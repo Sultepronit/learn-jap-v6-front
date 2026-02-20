@@ -88,14 +88,3 @@ export async function putMany(storeName: string, data: any[]) {
         tx.onabort = () => rej(new Error("Transaction aborted!"))
     })
 }
-
-export async function getCard(id: number) {
-    // return await getFromDb("wordCards", "get", id)
-    // return await useDb("wordCard", "readonly", s => s.get(id))
-    try {
-        return await useDb("wordCards", "readonly", s => s.get(id))
-    } catch (error) {
-        console.warn(error)
-        alert(error.message)
-    }
-}

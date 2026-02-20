@@ -1,5 +1,5 @@
 import { saveCards } from "../indexedDB/dbUseCases";
-import type { WordCard, WordProg } from "../types/types";
+import type { WordCard, WordProg } from "../words/types";
 
 export default function parseInitData() {
     const initData = JSON.parse(localStorage.getItem('initData')) as any[]

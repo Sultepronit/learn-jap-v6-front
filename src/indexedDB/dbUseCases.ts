@@ -1,4 +1,3 @@
-import type { WordCard } from "../types/types"
 import { putMany, useDb } from "./dbHandlers"
 
 function dbErrorAlert(e: Error) {
@@ -23,3 +22,18 @@ export async function getAllCards(store: CardStore) {
     }
 }
 
+export async function getCardsKeys(store: CardStore) {
+    try {
+        return await useDb(store, "readonly", s => s.getAllKeys())
+    } catch (e) {
+        dbErrorAlert(e)
+    }
+}
+
+export async function getCard(store: CardStore, id: number) {
+    try {
+        return await useDb(store, "readonly", s => s.get(id))
+    } catch (e) {
+        dbErrorAlert(e)
+    }
+}
