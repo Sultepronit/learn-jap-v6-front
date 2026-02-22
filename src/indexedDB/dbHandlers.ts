@@ -53,8 +53,14 @@ const dbPromise = openDB().catch(err => {
 //     })
 // }
 
+function dbErrorAlert(e: Error) {
+    console.warn(e)
+    // alert(e.message)
+}
+
 type DbAction = (store: IDBObjectStore) => IDBRequest
-export async function useDb<T>(storeName: string, mode: IDBTransactionMode, action: DbAction): Promise<T> {
+// export async function useDb<T>(storeName: string, mode: IDBTransactionMode, action: DbAction): Promise<T> {
+export async function useDb(storeName: string, mode: IDBTransactionMode, action: DbAction) {
     const db = await dbPromise
     if (!db) return null
     
@@ -68,7 +74,7 @@ export async function useDb<T>(storeName: string, mode: IDBTransactionMode, acti
 
         tx.onerror = () => rej(tx.error)
         tx.onabort = () => rej(new Error("Transaction aborted!"))
-    })
+    }).catch(dbErrorAlert)
 }
 
 export async function putMany(storeName: string, data: any[]) {

@@ -2,7 +2,7 @@ import { putMany, useDb } from "./dbHandlers"
 
 function dbErrorAlert(e: Error) {
     console.warn(e)
-    alert(e.message)
+    // alert(e.message)
 }
 
 type CardStore = "wordCards" | "wordStats"
