@@ -19,23 +19,34 @@ const data = {
         console.log(cards)
     },
 
-    timeout: false, 
+    timeout: 0, 
+    isPlanned: false,
     async fillCard(num: number, id: number) {
-        let card = cards[num - 1];
+        let card = cards[num - 1]
         // console.log(card)
         if (card?.id != id) card = cards.find(c => c.id === id)
         // console.log(card)
         card.card = await useDb("wordCards", "readonly", s => s.get(id)) as WordCard
         card.t = Date.now()
-        console.log(card)
+        // console.log(card)
+        // document.dispatchEvent(new Event("word-updated"))
         if (!this.timeout) {
-            this.timeout = true
             document.dispatchEvent(new Event("word-updated"))
-            setTimeout(() => {
-                document.dispatchEvent(new Event("word-updated"))
-                this.timeout = false
-                console.log(this)
-            })
+
+            this.timeout = setTimeout(() => {
+                if (this.isPlanned) {
+                    document.dispatchEvent(new Event("word-updated"))
+                    this.isPlanned = false
+                }
+                
+                clearTimeout(this.timeout)
+                // console.log(this.timeout)
+                this.timeout = 0
+                // console.log(this.timeout)
+            }, 50)
+            // console.log(this.timeout)
+        } else {
+            this.isPlanned = true
         }
     },
 
