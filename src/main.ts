@@ -51,3 +51,13 @@ customElements.define("words-table", WordsTable)
 // document.addEventListener("test-event", () => console.log("test event"))
 // document.dispatchEvent(new Event("test-event"))
 // console.timeEnd("t4")
+
+// const test = { a: null }
+// console.log(test)
+// console.log(test.a)
+// console.log(test.a?.b)
+// console.log(test.a?.b.c)
+// console.log(test.a?.b.c.join(" "))
+// const t = document.createElement("p")
+// t.textContent = test.a?.b.c.join(" ")
+// console.log(t)

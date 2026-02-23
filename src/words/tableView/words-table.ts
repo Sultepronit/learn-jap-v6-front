@@ -1,64 +1,72 @@
 import css from "./style.css?inline"
-import data from "../data/data"
-import type { WordCard } from "../types"
+import { getCards, loadData } from "../data/data"
 
 export default class WordsTable extends HTMLElement {
     private data: any[] = []
-    // private rows: HTMLDivElement[] = []
     private rows = []
+    private top = 0
 
     constructor() {
         super()
     }
 
+    fillRow(elem: HTMLDivElement, card) {
+        elem.querySelector(".card-id").textContent = card.num
+        // if (!card.card) return
+        // console.log(card.card?.data.readings.join(" "))
+        elem.querySelector(".writings").textContent = (card.card?.data.writings.join(" ") || "")
+        elem.querySelector(".readings").textContent = card.card?.data.readings.join(" ")
+    }
+
+    doScroll(rawDelta: number) {
+        const delta = rawDelta > 0 ? 3 : -3
+        // console.log(delta)
+        this.top += delta
+
+        this.rows.forEach((row, i) => {
+            const card = this.data[i + this.top]
+            row.card = card
+            row.v = card.v
+            this.fillRow(row.element, card)
+        })
+    }
+
     async connectedCallback() {
         this.render()
         this.addEventListener("wheel", (e) => {
-            console.log(e)
+            // console.log(e)
+            this.doScroll(e.deltaY)
         })
-        await data.init()
-        // console.log(data.keys)
+        await loadData()
         // this.data = [...data.cards].reverse()
-        this.data = [...data.cards]
+        this.data = [...getCards()]
         this.rows.forEach((row, i) => {
             const card = this.data[i]
-            // row.dataset.t = card.t
             row.card = card
-            row.t = card.t
-            row.element.querySelector(".card-id").textContent = card.num
-            if (!card.card) {
-                data.fillCard(card.num, card.id) 
-                return
-            }
-            row.element.querySelector(".writings").textContent = card.card.data.writings.join(" ")
-            row.element.querySelector(".readings").textContent = card.card.data.readings.join(" ")
+            row.v = card.v
+            this.fillRow(row.element, card)
         })
+
         document.addEventListener("word-updated", () => {
             console.timeLog("t1", "start update")
             // console.log("e")
             this.rows.forEach((row) => {
-                // console.log("t")
+                console.log("t")
                 // console.log(row.dataset.t)
                 const card = row.card
-                if (card.t === Number(row.t)) return
-                row.t = card.t
-                console.log("change")
-                row.element.querySelector(".card-id").textContent = card.num
-                if (!card.card) return
-                // if (!card.card) console.log("empty?")
-                row.element.querySelector(".writings").textContent = card.card.data.writings.join(" ")
-                row.element.querySelector(".readings").textContent = card.card.data.readings.join(" ")
+                if (card.v === row.v) return
+                // console.log(card.v, row.v)
+                row.v = card.v
+                this.fillRow(row.element, card)
             })
             console.timeLog("t1", "end update")
         })
-        // this.addEventListener("word-updated", (e) => console.log(e))
     }
 
     render() {
         const rowTemp: string[] = []
         for (let i = 0; i < 40; i++) {
             rowTemp.push(`<div class="row" data-ri="${i}">
-                <div class="row-num">${i + 1}</div>
                 <div class="card-id"></div>
                 <div class="writings"></div>
                 <div class="readings"></div>
