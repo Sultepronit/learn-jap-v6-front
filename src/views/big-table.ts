@@ -1,20 +1,23 @@
-import css from "./style.css?inline"
-import { getCards, loadData } from "../data/data"
+import css from "./big-table.css?inline"
+type FillRow = (elem: HTMLDivElement, card: any) => void
 
-export default class WordsTable extends HTMLElement {
+export default class BigTable extends HTMLElement {
     private data: any[] = []
     private rows = []
+    private rowsN = 15
     private top = 0
 
-    fillRow(elem: HTMLDivElement, card) {
-        elem.querySelector(".card-id").textContent = card.num
-        // if (!card.card) return
-        // console.log(card.card?.data.readings.join(" "))
-        elem.querySelector(".writings").textContent = (card.card?.data.writings.join(" ") || "")
-        elem.querySelector(".readings").textContent = card.card?.data.readings.join(" ")
+    private rowCss = ""
+    private rowTemplate = ""
+    private fillRow: FillRow
+
+    setParams(rowTemplate: string, css: string, fillRow: FillRow) {
+        this.rowTemplate = rowTemplate
+        this.rowCss = css
+        this.fillRow = fillRow
     }
 
-    doScroll(rawDelta: number) {
+    private doScroll(rawDelta: number) {
         const delta = rawDelta > 0 ? 3 : -3
         // console.log(delta)
         this.top += delta
@@ -30,12 +33,11 @@ export default class WordsTable extends HTMLElement {
     async connectedCallback() {
         this.render()
         this.addEventListener("wheel", (e) => {
-            // console.log(e)
             this.doScroll(e.deltaY)
         })
-        await loadData()
+        // await loadData()
         // this.data = [...data.cards].reverse()
-        this.data = [...getCards()]
+        // this.data = [...getCards()]
         this.rows.forEach((row, i) => {
             const card = this.data[i]
             row.card = card
@@ -61,22 +63,21 @@ export default class WordsTable extends HTMLElement {
 
     render() {
         const rowTemp: string[] = []
-        for (let i = 0; i < 10; i++) {
-            rowTemp.push(`<div class="row" data-ri="${i}">
+        for (let i = 0; i < 15; i++) {
+            rowTemp.push(`<div class="btr" data-ri="${i}">
                 <div class="card-id"></div>
                 <div class="writings"></div>
                 <div class="readings"></div>
             </div>`)
         }
-        this.innerHTML = `<style>${css}</style>${rowTemp.join('')}`
+        this.innerHTML = `<style>${css}</style><div class="big-table">${rowTemp.join('')}</div>`
         // this.rows = Array.from(this.querySelectorAll('.row'))
         const re = this.querySelectorAll('.row')
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 40; i++) {
             this.rows.push({
                 element: re[i]
             });
         }
         console.log(this.rows)
     }
-
 }

@@ -1,0 +1,9 @@
+.big-table {
+    /* background-color: yellow; */
+    border: 1px solid red;
+}
+
+.btr {
+    border-top: 1px solid black;
+    height: 1.5rem;
+}
