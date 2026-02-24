@@ -6,7 +6,7 @@ export default class WordsDb extends HTMLElement {
     private data: any[]
     private table: BigTable
         
-    private async connectedCallback() {
+    async connectedCallback() {
         this.data = await loadData()
         console.log(this.data)
         this.render()
@@ -25,10 +25,11 @@ export default class WordsDb extends HTMLElement {
         <div class="btd writings">*</div>
         <div class="btd readings">*</div>`
     private rowCss = ""
-    private fillRow(elem: HTMLDivElement, card) {
-        elem.querySelector(".card-id").textContent = card.num
-        elem.querySelector(".writings").textContent = (card.card?.data.writings.join(" ") || "")
-        elem.querySelector(".readings").textContent = card.card?.data.readings.join(" ")
+    private fillRow(rowElem: HTMLDivElement, card) {
+        rowElem.dataset.cardNum = card.num
+        rowElem.querySelector(".card-id").textContent = card.num
+        rowElem.querySelector(".writings").textContent = (card.card?.data.writings.join(" ") || "")
+        rowElem.querySelector(".readings").textContent = card.card?.data.readings.join(" ")
     }
 
     private setTable() {
@@ -42,7 +43,8 @@ export default class WordsDb extends HTMLElement {
             this.fillRow,
             "word-updated"
         )
-        this.table.setData(this.data.slice(100, 110))
-        setTimeout(() => this.table.setData(this.data.slice(120, 150)), 2000)
+        // this.table.setData(this.data.slice(100, 150))
+        this.table.setData(this.data.reverse())
+        // setTimeout(() => this.table.setData(this.data.slice(120, 150)), 2000)
     }
 }
