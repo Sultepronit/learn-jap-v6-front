@@ -1,4 +1,5 @@
-import css from "./big-table.css?inline"
+// import css from "./big-table.css?inline"
+import "./big-table.css"
 type FillRow = (elem: HTMLDivElement, card: any) => void
 
 export default class BigTable extends HTMLElement {
@@ -8,14 +9,10 @@ export default class BigTable extends HTMLElement {
     private top = 0
 
     private rowCss = ""
-    private rowTemplate = ""
+    private tdTemplate = ""
+    private btrClassName = ""
     private fillRow: FillRow
-
-    setParams(rowTemplate: string, css: string, fillRow: FillRow) {
-        this.rowTemplate = rowTemplate
-        this.rowCss = css
-        this.fillRow = fillRow
-    }
+    private updateEvent = ""
 
     private doScroll(rawDelta: number) {
         const delta = rawDelta > 0 ? 3 : -3
@@ -30,25 +27,49 @@ export default class BigTable extends HTMLElement {
         })
     }
 
-    async connectedCallback() {
-        this.render()
+    connectedCallback() {
+        // this.render()
         this.addEventListener("wheel", (e) => {
             this.doScroll(e.deltaY)
         })
-        // await loadData()
-        // this.data = [...data.cards].reverse()
-        // this.data = [...getCards()]
-        this.rows.forEach((row, i) => {
-            const card = this.data[i]
-            row.card = card
-            row.v = card.v
-            this.fillRow(row.element, card)
-        })
+        
+    }
 
-        document.addEventListener("word-updated", () => {
+    private render() {
+        const rowsTemp = new Array(this.rowsN)
+            .fill(`<div class="btr ${this.btrClassName} hidden">${this.tdTemplate}</div>`).join("")
+            
+        this.innerHTML = `<style>${this.rowCss}</style>
+            <div class="big-table">${rowsTemp}</div>`
+        // this.rows = Array.from(this.querySelectorAll('.row'))
+        const re = this.querySelectorAll('.btr')
+        re.forEach(r => this.rows.push({ element: r}))
+        console.log(this.rows)
+    }
+
+    setParams(
+        tdTemplate: string,
+        btrClassName: string,
+        css: string,
+        fillRow: FillRow,
+        updateEvent: string
+    ) {
+        this.tdTemplate = tdTemplate
+        this.btrClassName = btrClassName
+        this.rowCss = css
+        this.fillRow = fillRow
+        this.updateEvent = updateEvent
+
+        this.render()
+
+        document.addEventListener(this.updateEvent, () => {
             console.timeLog("t1", "start update")
             // console.log("e")
-            this.rows.forEach((row) => {
+            this.rows.forEach((row, i) => {
+                if (i >= this.data.length) {
+                    row.element.classList.add("hidden")
+                    return
+                }
                 console.log("t")
                 // console.log(row.dataset.t)
                 const card = row.card
@@ -61,23 +82,20 @@ export default class BigTable extends HTMLElement {
         })
     }
 
-    render() {
-        const rowTemp: string[] = []
-        for (let i = 0; i < 15; i++) {
-            rowTemp.push(`<div class="btr" data-ri="${i}">
-                <div class="card-id"></div>
-                <div class="writings"></div>
-                <div class="readings"></div>
-            </div>`)
-        }
-        this.innerHTML = `<style>${css}</style><div class="big-table">${rowTemp.join('')}</div>`
-        // this.rows = Array.from(this.querySelectorAll('.row'))
-        const re = this.querySelectorAll('.row')
-        for (let i = 0; i < 40; i++) {
-            this.rows.push({
-                element: re[i]
-            });
-        }
-        console.log(this.rows)
+    setData(data: any[]) {
+        this.data = data
+        this.rows.forEach((row, i) => {
+            if (i >= this.data.length) {
+                row.element.classList.add("hidden")
+                return
+            }
+            const card = this.data[i]
+            row.card = card
+            row.v = card.v
+            this.fillRow(row.element, card)
+            row.element.classList.remove("hidden")
+            // console.log(row)
+        })
+        // this.rows[this.rowsN - 1].element.classList.add("hidden")
     }
 }

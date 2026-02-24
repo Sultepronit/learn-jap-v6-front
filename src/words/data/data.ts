@@ -5,7 +5,8 @@ let cards: any[] = null
 let cardV = 1
 
 export async function loadData() {
-    if (cards) return
+    if (cards) return cards
+
     console.timeLog("t1", "cards init")
     const keys = await useDb("wordCards", "readonly", s => s.getAllKeys()) as number[]
     console.timeLog("t1", "cards keys")
@@ -21,6 +22,7 @@ export async function loadData() {
     }))
     console.timeLog("t1", "cards parsed")
     console.log(cards)
+    return cards
 }
 
 export function getCards() {
@@ -31,7 +33,7 @@ let queue = new Set()
 let timeout = 0
 let isPlanned = false
 async function loadCard(card) {
-    console.log(queue.has(card.id))
+    // console.log(queue.has(card.id))
     if (queue.has(card.id)) return
     queue.add(card.id)
     

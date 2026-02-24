@@ -1,9 +1,15 @@
 .big-table {
+    margin: 0.3rem;
     /* background-color: yellow; */
-    border: 1px solid red;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
 }
 
 .btr {
-    border-top: 1px solid black;
-    height: 1.5rem;
+    border-bottom: 1px solid black;
+    /* height: 1.6em; */
+}
+
+.btd {
+    border-right: 1px solid black;
 }
