@@ -5,12 +5,19 @@ import { loadData } from "../data/data"
 export default class WordsDb extends HTMLElement {
     private data: any[]
     private table: BigTable
+    private selectedCard: any
         
     async connectedCallback() {
         this.data = await loadData()
         console.log(this.data)
         this.render()
         this.setTable()
+    }
+
+    private selectCard(num: number) {
+        this.selectedCard = this.data[num - 1]
+        console.log(this.selectedCard)
+        this.dispatchEvent(new CustomEvent("card-selected", { detail: this.selectedCard }))
     }
 
     private render() {
@@ -44,7 +51,9 @@ export default class WordsDb extends HTMLElement {
             "word-updated"
         )
         // this.table.setData(this.data.slice(100, 150))
-        this.table.setData(this.data.reverse())
+        this.table.setData([...this.data].reverse())
+        this.selectCard(this.data.length - 1)
         // setTimeout(() => this.table.setData(this.data.slice(120, 150)), 2000)
+        // setTimeout(() => this.data.forEach(c => c.card), 2000)
     }
 }

@@ -47,6 +47,9 @@ export default class BigTable extends HTMLElement {
         this.addEventListener("wheel", (e) => {
             this.doScroll(e.deltaY)
         })
+        this.parentElement.addEventListener("card-selected", (e) => {
+            console.log(e.detail)
+        })
     }
 
     private render() {
@@ -123,5 +126,9 @@ export default class BigTable extends HTMLElement {
         // this.data.forEach(c => console.log(c.card?.data))
         // this.data.forEach(c => c.card)
         // this.rows[this.rowsN - 1].element.classList.add("hidden")
+        this.parentNode.dispatchEvent(new CustomEvent(
+            "card-selected",
+            { detail: this.data[0].num }
+        ))
     }
 }

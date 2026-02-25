@@ -12,7 +12,7 @@ console.time("t1")
 customElements.define("words-table", WordsTable)
 customElements.define("big-table", BigTable)
 customElements.define("words-db", WordsDb)
-document.createElement("my-component")
+
 // fetchInitData()
 // parseInitData()
 
