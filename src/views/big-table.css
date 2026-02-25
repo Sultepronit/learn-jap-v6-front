@@ -13,3 +13,7 @@
 .btd {
     border-right: 1px solid black;
 }
+
+.selected {
+    background-color: aqua;
+}

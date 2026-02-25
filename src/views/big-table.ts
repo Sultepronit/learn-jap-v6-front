@@ -1,11 +1,17 @@
 // import css from "./big-table.css?inline"
 import "./big-table.css"
 type FillRow = (elem: HTMLDivElement, card: any) => void
+type Row = {
+    element: HTMLDivElement,
+    v: number,
+    card: any
+}
 
 export default class BigTable extends HTMLElement {
     private data: any[] = []
-    private rows = []
+    private rows: Row[] = []
     private rowsArea: HTMLDivElement
+    private selected: HTMLDivElement
     private rowsN = 15
     private top = 0
 
@@ -15,8 +21,19 @@ export default class BigTable extends HTMLElement {
     private fillRow: FillRow
     private updateEvent = ""
 
+    private reselect(rowIdx: number) {
+        this.selected?.classList.remove("selected")
+        this.selected = this.rows[rowIdx].element
+        this.selected.classList.add("selected")
+    }
+
     private navigate(delta: number) {
         this.top += delta
+
+        // console.log(this.selected)
+        const selIdx = Number(this.selected.dataset.i) - delta
+        console.log("new i", selIdx, delta)
+        this.reselect(selIdx)
 
         this.rows.forEach((row, i) => {
             const card = this.data[i + this.top]
@@ -33,9 +50,9 @@ export default class BigTable extends HTMLElement {
         if (newTop + this.rowsN > this.data.length) newTop = this.data.length - this.rowsN
         if (this.top === newTop) return
 
-        this.top = newTop
+        // this.top = newTop
         // console.log(newTop)
-        this.navigate(0)
+        this.navigate(newTop - this.top)
     }
 
     private doScroll(rawDelta: number) {
@@ -47,19 +64,36 @@ export default class BigTable extends HTMLElement {
         this.addEventListener("wheel", (e) => {
             this.doScroll(e.deltaY)
         })
-        this.parentElement.addEventListener("card-selected", (e) => {
+        this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
             console.log(e.detail)
+            const { num, rowI } = e.detail
+
+            this.selected?.classList.remove("selected")
+            if (rowI || rowI === 0) {
+                this.selected = this.rows[rowI].element
+                // console.log(this.selected)
+                // console.log(this.rows[rowI])
+            } else {
+
+            }
+            this.selected.classList.add("selected")
         })
     }
 
     private render() {
-        const rowsTemp = new Array(this.rowsN)
-            .fill(`<div class="btr ${this.btrClassName} hidden">${this.tdTemplate}</div>`)
-            .join("")
+        // const rowsTemp = new Array(this.rowsN)
+        //     .fill(`<div class="btr ${this.btrClassName} hidden">${this.tdTemplate}</div>`)
+        //     .join("")
+        const rowsTemp = []
+        for (let i = 0; i < this.rowsN; i++) {
+            rowsTemp.push(`<div class="btr ${this.btrClassName}" data-i=${i} hidden">
+                ${this.tdTemplate}
+            </div>`)
+        }
             
         this.innerHTML = `<style>${this.rowCss}</style>
             <div class="big-table">
-                <div class="rows-area">${rowsTemp}</div>
+                <div class="rows-area">${rowsTemp.join("")}</div>
             </div>`
         // this.rows = Array.from(this.querySelectorAll('.row'))
         const re = this.querySelectorAll('.btr')
@@ -68,8 +102,19 @@ export default class BigTable extends HTMLElement {
 
         this.rowsArea = this.querySelector(".rows-area")
         console.log(this.rowsArea)
+
         this.rowsArea.addEventListener("click", (e) => {
-            console.log((e.target as HTMLDivElement).closest(".btr"))
+            const clicked = (e.target as HTMLDivElement).closest(".btr")
+            if (clicked === this.selected) return
+
+            // console.log(clicked)
+            // console.log(clicked.dataset.i)
+            const { cardNum, i } = clicked.dataset
+            // console.log(cardNum, i)
+            this.parentNode.dispatchEvent(new CustomEvent(
+            "card-selected",
+            { detail: { num: Number(cardNum), rowI: Number(i) } }
+        ))
         })
     }
 
@@ -126,9 +171,9 @@ export default class BigTable extends HTMLElement {
         // this.data.forEach(c => console.log(c.card?.data))
         // this.data.forEach(c => c.card)
         // this.rows[this.rowsN - 1].element.classList.add("hidden")
-        this.parentNode.dispatchEvent(new CustomEvent(
-            "card-selected",
-            { detail: this.data[0].num }
-        ))
+        // this.parentNode.dispatchEvent(new CustomEvent(
+        //     "card-selected",
+        //     { detail: { num: this.data[0].num, rowI: 0 } }
+        // ))
     }
 }

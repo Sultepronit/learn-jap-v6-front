@@ -5,7 +5,7 @@ import { loadData } from "../data/data"
 export default class WordsDb extends HTMLElement {
     private data: any[]
     private table: BigTable
-    private selectedCard: any
+    // private selectedCard: any
         
     async connectedCallback() {
         this.data = await loadData()
@@ -14,11 +14,11 @@ export default class WordsDb extends HTMLElement {
         this.setTable()
     }
 
-    private selectCard(num: number) {
-        this.selectedCard = this.data[num - 1]
-        console.log(this.selectedCard)
-        this.dispatchEvent(new CustomEvent("card-selected", { detail: this.selectedCard }))
-    }
+    // private selectCard(num: number) {
+    //     this.selectedCard = this.data[num - 1]
+    //     console.log(this.selectedCard)
+    //     this.dispatchEvent(new CustomEvent("card-selected", { detail: this.selectedCard }))
+    // }
 
     private render() {
         this.innerHTML = `
@@ -52,7 +52,12 @@ export default class WordsDb extends HTMLElement {
         )
         // this.table.setData(this.data.slice(100, 150))
         this.table.setData([...this.data].reverse())
-        this.selectCard(this.data.length - 1)
+
+        this.dispatchEvent(new CustomEvent(
+            "card-selected",
+            { detail: { num: this.data.length, rowI: 0 } }
+        ))
+        // this.selectCard(this.data.length - 1)
         // setTimeout(() => this.table.setData(this.data.slice(120, 150)), 2000)
         // setTimeout(() => this.data.forEach(c => c.card), 2000)
     }
