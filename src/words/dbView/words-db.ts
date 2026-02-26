@@ -28,25 +28,38 @@ export default class WordsDb extends HTMLElement {
     }
 
     private tdTemplate = `
-        <div class="btd card-id">*</div>
-        <div class="btd writings">*</div>
-        <div class="btd readings">*</div>`
-    private rowCss = ""
+        <div class="btd num"></div>
+        <div class="btd writings"></div>
+        <div class="btd readings"></div>
+        <div class="btd translation"></div>
+        <div class="btd example"></div>
+        `
+    private colums = ["num", "writings", "readings", "translation", "example"]
     private fillRow(rowElem: HTMLDivElement, card) {
         rowElem.dataset.cardNum = card.num
-        rowElem.querySelector(".card-id").textContent = card.num
-        rowElem.querySelector(".writings").textContent = (card.card?.data.writings.join(" ") || "")
+        rowElem.querySelector(".num").textContent = card.num
+
+        const writ = rowElem.querySelector(".writings")
+        if (card.card?.data.altWriting) {
+            writ.classList.add("blue")
+        } else {
+            writ.classList.remove("blue")
+        }
+        writ.textContent = (card.card?.data.writings.join(" ") || "")
+
         rowElem.querySelector(".readings").textContent = card.card?.data.readings.join(" ")
+        rowElem.querySelector(".translation").textContent = card.card?.data.translation
+        rowElem.querySelector(".example").textContent = card.card?.data.example
     }
 
     private setTable() {
         this.table = this.querySelector("big-table")
-        console.log(this.table)
+        // console.log(this.table)
         console.timeLog("t1", "table!")
         this.table.setParams(
-            this.tdTemplate,
+            // this.tdTemplate,
+            this.colums,
             "word-btr",
-            this.rowCss,
             this.fillRow,
             "word-updated"
         )
@@ -55,7 +68,7 @@ export default class WordsDb extends HTMLElement {
 
         this.dispatchEvent(new CustomEvent(
             "card-selected",
-            { detail: { num: this.data.length, rowI: 0 } }
+            { detail: { cardNum: this.data.length, rowIdx: 0 } }
         ))
         // this.selectCard(this.data.length - 1)
         // setTimeout(() => this.table.setData(this.data.slice(120, 150)), 2000)

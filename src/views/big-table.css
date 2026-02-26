@@ -12,6 +12,10 @@
 
 .btd {
     border-right: 1px solid black;
+    white-space: nowrap;
+    overflow: hidden;
+    /* text-overflow: ellipsis; */
+    padding: 1px 0.2em;
 }
 
 .selected {

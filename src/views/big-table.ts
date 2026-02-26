@@ -11,32 +11,54 @@ export default class BigTable extends HTMLElement {
     private data: any[] = []
     private rows: Row[] = []
     private rowsArea: HTMLDivElement
-    private selected: HTMLDivElement
+    // private selected: HTMLDivElement
+    private selected: {
+        element: HTMLDivElement,
+        cardNum: number
+    } = {
+        element: null,
+        cardNum: -1
+    }
     private rowsN = 15
     private top = 0
 
-    private rowCss = ""
-    private tdTemplate = ""
+    private columns: string[]
     private btrClassName = ""
     private fillRow: FillRow
     private updateEvent = ""
 
-    private reselect(rowIdx: number) {
-        this.selected?.classList.remove("selected")
-        this.selected = this.rows[rowIdx].element
-        this.selected.classList.add("selected")
+    private deselect() {
+        this.selected.element?.classList.remove("selected")
+        this.selected.element = null
+    }
+
+    private select(cardNum: number, rowIdx: number) {
+        this.selected.cardNum = cardNum
+        if (!rowIdx && rowIdx !== 0) {
+            rowIdx = this.data.findIndex(c => c.num === cardNum)
+        }
+        if (rowIdx < 0) return
+
+        this.selected.element = this.rows[rowIdx].element
+        this.selected.element.classList.add("selected")
+        // console.log(this.selected)
+    }
+
+    private reselect(cardNum: number, rowIdx: number) {
+        this.deselect()
+        this.select(cardNum, rowIdx)
     }
 
     private navigate(delta: number) {
         this.top += delta
 
-        // console.log(this.selected)
-        const selIdx = Number(this.selected.dataset.i) - delta
-        console.log("new i", selIdx, delta)
-        this.reselect(selIdx)
+        this.deselect();
 
         this.rows.forEach((row, i) => {
             const card = this.data[i + this.top]
+
+            if (card.num === this.selected.cardNum) this.select(card.num, i)
+
             row.card = card
             row.v = card.v
             this.fillRow(row.element, card)
@@ -50,8 +72,6 @@ export default class BigTable extends HTMLElement {
         if (newTop + this.rowsN > this.data.length) newTop = this.data.length - this.rowsN
         if (this.top === newTop) return
 
-        // this.top = newTop
-        // console.log(newTop)
         this.navigate(newTop - this.top)
     }
 
@@ -65,47 +85,39 @@ export default class BigTable extends HTMLElement {
             this.doScroll(e.deltaY)
         })
         this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
-            console.log(e.detail)
-            const { num, rowI } = e.detail
-
-            this.selected?.classList.remove("selected")
-            if (rowI || rowI === 0) {
-                this.selected = this.rows[rowI].element
-                // console.log(this.selected)
-                // console.log(this.rows[rowI])
-            } else {
-
-            }
-            this.selected.classList.add("selected")
+            // console.log(e.detail)
+            const { cardNum, rowIdx } = e.detail
+            this.reselect(cardNum, rowIdx)
         })
     }
 
     private render() {
-        // const rowsTemp = new Array(this.rowsN)
-        //     .fill(`<div class="btr ${this.btrClassName} hidden">${this.tdTemplate}</div>`)
-        //     .join("")
         const rowsTemp = []
+        const bth = this.columns.map(c => `<div class="btd ${c}">${c}</div>`).join("")
+        const btd = this.columns.map(c => `<div class="btd ${c}"></div>`).join("")
         for (let i = 0; i < this.rowsN; i++) {
             rowsTemp.push(`<div class="btr ${this.btrClassName}" data-i=${i} hidden">
-                ${this.tdTemplate}
+                ${btd}
             </div>`)
         }
             
-        this.innerHTML = `<style>${this.rowCss}</style>
-            <div class="big-table">
+        this.innerHTML = `<div class="big-table">
+                <div class="btr- ${this.btrClassName}">
+                    ${bth}
+                </div>
                 <div class="rows-area">${rowsTemp.join("")}</div>
             </div>`
         // this.rows = Array.from(this.querySelectorAll('.row'))
-        const re = this.querySelectorAll('.btr')
-        re.forEach(r => this.rows.push({ element: r}))
+        const re = this.querySelectorAll<HTMLDivElement>('.btr')
+        re.forEach(r => this.rows.push({ element: r, v: 0, card: null }))
         console.log(this.rows)
 
         this.rowsArea = this.querySelector(".rows-area")
-        console.log(this.rowsArea)
+        // console.log(this.rowsArea)
 
         this.rowsArea.addEventListener("click", (e) => {
             const clicked = (e.target as HTMLDivElement).closest(".btr")
-            if (clicked === this.selected) return
+            if (clicked === this.selected.element) return
 
             // console.log(clicked)
             // console.log(clicked.dataset.i)
@@ -113,21 +125,20 @@ export default class BigTable extends HTMLElement {
             // console.log(cardNum, i)
             this.parentNode.dispatchEvent(new CustomEvent(
             "card-selected",
-            { detail: { num: Number(cardNum), rowI: Number(i) } }
+            { detail: { cardNum: Number(cardNum), rowIdx: Number(i) } }
         ))
         })
     }
 
     setParams(
-        tdTemplate: string,
+        // tdTemplate: string,
+        colums: string[],
         btrClassName: string,
-        css: string,
         fillRow: FillRow,
         updateEvent: string
     ) {
-        this.tdTemplate = tdTemplate
+        this.columns = colums
         this.btrClassName = btrClassName
-        this.rowCss = css
         this.fillRow = fillRow
         this.updateEvent = updateEvent
 
