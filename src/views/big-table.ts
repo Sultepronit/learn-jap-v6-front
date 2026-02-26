@@ -93,7 +93,7 @@ export default class BigTable extends HTMLElement {
 
     private render() {
         const rowsTemp = []
-        const bth = this.columns.map(c => `<div class="btd ${c}">${c}</div>`).join("")
+        const bth = this.columns.map(c => `<div class="btd" data-column="${c}">${c}</div>`).join("")
         const btd = this.columns.map(c => `<div class="btd ${c}"></div>`).join("")
         for (let i = 0; i < this.rowsN; i++) {
             rowsTemp.push(`<div class="btr ${this.btrClassName}" data-i=${i} hidden">
@@ -102,7 +102,7 @@ export default class BigTable extends HTMLElement {
         }
             
         this.innerHTML = `<div class="big-table">
-                <div class="btr- ${this.btrClassName}">
+                <div class="btrh ${this.btrClassName}">
                     ${bth}
                 </div>
                 <div class="rows-area">${rowsTemp.join("")}</div>
@@ -111,6 +111,21 @@ export default class BigTable extends HTMLElement {
         const re = this.querySelectorAll<HTMLDivElement>('.btr')
         re.forEach(r => this.rows.push({ element: r, v: 0, card: null }))
         console.log(this.rows)
+
+        this.querySelector(".btrh").addEventListener("click", (e) => {
+            const ch = e.target as HTMLDivElement
+            const column = ch.dataset.column
+            if (!column) return
+            console.log(column)
+            ch.textContent = ch.textContent === "up" ? "down" : "up"
+            // this.parentNode.dispatchEvent(new CustomEvent("sort", { detail: {
+            this.dispatchEvent(new CustomEvent("sort", { detail: {
+                column, up: ch.textContent === "up"
+            } }))
+            // if (ch.textContent === "up") {
+            //     ch.textContent === "down"
+            // } else
+        })
 
         this.rowsArea = this.querySelector(".rows-area")
         // console.log(this.rowsArea)
