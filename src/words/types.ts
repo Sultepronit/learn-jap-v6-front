@@ -23,20 +23,34 @@
 
 // export type WordCard = ActiveWordCard | DeletedWordCard
 
+// export type WordCard = {
+//     id: number,
+//     v: number,
+//     toSync?: true,
+//     data: {
+//         num: number,
+//         writings: string[],
+//         altWriting: boolean,
+//         rareWritings: string[],
+//         readings: string[],
+//         rareReadings: string[],
+//         translation: string[],
+//         example: string
+//     }
+// }
+
 export type WordCard = {
     id: number,
     v: number,
-    toSync: boolean,
-    data: {
-        num: number,
-        writings: string[],
-        altWriting: boolean,
-        rareWritings: string[],
-        readings: string[],
-        rareReadings: string[],
-        translation: string[],
-        example: string
-    }
+    toSync?: true,
+    // num: number,
+    writings: string[],
+    altWriting: boolean,
+    rareWritings: string[],
+    readings: string[],
+    rareReadings: string[],
+    translation: string,
+    example: string
 }
 
 interface Progress {
@@ -48,10 +62,15 @@ interface Progress {
 export type WordProg = {
     id: number,
     v: number,
-    toSync: boolean,
-    data: {
-        status: number,
-        f: Progress,
-        b: Progress
-    }
+    toSync?: true,
+    status: number,
+    f: Progress,
+    b: Progress
+}
+
+export type CombinedCard = {
+    id: number,
+    num: number,
+    v: number
+    card: WordCard
 }

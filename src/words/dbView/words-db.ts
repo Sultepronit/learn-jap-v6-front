@@ -1,12 +1,12 @@
 import "./words-db.css"
 import type BigTable from "../../views/big-table"
 import { loadData } from "../data/data"
+import type { CombinedCard } from "../types"
 
 export default class WordsDb extends HTMLElement {
-    private allData: any[]
-    private displayData: any[]
+    private allData: CombinedCard[]
+    private displayData: CombinedCard[]
     private table: BigTable
-    // private selectedCard: any
         
     async connectedCallback() {
         this.allData = await loadData()
@@ -14,12 +14,6 @@ export default class WordsDb extends HTMLElement {
         this.render()
         this.setTable()
     }
-
-    // private selectCard(num: number) {
-    //     this.selectedCard = this.data[num - 1]
-    //     console.log(this.selectedCard)
-    //     this.dispatchEvent(new CustomEvent("card-selected", { detail: this.selectedCard }))
-    // }
 
     private render() {
         this.innerHTML = `
@@ -29,27 +23,22 @@ export default class WordsDb extends HTMLElement {
     }
 
     private colums = ["num", "writings", "readings", "translation", "example"]
-    private fillRow(rowElem: HTMLDivElement, card) {
-        rowElem.dataset.cardNum = card.num
-        rowElem.querySelector(".num").textContent = card.num
+    private fillRow(rowElem: HTMLDivElement, card: CombinedCard) {
+        const strNum = card.num.toString()
+        rowElem.dataset.cardNum = strNum
+        rowElem.querySelector(".num").textContent = strNum
 
         const writ = rowElem.querySelector(".writings")
-        if (card.card?.data.altWriting) {
+        if (card.card?.altWriting) {
             writ.classList.add("blue")
         } else {
             writ.classList.remove("blue")
         }
-        writ.textContent = (card.card?.data.writings.join(" ") || "")
+        writ.textContent = (card.card?.writings.join(" ") || "")
 
-        rowElem.querySelector(".readings").textContent = card.card?.data.readings.join(" ")
-        rowElem.querySelector(".translation").textContent = card.card?.data.translation
-        rowElem.querySelector(".example").textContent = card.card?.data.example
-
-        // this.addEventListener("sort", (e: CustomEvent) => {
-        //     console.log(e)
-        //     const { column, up } = e.detail
-        //     console.log(column, up)
-        // })
+        rowElem.querySelector(".readings").textContent = card.card?.readings.join(" ")
+        rowElem.querySelector(".translation").textContent = card.card?.translation
+        rowElem.querySelector(".example").textContent = card.card?.example
     }
 
     private sort(column: string, up: boolean) {
@@ -60,7 +49,7 @@ export default class WordsDb extends HTMLElement {
                 break
             case "writings":
                 this.displayData.forEach(c => c.card)
-                this.displayData.sort((a, b) => a.card?.data.writings[0].localeCompare(b.card?.data.writings[0]))
+                this.displayData.sort((a, b) => a.card?.writings[0].localeCompare(b.card?.writings[0]))
                 break
         }
         if (!up) this.displayData.reverse();

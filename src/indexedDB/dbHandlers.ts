@@ -1,12 +1,12 @@
 const stores = [
     { name: "wordCards", key: "id" },
-    { name: "wordStats", key: "id" }
+    { name: "wordProgs", key: "id" }
 ]
 
 function openDB(): Promise<IDBDatabase> {
     return new Promise((res, rej) => {
         // rej("testing regect")
-        const req = indexedDB.open("learnJap", 2)
+        const req = indexedDB.open("learnJap", 3)
 
         req.onupgradeneeded = (e: IDBVersionChangeEvent) => {
             console.log("upgrade me!")
@@ -92,5 +92,5 @@ export async function putMany(storeName: string, data: any[]) {
         tx.oncomplete = res
         tx.onerror = () => rej(tx.error)
         tx.onabort = () => rej(new Error("Transaction aborted!"))
-    })
+    }).catch(dbErrorAlert)
 }

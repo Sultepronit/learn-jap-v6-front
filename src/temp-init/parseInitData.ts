@@ -1,3 +1,4 @@
+import { putMany } from "../indexedDB/dbHandlers";
 import { saveCards } from "../indexedDB/dbUseCases";
 import type { WordCard, WordProg } from "../words/types";
 
@@ -10,12 +11,13 @@ export default function parseInitData() {
     console.log(part)
 
     const wordCards: WordCard[] = []
+    const wordProgs: WordProg[] = []
 
     for (const rawCard of part) {
         // console.table(rawCard);
         const {
             id,
-            cardNumber,
+            // cardNumber,
             writings,
             altWriting,
             rareWritings,
@@ -36,41 +38,42 @@ export default function parseInitData() {
         const wordCard: WordCard = {
             id: newId,
             v: 0,
-            toSync: false,
-            data: {
-                num: cardNumber,
-                writings: writings.split(", "),
-                altWriting: !!altWriting,
-                rareWritings: rareWritings.split(", "),
-                readings: readings.split(", "),
-                rareReadings: rareReadings.split(", "),
-                translation: translation,
-                example
-            }
+            // toSync: false,
+            // data: {
+                // num: cardNumber,
+            writings: writings.split(", "),
+            altWriting: !!altWriting,
+            rareWritings: rareWritings.split(", "),
+            readings: readings.split(", "),
+            rareReadings: rareReadings.split(", "),
+            translation: translation,
+            example
+            // }
         }
         // console.table(wordCard)
         wordCards.push(wordCard)
 
-        const wordStats: WordProg = {
+        const wordProg: WordProg = {
             id: newId,
             v: 0,
-            toSync: false,
-            data: {
-                status: repeatStatus,
-                f: {
-                    progress: fProgress,
-                    record: fRecord,
-                    autorepeat: !!fAutorepeat
-                },
-                b: {
-                    progress: bProgress,
-                    record: bRecord,
-                    autorepeat: !!bAutorepeat
-                }
+            // toSync: false,
+            status: repeatStatus,
+            f: {
+                progress: fProgress,
+                record: fRecord,
+                autorepeat: !!fAutorepeat
+            },
+            b: {
+                progress: bProgress,
+                record: bRecord,
+                autorepeat: !!bAutorepeat
             }
         }
-        console.table(wordStats)
+        // console.table(wordProg)
+        wordProgs.push(wordProg)
     }
     console.log(wordCards)
-    saveCards("wordCards", wordCards)
+    // saveCards("wordCards", wordCards)
+    // saveCards("wordProgs", wordProgs)
+    putMany("wordProgs", wordProgs)
 }

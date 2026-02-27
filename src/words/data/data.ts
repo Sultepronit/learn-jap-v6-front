@@ -1,7 +1,7 @@
 import { useDb } from "../../indexedDB/dbHandlers"
-import type { WordCard } from "../types"
+import type { CombinedCard, WordCard } from "../types"
 
-let cards: any[] = null
+let cards: CombinedCard[] = null
 let cardV = 1
 
 export async function loadData() {
