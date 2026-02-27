@@ -18,6 +18,10 @@ export async function loadData() {
         get card() {
             loadCard(this)
             return null
+        },
+        get prog() {
+            loadCard(this)
+            return null
         }
     }))
     console.timeLog("t1", "cards parsed")
@@ -40,6 +44,9 @@ async function loadCard(card) {
     // card.card = await useDb("wordCards", "readonly", s => s.get(card.id)) as WordCard
     Object.defineProperty(card, 'card', {
         value: await useDb("wordCards", "readonly", s => s.get(card.id)) as WordCard
+    })
+    Object.defineProperty(card, 'prog', {
+        value: await useDb("wordProgs", "readonly", s => s.get(card.id))
     })
     card.v = cardV++
     queue.delete(card.id)

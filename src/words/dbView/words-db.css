@@ -1,6 +1,6 @@
 .word-btr {
     display: grid;
-    grid-template-columns: 3em 5fr 5fr 10fr 6fr;
+    grid-template-columns: 3em 4em 5fr 5fr 10fr 6fr;
     height: 1.5em;
 }
 

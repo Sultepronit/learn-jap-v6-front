@@ -42,7 +42,7 @@
 export type WordCard = {
     id: number,
     v: number,
-    toSync?: true,
+    tempV?: number
     // num: number,
     writings: string[],
     altWriting: boolean,
@@ -62,15 +62,16 @@ interface Progress {
 export type WordProg = {
     id: number,
     v: number,
-    toSync?: true,
+    tempV?: number
     status: number,
     f: Progress,
     b: Progress
 }
 
 export type CombinedCard = {
-    id: number,
-    num: number,
+    id: number
+    num: number
     v: number
     card: WordCard
+    prog: WordProg
 }

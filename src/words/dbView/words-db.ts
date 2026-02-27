@@ -22,11 +22,13 @@ export default class WordsDb extends HTMLElement {
         `
     }
 
-    private colums = ["num", "writings", "readings", "translation", "example"]
+    private colums = ["num", "status", "writings", "readings", "translation", "example"]
     private fillRow(rowElem: HTMLDivElement, card: CombinedCard) {
         const strNum = card.num.toString()
         rowElem.dataset.cardNum = strNum
         rowElem.querySelector(".num").textContent = strNum
+
+        rowElem.querySelector(".status").textContent = card.prog?.status.toString()
 
         const writ = rowElem.querySelector(".writings")
         if (card.card?.altWriting) {

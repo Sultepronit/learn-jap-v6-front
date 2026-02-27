@@ -73,7 +73,6 @@ export default function parseInitData() {
         wordProgs.push(wordProg)
     }
     console.log(wordCards)
-    // saveCards("wordCards", wordCards)
-    // saveCards("wordProgs", wordProgs)
+    saveCards("wordCards", wordCards)
     putMany("wordProgs", wordProgs)
 }
