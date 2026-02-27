@@ -5,6 +5,18 @@
     border-left: 1px solid black;
 }
 
+.big-table .btrh {
+    border-bottom: 1px solid black;
+    height: 1.2em;
+    user-select: none;
+    background-color: aliceblue;
+    color: lightgray;
+}
+
+.btrh .btd {
+    padding: 0;
+}
+
 .btr {
     border-bottom: 1px solid black;
     /* height: 1.6em; */
@@ -20,4 +32,8 @@
 
 .selected {
     background-color: aqua;
+}
+
+.active-sort {
+    color: black;
 }

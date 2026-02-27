@@ -93,7 +93,7 @@ export default class BigTable extends HTMLElement {
 
     private render() {
         const rowsTemp = []
-        const bth = this.columns.map(c => `<div class="btd" data-column="${c}">${c}</div>`).join("")
+        const bth = this.columns.map(c => `<div class="btd" data-column="${c}"></div>`).join("")
         const btd = this.columns.map(c => `<div class="btd ${c}"></div>`).join("")
         for (let i = 0; i < this.rowsN; i++) {
             rowsTemp.push(`<div class="btr ${this.btrClassName}" data-i=${i} hidden">
@@ -102,9 +102,7 @@ export default class BigTable extends HTMLElement {
         }
             
         this.innerHTML = `<div class="big-table">
-                <div class="btrh ${this.btrClassName}">
-                    ${bth}
-                </div>
+                <div class="btrh ${this.btrClassName}">${bth}</div>
                 <div class="rows-area">${rowsTemp.join("")}</div>
             </div>`
         // this.rows = Array.from(this.querySelectorAll('.row'))
@@ -117,21 +115,22 @@ export default class BigTable extends HTMLElement {
             const column = ch.dataset.column
             if (!column) return
             console.log(column)
-            ch.textContent = ch.textContent === "up" ? "down" : "up"
+            
+            this.querySelector(".active-sort")?.classList.remove("active-sort")
+            ch.classList.add("active-sort")
+
+            ch.textContent = ch.textContent === "▲" ? "▼" : "▲"
             // this.parentNode.dispatchEvent(new CustomEvent("sort", { detail: {
             this.dispatchEvent(new CustomEvent("sort", { detail: {
-                column, up: ch.textContent === "up"
+                column, up: ch.textContent === "▲"
             } }))
-            // if (ch.textContent === "up") {
-            //     ch.textContent === "down"
-            // } else
         })
 
         this.rowsArea = this.querySelector(".rows-area")
         // console.log(this.rowsArea)
 
         this.rowsArea.addEventListener("click", (e) => {
-            const clicked = (e.target as HTMLDivElement).closest(".btr")
+            const clicked = (e.target as HTMLDivElement).closest(".btr") as HTMLDivElement
             if (clicked === this.selected.element) return
 
             // console.log(clicked)
@@ -139,9 +138,9 @@ export default class BigTable extends HTMLElement {
             const { cardNum, i } = clicked.dataset
             // console.log(cardNum, i)
             this.parentNode.dispatchEvent(new CustomEvent(
-            "card-selected",
-            { detail: { cardNum: Number(cardNum), rowIdx: Number(i) } }
-        ))
+                "card-selected",
+                { detail: { cardNum: Number(cardNum), rowIdx: Number(i) } }
+            ))
         })
     }
 

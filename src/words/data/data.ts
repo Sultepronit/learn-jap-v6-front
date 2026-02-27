@@ -25,9 +25,9 @@ export async function loadData() {
     return cards
 }
 
-export function getCards() {
-    return cards
-}
+// export function getCards() {
+//     return cards
+// }
 
 let queue = new Set()
 let timeout = 0

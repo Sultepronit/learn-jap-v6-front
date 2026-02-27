@@ -1,5 +1,16 @@
 .word-btr {
     display: grid;
     grid-template-columns: 3em 5fr 5fr 10fr 6fr;
-    height: 1.6em;
+    height: 1.5em;
 }
+
+/* .btrh.word-btr {
+    border-bottom: 1px solid black;
+    height: 1.2em;
+    user-select: none;
+    color: gray;
+}
+
+.btrh.word-btr .btd {
+    padding: 0
+} */
