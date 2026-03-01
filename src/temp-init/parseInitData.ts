@@ -38,17 +38,16 @@ export default function parseInitData() {
         const wordCard: WordCard = {
             id: newId,
             v: 0,
-            // toSync: false,
-            // data: {
-                // num: cardNumber,
-            writings: writings.split(", "),
-            altWriting: !!altWriting,
-            rareWritings: rareWritings.split(", "),
-            readings: readings.split(", "),
-            rareReadings: rareReadings.split(", "),
-            translation: translation,
-            example
-            // }
+            syncV: 0,
+            data: {
+                writings: writings.split(", "),
+                altWriting: !!altWriting,
+                rareWritings: rareWritings.split(", "),
+                readings: readings.split(", "),
+                rareReadings: rareReadings.split(", "),
+                translation: translation,
+                example
+            }
         }
         // console.table(wordCard)
         wordCards.push(wordCard)

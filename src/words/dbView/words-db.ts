@@ -11,7 +11,7 @@ export default class WordsDb extends HTMLElement {
         
     async connectedCallback() {
         this.allData = await loadData()
-        console.log(this.allData)
+        // console.log(this.allData)
         this.render()
         this.querySelector<WordEditor>("word-editor").setData(this.allData)
         this.setTable()
@@ -25,24 +25,24 @@ export default class WordsDb extends HTMLElement {
     }
 
     private colums = ["num", "status", "writings", "readings", "translation", "example"]
-    private fillRow(rowElem: HTMLDivElement, card: CombinedCard) {
-        const strNum = card.num.toString()
+    private fillRow(rowElem: HTMLDivElement, word: CombinedCard) {
+        const strNum = word.num.toString()
         rowElem.dataset.cardNum = strNum
         rowElem.querySelector(".num").textContent = strNum
 
-        rowElem.querySelector(".status").textContent = card.prog?.status.toString()
+        rowElem.querySelector(".status").textContent = word.prog?.status.toString()
 
         const writ = rowElem.querySelector(".writings")
-        if (card.card?.altWriting) {
+        if (word.card?.data.altWriting) {
             writ.classList.add("blue")
         } else {
             writ.classList.remove("blue")
         }
-        writ.textContent = (card.card?.writings.join(" ") || "")
+        writ.textContent = (word.card?.data.writings.join(" ") || "")
 
-        rowElem.querySelector(".readings").textContent = card.card?.readings.join(" ")
-        rowElem.querySelector(".translation").textContent = card.card?.translation
-        rowElem.querySelector(".example").textContent = card.card?.example
+        rowElem.querySelector(".readings").textContent = word.card?.data.readings.join(" ")
+        rowElem.querySelector(".translation").textContent = word.card?.data.translation
+        rowElem.querySelector(".example").textContent = word.card?.data.example
     }
 
     private sort(column: string, up: boolean) {
@@ -53,7 +53,7 @@ export default class WordsDb extends HTMLElement {
                 break
             case "writings":
                 this.displayData.forEach(c => c.card)
-                this.displayData.sort((a, b) => a.card?.writings[0].localeCompare(b.card?.writings[0]))
+                this.displayData.sort((a, b) => a.card?.data.writings[0].localeCompare(b.card?.data.writings[0]))
                 break
         }
         if (!up) this.displayData.reverse();

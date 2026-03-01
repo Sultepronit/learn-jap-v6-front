@@ -25,7 +25,7 @@ export async function loadData() {
         }
     }))
     console.timeLog("t1", "cards parsed")
-    console.log(cards)
+    // console.log(cards)
     return cards
 }
 

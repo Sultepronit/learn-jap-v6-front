@@ -1,3 +1,5 @@
+import type { WordCard } from "../words/types";
+
 export const MSG = {
     WORD_UPDATED: "word-updated",
     WORD_CARD_MUTATED: "word-card-mutated"
@@ -7,7 +9,7 @@ type EventName = typeof MSG[keyof typeof MSG]
 
 interface EventPayloads {
   "word-updated" : undefined;
-  "word-card-mutated" : { num: number, id: number };
+  "word-card-mutated" : WordCard;
 }
 
 // export function emit<T extends EventName>(eventName: T, detail?: CustomEventPayloads[T]) {

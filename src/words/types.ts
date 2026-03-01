@@ -40,17 +40,19 @@
 // }
 
 export type WordCard = {
-    id: number,
-    v: number,
-    tempV?: number
-    // num: number,
-    writings: string[],
-    altWriting: boolean,
-    rareWritings: string[],
-    readings: string[],
-    rareReadings: string[],
-    translation: string,
-    example: string
+    id: number
+    v: number
+    syncV: number
+    toSync?: 1
+    data: {
+        writings: string[]
+        altWriting: boolean
+        rareWritings: string[]
+        readings: string[]
+        rareReadings: string[]
+        translation: string
+        example: string
+    }
 }
 
 interface Progress {

@@ -4,8 +4,8 @@ import template from "./word-editor.html?raw"
 
 export default class WordEditor extends HTMLElement {
     private data: CombinedCard[]
-    private card: CombinedCard
-    private cardV = 0
+    private word: CombinedCard
+    private wordV = 0
     private writings: HTMLInputElement
     private altWrit: HTMLButtonElement
     private readings: HTMLInputElement
@@ -19,6 +19,17 @@ export default class WordEditor extends HTMLElement {
         this.translation = this.querySelector('[name="translation"]')
     }
 
+    implementMutation(part: "card" | "prog") {
+        this.word.v++ // to update views of the word
+        this.wordV = this.word.v // not to update it here!
+        emit(MSG.WORD_UPDATED)
+        // const { num, id } = this.word
+        // emit(MSG.WORD_CARD_MUTATED, { num, id })
+        if (part === "card") {
+            emit(MSG.WORD_CARD_MUTATED, this.word[part])
+        }
+    }
+
     connectedCallback() {
         this.render()
 
@@ -27,38 +38,26 @@ export default class WordEditor extends HTMLElement {
             const { cardNum } = e.detail
             // console.log(cardNum)
             // console.log(this.data[cardNum - 1])
-            this.card = this.data[cardNum - 1];
-            this.cardV = this.card.v
+            this.word = this.data[cardNum - 1];
+            console.log(this.word)
+            this.wordV = this.word.v
             this.updateEditorContent()
         })
 
         document.addEventListener("word-updated", () => {
-            if (this.cardV !== this.card.v) this.updateEditorContent()
+            if (this.wordV !== this.word.v) this.updateEditorContent()
         })
 
         this.altWrit.addEventListener("click", () => {
-            this.card.card.altWriting = !this.card.card.altWriting
+            this.word.card.data.altWriting = !this.word.card.data.altWriting
             this.altWrit.classList.toggle("is-alt")
             this.writings.classList.toggle("blue")
-
-            this.card.v++
-            this.cardV = this.card.v
-            // document.dispatchEvent(new Event(EVENT.WORD_UPDATED))
-            emit(MSG.WORD_UPDATED)
-            const { num, id } = this.card
-            emit(MSG.WORD_CARD_MUTATED, { num, id })
+            this.implementMutation("card")
         })
 
         this.translation.addEventListener("change", () => {
-            // console.log(e)
-            this.card.card.translation = this.translation.value
-
-            this.card.v++
-            this.cardV = this.card.v
-            // document.dispatchEvent(new Event("word-updated"))
-            emit(MSG.WORD_UPDATED)
-            const { num, id } = this.card
-            emit(MSG.WORD_CARD_MUTATED, { num, id })
+            this.word.card.data.translation = this.translation.value
+            this.implementMutation("card")
         })
     }
 
@@ -68,15 +67,15 @@ export default class WordEditor extends HTMLElement {
 
     updateEditorContent() {
         // console.log("editor update!")
-        this.writings.value = this.card.card?.writings.join(", ")
-        if (this.card.card?.altWriting) {
+        this.writings.value = this.word.card?.data.writings.join(", ")
+        if (this.word.card?.data.altWriting) {
             this.writings.classList.add("blue")
             this.altWrit.classList.add("is-alt")
         } else {
             this.writings.classList.remove("blue")
             this.altWrit.classList.remove("is-alt")
         }
-        this.readings.value = this.card.card?.readings.join(", ")
-        this.translation.value = this.card.card?.translation
+        this.readings.value = this.word.card?.data.readings.join(", ")
+        this.translation.value = this.word.card?.data.translation
     }
 }

@@ -1,17 +1,16 @@
 import { MSG, on } from "../global/events";
 import { saveWordCard } from "../indexedDB/dbUseCases";
-import { getCard } from "../words/data/data";
+import type { WordCard } from "../words/types";
 import { toSync } from "./sync";
 
-function handleWordCard({ num, id }) {
-    console.log(num, id)
-    const card = getCard(num, id)
-    card.card.tempV = card.card.tempV ? card.card.tempV + 1 : 1
+function handleWordCard(card: WordCard) {
+    card.v++
+    card.toSync = 1
     console.log(card)
-    // toSync.add(["word", "card", card])
-    toSync.wordCards.add(card.card)
+    toSync.wordCards.add(card)
+    toSync.wordCards2.set(card.id, card)
     console.log(toSync)
-    saveWordCard(card.card)
+    saveWordCard(card)
 }
 
 export default function setMutationsListener() {
