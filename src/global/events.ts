@@ -1,13 +1,13 @@
-export const EVENT = {
+export const MSG = {
     WORD_UPDATED: "word-updated",
     WORD_CARD_MUTATED: "word-card-mutated"
 } as const
 
-type EventName = typeof EVENT[keyof typeof EVENT]
+type EventName = typeof MSG[keyof typeof MSG]
 
 interface EventPayloads {
   "word-updated" : undefined;
-  "word-card-mutated" : { userId: number };
+  "word-card-mutated" : { num: number, id: number };
 }
 
 // export function emit<T extends EventName>(eventName: T, detail?: CustomEventPayloads[T]) {
@@ -22,3 +22,4 @@ export function on<T extends EventName>(eventName: T, callback: eventCallback<T>
 }
 
 // on(EVENT.WORD_UPDATED, () => {console.log("here!")})
+// on(MSG.WORD_CARD_MUTATED, (d) => {console.log(d)})

@@ -1,6 +1,6 @@
 import "./app.css"
 import { useDb } from "./indexedDB/dbHandlers"
-import { getAllCards, getCard } from "./indexedDB/dbUseCases"
+import setMutationsListener from "./sync/localMutations"
 import fetchInitData from "./temp-init/fetchInitData"
 import parseInitData from "./temp-init/parseInitData"
 import BigTable from "./views/big-table"
@@ -10,6 +10,9 @@ import WordsDb from "./words/dbView/words-db"
 import type { WordCard } from "./words/types"
 
 console.time("t1")
+
+setMutationsListener()
+
 // customElements.define("words-table", WordsTable)
 customElements.define("big-table", BigTable)
 customElements.define("word-editor", WordEditor)

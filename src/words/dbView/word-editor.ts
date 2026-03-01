@@ -1,4 +1,4 @@
-import { EVENT, emit } from "../../global/events"
+import { MSG, emit } from "../../global/events"
 import type { CombinedCard } from "../types"
 import template from "./word-editor.html?raw"
 
@@ -44,17 +44,21 @@ export default class WordEditor extends HTMLElement {
             this.card.v++
             this.cardV = this.card.v
             // document.dispatchEvent(new Event(EVENT.WORD_UPDATED))
-            emit(EVENT.WORD_UPDATED)
+            emit(MSG.WORD_UPDATED)
+            const { num, id } = this.card
+            emit(MSG.WORD_CARD_MUTATED, { num, id })
         })
 
-        this.translation.addEventListener("change", (e) => {
+        this.translation.addEventListener("change", () => {
             // console.log(e)
             this.card.card.translation = this.translation.value
 
             this.card.v++
             this.cardV = this.card.v
             // document.dispatchEvent(new Event("word-updated"))
-            emit(EVENT.WORD_UPDATED)
+            emit(MSG.WORD_UPDATED)
+            const { num, id } = this.card
+            emit(MSG.WORD_CARD_MUTATED, { num, id })
         })
     }
 
@@ -63,7 +67,7 @@ export default class WordEditor extends HTMLElement {
     }
 
     updateEditorContent() {
-        console.log("editor update!")
+        // console.log("editor update!")
         this.writings.value = this.card.card?.writings.join(", ")
         if (this.card.card?.altWriting) {
             this.writings.classList.add("blue")

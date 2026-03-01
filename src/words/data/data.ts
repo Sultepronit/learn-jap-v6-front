@@ -29,9 +29,11 @@ export async function loadData() {
     return cards
 }
 
-// export function getCards() {
-//     return cards
-// }
+export function getCard(num: number, id: number) {
+    let c = cards[num - 1]
+    if (c.id === id) return c
+    return cards.find(c => c.id === id)
+}
 
 let queue = new Set()
 let timeout = 0
@@ -66,9 +68,9 @@ async function loadCard(card) {
         }
         
         clearTimeout(timeout)
-        console.log(timeout)
+        // console.log(timeout)
         timeout = 0
-        console.log(timeout)
+        // console.log(timeout)
     }, 50)
-    console.log(timeout)
+    // console.log(timeout)
 }
