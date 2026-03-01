@@ -2,7 +2,7 @@ import { useDb } from "../../indexedDB/dbHandlers"
 import type { CombinedCard, WordCard } from "../types"
 
 let cards: CombinedCard[] = null
-let cardV = 1
+// let cardV = 1
 
 export async function loadData() {
     if (cards) return cards
@@ -48,7 +48,8 @@ async function loadCard(card) {
     Object.defineProperty(card, 'prog', {
         value: await useDb("wordProgs", "readonly", s => s.get(card.id))
     })
-    card.v = cardV++
+    // card.v = cardV++
+    card.v++
     queue.delete(card.id)
     // console.log(queue)
 

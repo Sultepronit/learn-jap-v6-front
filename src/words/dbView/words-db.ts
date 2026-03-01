@@ -2,6 +2,7 @@ import "./words-db.css"
 import type BigTable from "../../views/big-table"
 import { loadData } from "../data/data"
 import type { CombinedCard } from "../types"
+import type WordEditor from "./word-editor"
 
 export default class WordsDb extends HTMLElement {
     private allData: CombinedCard[]
@@ -12,12 +13,13 @@ export default class WordsDb extends HTMLElement {
         this.allData = await loadData()
         console.log(this.allData)
         this.render()
+        this.querySelector<WordEditor>("word-editor").setData(this.allData)
         this.setTable()
     }
 
     private render() {
         this.innerHTML = `
-        <div>Here will be the editor</div>
+        <word-editor></word-editor>
         <big-table></big-table>
         `
     }

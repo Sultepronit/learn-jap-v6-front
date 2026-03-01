@@ -8,6 +8,10 @@ body {
     font-size: 1.5rem;
 }
 
+input, button {
+    font: inherit;
+}
+
 .hidden {
     display: none !important;
 }
