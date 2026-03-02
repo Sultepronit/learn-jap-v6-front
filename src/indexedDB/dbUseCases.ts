@@ -15,13 +15,9 @@ export async function saveWordCard(card: WordCard) {
     return await useDb("wordCards", "readwrite", s => s.put(card))
 }
 
-// export async function getAllCards(store: CardStore) {
-//     try {
-//         return await useDb(store, "readonly", s => s.getAll())
-//     } catch (e) {
-//         dbErrorAlert(e)
-//     }
-// }
+export async function getAllCards(store: CardStore) {
+    return await useDb(store, "readonly", s => s.getAll())
+}
 
 // export async function getCardsKeys(store: CardStore) {
 //     try {
