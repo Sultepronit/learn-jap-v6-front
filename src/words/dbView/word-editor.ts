@@ -49,7 +49,11 @@ export default class WordEditor extends HTMLElement {
         })
 
         this.altWrit.addEventListener("click", () => {
-            this.word.card.data.altWriting = !this.word.card.data.altWriting
+            if (this.word.card.data.writings.alt) {
+                delete this.word.card.data.writings.alt
+            } else {
+                this.word.card.data.writings.alt = true
+            }
             this.altWrit.classList.toggle("is-alt")
             this.writings.classList.toggle("blue")
             this.implementMutation("card")
@@ -67,15 +71,15 @@ export default class WordEditor extends HTMLElement {
 
     updateEditorContent() {
         // console.log("editor update!")
-        this.writings.value = this.word.card?.data.writings.join(", ")
-        if (this.word.card?.data.altWriting) {
+        this.writings.value = this.word.card?.data.writings.main.join(", ")
+        if (this.word.card?.data.writings.alt) {
             this.writings.classList.add("blue")
             this.altWrit.classList.add("is-alt")
         } else {
             this.writings.classList.remove("blue")
             this.altWrit.classList.remove("is-alt")
         }
-        this.readings.value = this.word.card?.data.readings.join(", ")
+        this.readings.value = this.word.card?.data.readings.main.join(", ")
         this.translation.value = this.word.card?.data.translation
     }
 }

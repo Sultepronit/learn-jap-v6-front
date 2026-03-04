@@ -1,5 +1,5 @@
 import { putMany } from "../indexedDB/dbHandlers";
-import { saveCards } from "../indexedDB/dbUseCases";
+import { clearStore, saveCards } from "../indexedDB/dbUseCases";
 import type { WordCard, WordProg } from "../words/types";
 
 export default function parseInitData() {
@@ -34,17 +34,25 @@ export default function parseInitData() {
             bAutorepeat
         } = rawCard
 
-        const newId = id + 1000_000_000_000
         const wordCard: WordCard = {
-            id: newId,
+            id,
             v: 0,
             syncV: 0,
             data: {
-                writings: writings.split(", "),
-                altWriting: !!altWriting,
-                rareWritings: rareWritings.split(", "),
-                readings: readings.split(", "),
-                rareReadings: rareReadings.split(", "),
+                // writings: writings.split(", "),
+                // altWriting: !!altWriting,
+                // rareWritings: rareWritings.split(", "),
+                // readings: readings.split(", "),
+                // rareReadings: rareReadings.split(", "),
+                writings: {
+                    main: writings.split(", "),
+                    ...(altWriting && { alt: true }),
+                    ...(rareWritings && { rare: rareWritings.split(", ") }),
+                },
+                readings: {
+                    main: readings.split(", "),
+                    ...(rareReadings && { rare: rareReadings.split(", ") }),
+                },
                 translation: translation,
                 example
             }
@@ -53,25 +61,29 @@ export default function parseInitData() {
         wordCards.push(wordCard)
 
         const wordProg: WordProg = {
-            id: newId,
+            id,
             v: 0,
-            // toSync: false,
-            status: repeatStatus,
-            f: {
-                progress: fProgress,
-                record: fRecord,
-                autorepeat: !!fAutorepeat
-            },
-            b: {
-                progress: bProgress,
-                record: bRecord,
-                autorepeat: !!bAutorepeat
+            syncV: 0,
+            data: {
+                status: repeatStatus,
+                f: {
+                    progress: fProgress,
+                    record: fRecord,
+                    ...(fAutorepeat && { autorepeat: true })
+                },
+                b: {
+                    progress: bProgress,
+                    record: bRecord,
+                    ...(bAutorepeat && { autorepeat: true })
+                }
             }
         }
         // console.table(wordProg)
         wordProgs.push(wordProg)
     }
     console.log(wordCards)
+    // clearStore("wordCards")
+    // clearStore("wordProgs")
     saveCards("wordCards", wordCards)
     putMany("wordProgs", wordProgs)
 }

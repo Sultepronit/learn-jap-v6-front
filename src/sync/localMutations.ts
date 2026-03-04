@@ -7,8 +7,7 @@ function handleWordCard(card: WordCard) {
     card.v++
     card.toSync = 1
     console.log(card)
-    toSync.wordCards.add(card)
-    toSync.wordCards2.set(card.id, card)
+    toSync.wordCards.set(card.id, card)
     console.log(toSync)
     saveWordCard(card)
 }

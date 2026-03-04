@@ -12,16 +12,16 @@ import type { WordCard } from "./words/types"
 
 console.time("t1")
 
-// setMutationsListener()
+setMutationsListener()
 
 // // customElements.define("words-table", WordsTable)
-// customElements.define("big-table", BigTable)
-// customElements.define("word-editor", WordEditor)
-// customElements.define("words-db", WordsDb)
+customElements.define("big-table", BigTable)
+customElements.define("word-editor", WordEditor)
+customElements.define("words-db", WordsDb)
 
 // fetchInitData()
 // parseInitData()
 
-loadToServer()
+// loadToServer()
 
 

@@ -1,22 +1,16 @@
 import { getIndexed } from "../indexedDB/dbHandlers"
 import type { WordCard } from "../words/types"
 
-// export const toSync = new Set()
 export const toSync = {
-    // wordCards: new Set()
-    wordCards: null as Set<WordCard>,
-    // wordCards2: null as Map<number, WordCard>
-    wordCards2: new Map()
+    wordCards: new Map()
 }
 
 async function checkUnsaved() {
     const wc = await getIndexed("wordCards", "toSync") as WordCard[]
     console.log(wc)
     console.timeLog("t1", "indexes!")
-    // toSync.wordCards2 = new Map()
-    toSync.wordCards = new Set(wc)
     for (const c of wc) {
-        toSync.wordCards2.set(c.id, c)
+        toSync.wordCards.set(c.id, c)
     }
     console.log(toSync)
     sync();
@@ -24,11 +18,7 @@ async function checkUnsaved() {
 
 checkUnsaved()
 
-function prepareToSend(set: Set<WordCard>) {
-    return Array.from(set).map(({ id, v, syncV, data }) => ({ id, v, syncV, data }))
-}
-
-function prepareToSend2(map: Map<number, WordCard>) {
+function prepareToSend(map: Map<number, WordCard>) {
     return Array.from(map.values())
         .map(({ id, v, syncV, data }) => ({ id, v, syncV, data }))
 }
@@ -40,10 +30,24 @@ async function sync() {
             wordProgs: 0
         },
         updates: {
-            // wordCards: prepareToSend(toSync.wordCards)
-            wordCards: prepareToSend2(toSync.wordCards2)
+            wordCards: prepareToSend(toSync.wordCards)
         }
     }
     console.log(msg)
     console.log(JSON.stringify(msg))
+
+    const apiUrl = import.meta.env.VITE_API_URL
+    console.log(apiUrl)
+
+    // const c0 = localStorage.getItem("c0")
+    // console.log(JSON.parse(c0))
+    const re = await fetch(`${apiUrl}/sync`, {
+        method: "POST",
+        body: JSON.stringify(msg.updates.wordCards)
+    })
+    
+    const j = await re.json()
+    console.log(j)
 }
+
+// setInterval(sync, 5000)

@@ -6,7 +6,7 @@ import { putMany, useDb } from "./dbHandlers"
 //     // alert(e.message)
 // }
 
-type CardStore = "wordCards" | "wordStats"
+type CardStore = "wordCards" | "wordProgs"
 export async function saveCards(store: CardStore, data: any[]) {
     await putMany(store, data)
 }
@@ -19,18 +19,6 @@ export async function getAllCards(store: CardStore) {
     return await useDb(store, "readonly", s => s.getAll())
 }
 
-// export async function getCardsKeys(store: CardStore) {
-//     try {
-//         return await useDb(store, "readonly", s => s.getAllKeys())
-//     } catch (e) {
-//         dbErrorAlert(e)
-//     }
-// }
-
-// export async function getCard(store: CardStore, id: number) {
-//     try {
-//         return await useDb(store, "readonly", s => s.get(id))
-//     } catch (e) {
-//         dbErrorAlert(e)
-//     }
-// }
+export async function clearStore(store: CardStore) {
+    return await useDb(store, "readwrite", s => s.clear())
+}

@@ -30,17 +30,17 @@ export default class WordsDb extends HTMLElement {
         rowElem.dataset.cardNum = strNum
         rowElem.querySelector(".num").textContent = strNum
 
-        rowElem.querySelector(".status").textContent = word.prog?.status.toString()
+        rowElem.querySelector(".status").textContent = word.prog?.data.status.toString()
 
         const writ = rowElem.querySelector(".writings")
-        if (word.card?.data.altWriting) {
+        if (word.card?.data.writings.alt) {
             writ.classList.add("blue")
         } else {
             writ.classList.remove("blue")
         }
-        writ.textContent = (word.card?.data.writings.join(" ") || "")
+        writ.textContent = (word.card?.data.writings.main.join(" ") || "")
 
-        rowElem.querySelector(".readings").textContent = word.card?.data.readings.join(" ")
+        rowElem.querySelector(".readings").textContent = word.card?.data.readings.main.join(" ")
         rowElem.querySelector(".translation").textContent = word.card?.data.translation
         rowElem.querySelector(".example").textContent = word.card?.data.example
     }

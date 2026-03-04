@@ -39,17 +39,37 @@
 //     }
 // }
 
+// export type WordCard = {
+//     id: number
+//     v: number
+//     syncV: number
+//     toSync?: 1
+//     data: {
+//         writings: string[]
+//         altWriting: boolean
+//         rareWritings: string[]
+//         readings: string[]
+//         rareReadings: string[]
+//         translation: string
+//         example: string
+//     }
+// }
+
 export type WordCard = {
     id: number
     v: number
     syncV: number
     toSync?: 1
     data: {
-        writings: string[]
-        altWriting: boolean
-        rareWritings: string[]
-        readings: string[]
-        rareReadings: string[]
+        writings: {
+            main: string[]
+            alt?: true
+            rare?: string[]
+        } 
+        readings: { 
+            main: string[]
+            rare?: string[]
+        }
         translation: string
         example: string
     }
@@ -58,16 +78,28 @@ export type WordCard = {
 interface Progress {
     progress: number,
     record: number,
-    autorepeat: boolean
+    autorepeat?: true
 }
+
+// export type WordProg = {
+//     id: number,
+//     v: number,
+//     tempV?: number
+//     status: number,
+//     f: Progress,
+//     b: Progress
+// }
 
 export type WordProg = {
     id: number,
     v: number,
-    tempV?: number
-    status: number,
-    f: Progress,
-    b: Progress
+    syncV: number
+    toSync?: 1
+    data: {
+        status: number,
+        f: Progress,
+        b: Progress
+    }
 }
 
 export type CombinedCard = {

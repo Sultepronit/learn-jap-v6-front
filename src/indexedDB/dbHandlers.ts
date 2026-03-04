@@ -13,9 +13,9 @@ const stores = [
 
 function openDB(): Promise<IDBDatabase> {
     return new Promise((res, rej) => {
-        // rej("testing regect")
+        // rej("testing reject")
         const req = indexedDB.open("learnJap", 6)
-
+        
         req.onupgradeneeded = (e: IDBVersionChangeEvent) => {
             console.log("upgrade me!")
             const db = (e.target as IDBOpenDBRequest).result
@@ -45,6 +45,8 @@ function openDB(): Promise<IDBDatabase> {
             console.timeLog("t1", "db opened!")
         }
         req.onerror = () => rej(req.error)
+        
+        req.onblocked = () => alert("Доступ заблоковано іншою вкладкою!")
     })
 }
 
