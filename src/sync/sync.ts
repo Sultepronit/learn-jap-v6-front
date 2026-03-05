@@ -1,5 +1,6 @@
 import { getIndexed } from "../indexedDB/dbHandlers"
 import type { WordCard } from "../words/types"
+import { implementUpdates } from "./remoteMutaions"
 
 export const toSync = {
     wordCards: new Map()
@@ -23,18 +24,20 @@ function prepareToSend(map: Map<number, WordCard>) {
         .map(({ id, v, syncV, data }) => ({ id, v, syncV, data }))
 }
 
-async function sync() {
-    const msg = {
-        v: {
-            wordCards: 0,
-            wordProgs: 0
+// remove export?
+export async function sync() {
+    const msg = [
+        {
+            type: "wordCards",
+            v: 0,
+            updated: prepareToSend(toSync.wordCards)
         },
-        updates: {
-            wordCards: prepareToSend(toSync.wordCards)
+        {
+            type: "wordProgs",
+            v: 0,
+            // updated: []
         }
-    }
-    console.log(msg)
-    console.log(JSON.stringify(msg))
+    ]
 
     const apiUrl = import.meta.env.VITE_API_URL
     console.log(apiUrl)
@@ -43,11 +46,12 @@ async function sync() {
     // console.log(JSON.parse(c0))
     const re = await fetch(`${apiUrl}/sync`, {
         method: "POST",
-        body: JSON.stringify(msg.updates.wordCards)
+        body: JSON.stringify(msg)
     })
     
     const j = await re.json()
-    console.log(j)
+    console.log(j[0])
+    implementUpdates(j)
 }
 
 // setInterval(sync, 5000)

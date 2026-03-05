@@ -109,3 +109,10 @@ export type CombinedCard = {
     card: WordCard
     prog: WordProg
 }
+
+export type Msg = {
+    type: string
+    v: number
+    updated?: WordCard[] | WordProg[]
+    accepted?: WordCard[] | WordProg[]
+}

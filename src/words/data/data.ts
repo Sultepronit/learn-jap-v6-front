@@ -30,8 +30,10 @@ export async function loadData() {
 }
 
 export function getCard(num: number, id: number) {
-    let c = cards[num - 1]
-    if (c.id === id) return c
+    if (num >= 0) {
+        let c = cards[num - 1]
+        if (c.id === id) return c
+    }
     return cards.find(c => c.id === id)
 }
 
