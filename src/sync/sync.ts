@@ -51,7 +51,7 @@ export async function sync() {
     
     const j = await re.json()
     console.log(j[0])
-    implementUpdates(j)
+    implementUpdates(j, toSync)
 }
 
 // setInterval(sync, 5000)
