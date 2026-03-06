@@ -114,7 +114,8 @@ export async function putMany(storeName: string, data: any[]) {
             store.put(entry)
         }
 
-        tx.oncomplete = res
+        // tx.oncomplete = res
+        tx.oncomplete = () => res("success")
         tx.onerror = () => rej(tx.error)
         tx.onabort = () => rej(new Error("Transaction aborted!"))
     }).catch(dbErrorAlert)

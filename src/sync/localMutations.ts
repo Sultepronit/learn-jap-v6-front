@@ -1,6 +1,7 @@
 import { MSG, on } from "../global/events";
 import { saveWordCard } from "../indexedDB/dbUseCases";
 import type { WordCard } from "../words/types";
+import { useSaveQuery } from "./localDbQuery";
 import { sync, toSync } from "./sync";
 
 function handleWordCard(card: WordCard) {
@@ -9,7 +10,8 @@ function handleWordCard(card: WordCard) {
     console.log(card)
     toSync.wordCards.set(card.id, card)
     console.log(toSync)
-    saveWordCard(card)
+    // saveWordCard(card)
+    useSaveQuery("wordCards", [card])
     sync()
 }
 

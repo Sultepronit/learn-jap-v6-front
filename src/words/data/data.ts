@@ -1,17 +1,34 @@
+import { emit, MSG, on } from "../../global/events"
 import { useDb } from "../../indexedDB/dbHandlers"
-import type { CombinedCard, WordCard } from "../types"
+import type { CombinedCard, SyncBlock, WordCard } from "../types"
 
-let cards: CombinedCard[] = null
-// let cardV = 1
+let words: CombinedCard[] = null
+
+function setUpdates({ type, updates }: { type: string, updates: SyncBlock[] }) {
+    console.log(type, updates)
+    const block = type === "wordCards" ? "card" : "prog"
+    for (const u of updates) {
+        const word = words.find(c => c.id === u.id)
+        if (!word) continue
+        word.v++
+        if (word[block] === u) continue
+        console.log(word[block], u)
+        // word[block] = u
+        Object.defineProperty(word, block, { value: u })
+    }
+    emit(MSG.WORD_UPDATED)
+}
 
 export async function loadData() {
-    if (cards) return cards
+    if (words) return words
+
+    on(MSG.WORD_UPDATES_RECEIVED, setUpdates)
 
     console.timeLog("t1", "cards init")
     const keys = await useDb("wordCards", "readonly", s => s.getAllKeys()) as number[]
     console.timeLog("t1", "cards keys")
-    // cards = keys.map((id, i) => ({ id, num: i + 1, v: 0 }))
-    cards = keys.map((id, i) => ({
+
+    words = keys.map((id, i) => ({
         id,
         num: i + 1,
         v: 0,
@@ -26,35 +43,34 @@ export async function loadData() {
     }))
     console.timeLog("t1", "cards parsed")
     // console.log(cards)
-    return cards
+    return words
 }
 
 export function getCard(num: number, id: number) {
     if (num >= 0) {
-        let c = cards[num - 1]
+        let c = words[num - 1]
         if (c.id === id) return c
     }
-    return cards.find(c => c.id === id)
+    return words.find(c => c.id === id)
 }
 
 let queue = new Set()
 let timeout = 0
 let isPlanned = false
-async function loadCard(card) {
+async function loadCard(word) {
     // console.log(queue.has(card.id))
-    if (queue.has(card.id)) return
-    queue.add(card.id)
+    if (queue.has(word.id)) return
+    queue.add(word.id)
     
-    // card.card = await useDb("wordCards", "readonly", s => s.get(card.id)) as WordCard
-    Object.defineProperty(card, 'card', {
-        value: await useDb("wordCards", "readonly", s => s.get(card.id)) as WordCard
+    Object.defineProperty(word, 'card', {
+        value: await useDb("wordCards", "readonly", s => s.get(word.id))
     })
-    Object.defineProperty(card, 'prog', {
-        value: await useDb("wordProgs", "readonly", s => s.get(card.id))
+    Object.defineProperty(word, 'prog', {
+        value: await useDb("wordProgs", "readonly", s => s.get(word.id))
     })
-    // card.v = cardV++
-    card.v++
-    queue.delete(card.id)
+
+    word.v++
+    queue.delete(word.id)
     // console.log(queue)
 
     if (timeout) {

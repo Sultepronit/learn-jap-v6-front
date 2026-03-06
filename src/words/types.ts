@@ -110,9 +110,19 @@ export type CombinedCard = {
     prog: WordProg
 }
 
+export interface SyncBlock {
+    id: number,
+    v: number,
+    syncV: number
+    toSync?: 1
+    data: any
+}
+
 export type Msg = {
     type: string
     v: number
-    updated?: WordCard[] | WordProg[]
+    // updated?: WordCard[] | WordProg[]
+    updated?: SyncBlock[]
+    // accepted?: WordCard[] | WordProg[]
     accepted?: WordCard[] | WordProg[]
 }

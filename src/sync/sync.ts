@@ -1,5 +1,6 @@
 import { getIndexed } from "../indexedDB/dbHandlers"
 import type { WordCard } from "../words/types"
+import globalVersions from "./globalVersions"
 import { implementUpdates } from "./remoteMutaions"
 
 export const toSync = {
@@ -20,17 +21,18 @@ async function checkUnsaved() {
 checkUnsaved()
 
 function prepareToSend(map: Map<number, WordCard>) {
-    return Array.from(map.values())
+    return map.size === 0 ? null : Array.from(map.values())
         .map(({ id, v, syncV, data }) => ({ id, v, syncV, data }))
 }
 
 // remove export?
 export async function sync() {
+    const wc = prepareToSend(toSync.wordCards)
     const msg = [
         {
             type: "wordCards",
-            v: 0,
-            updated: prepareToSend(toSync.wordCards)
+            v: globalVersions.get("wordCards"),
+            ...(wc && { updated: wc })
         },
         {
             type: "wordProgs",
@@ -38,6 +40,7 @@ export async function sync() {
             // updated: []
         }
     ]
+    console.log("sent:", msg)
 
     const apiUrl = import.meta.env.VITE_API_URL
     console.log(apiUrl)
@@ -50,7 +53,7 @@ export async function sync() {
     })
     
     const j = await re.json()
-    console.log(j[0])
+    console.log("received:", j)
     implementUpdates(j, toSync)
 }
 

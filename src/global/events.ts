@@ -1,8 +1,9 @@
-import type { WordCard } from "../words/types";
+import type { SyncBlock, WordCard } from "../words/types";
 
 export const MSG = {
     WORD_UPDATED: "word-updated",
-    WORD_CARD_MUTATED: "word-card-mutated"
+    WORD_CARD_MUTATED: "word-card-mutated",
+    WORD_UPDATES_RECEIVED: "word-updates-received"
 } as const
 
 type EventName = typeof MSG[keyof typeof MSG]
@@ -10,6 +11,7 @@ type EventName = typeof MSG[keyof typeof MSG]
 interface EventPayloads {
   "word-updated" : undefined;
   "word-card-mutated" : WordCard;
+  "word-updates-received" : { type: string, updates: SyncBlock[] }
 }
 
 // export function emit<T extends EventName>(eventName: T, detail?: CustomEventPayloads[T]) {
