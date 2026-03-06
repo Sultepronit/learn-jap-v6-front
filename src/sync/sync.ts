@@ -4,7 +4,8 @@ import globalVersions from "./globalVersions"
 import { implementUpdates } from "./remoteMutaions"
 
 export const toSync = {
-    wordCards: new Map()
+    wordCards: new Map(),
+    wordProgs: new Map()
 }
 
 async function checkUnsaved() {
@@ -28,6 +29,7 @@ function prepareToSend(map: Map<number, WordCard>) {
 // remove export?
 export async function sync() {
     const wc = prepareToSend(toSync.wordCards)
+    const wp = prepareToSend(toSync.wordProgs)
     const msg = [
         {
             type: "wordCards",
@@ -36,8 +38,8 @@ export async function sync() {
         },
         {
             type: "wordProgs",
-            v: 0,
-            // updated: []
+            v: globalVersions.get("wordProgs"),
+            ...(wp && { updated: wp })
         }
     ]
     console.log("sent:", msg)

@@ -3,15 +3,17 @@ import type { SyncBlock, WordCard } from "../words/types";
 export const MSG = {
     WORD_UPDATED: "word-updated",
     WORD_CARD_MUTATED: "word-card-mutated",
+    CARD_MUTATED: "card-mutated",
     WORD_UPDATES_RECEIVED: "word-updates-received"
 } as const
 
 type EventName = typeof MSG[keyof typeof MSG]
 
 interface EventPayloads {
-  "word-updated" : undefined;
-  "word-card-mutated" : WordCard;
-  "word-updates-received" : { type: string, updates: SyncBlock[] }
+  "word-updated": undefined
+  "word-card-mutated": WordCard
+  "card-mutated": { type: string, card: SyncBlock }
+  "word-updates-received": { type: string, updates: SyncBlock[] }
 }
 
 // export function emit<T extends EventName>(eventName: T, detail?: CustomEventPayloads[T]) {

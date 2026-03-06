@@ -1,15 +1,16 @@
 const globalVersions = {
     _mem: {
-        wordCards: Number(localStorage.getItem("wordCardsV")) || -1
+        wordCards: Number(localStorage.getItem("wordCardsV")) || -1,
+        wordProgs: Number(localStorage.getItem("wordProgsV")) || -1
     },
 
-    get(group: string) {
-        return this._mem[group]
+    get(type: string) {
+        return this._mem[type]
     },
 
-    set(group: string, newVal: number) {
-        this._mem[group] = newVal
-        localStorage.setItem("wordCardsV", newVal.toString())
+    set(type: string, newVal: number) {
+        this._mem[type] = newVal
+        localStorage.setItem(`${type}V`, newVal.toString())
     }
 }
 

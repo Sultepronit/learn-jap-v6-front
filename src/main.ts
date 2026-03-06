@@ -19,7 +19,6 @@ customElements.define("big-table", BigTable)
 customElements.define("word-editor", WordEditor)
 customElements.define("words-db", WordsDb)
 
-// fetchInitData()
 // parseInitData()
 
 // loadToServer()

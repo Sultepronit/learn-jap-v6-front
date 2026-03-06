@@ -6,6 +6,7 @@ export default class WordEditor extends HTMLElement {
     private data: CombinedCard[]
     private word: CombinedCard
     private wordV = 0
+    private status: HTMLInputElement
     private writings: HTMLInputElement
     private altWrit: HTMLButtonElement
     private readings: HTMLInputElement
@@ -13,6 +14,7 @@ export default class WordEditor extends HTMLElement {
 
     render() {
         this.innerHTML = template
+        this.status = this.querySelector('[name="status"]')
         this.writings = this.querySelector('[name="writings"]')
         this.altWrit = this.querySelector('[name="toggle-alt"]')
         this.readings = this.querySelector('[name="readings"]')
@@ -23,11 +25,15 @@ export default class WordEditor extends HTMLElement {
         this.word.v++ // to update views of the word
         this.wordV = this.word.v // not to update it here!
         emit(MSG.WORD_UPDATED)
+        emit(MSG.CARD_MUTATED, {
+            type: part === "card" ? "wordCards" : "wordProgs",
+            card: this.word[part]
+        })
         // const { num, id } = this.word
         // emit(MSG.WORD_CARD_MUTATED, { num, id })
-        if (part === "card") {
-            emit(MSG.WORD_CARD_MUTATED, this.word[part])
-        }
+        // if (part === "card") {
+        //     emit(MSG.WORD_CARD_MUTATED, this.word[part])
+        // }
     }
 
     connectedCallback() {
@@ -46,6 +52,12 @@ export default class WordEditor extends HTMLElement {
 
         document.addEventListener("word-updated", () => {
             if (this.wordV !== this.word.v) this.updateEditorContent()
+        })
+
+        this.status.addEventListener("change", () => {
+            console.log(this.status.value)
+            this.word.prog.data.status = Number(this.status.value)
+            this.implementMutation("prog")
         })
 
         this.altWrit.addEventListener("click", () => {
@@ -71,6 +83,8 @@ export default class WordEditor extends HTMLElement {
 
     updateEditorContent() {
         // console.log("editor update!")
+        const prog = this.word.prog?.data;
+        this.status.value = prog?.status.toString()
         this.writings.value = this.word.card?.data.writings.main.join(", ")
         if (this.word.card?.data.writings.alt) {
             this.writings.classList.add("blue")

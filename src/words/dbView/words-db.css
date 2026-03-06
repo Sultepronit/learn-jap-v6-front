@@ -12,6 +12,10 @@ word-editor * {
     margin-block: 1px;
 }
 
+.word-status {
+    width: 5em;
+}
+
 .writings {
     display: grid;
     gap: 0.3em;

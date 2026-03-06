@@ -1,19 +1,19 @@
 import { putMany } from "../indexedDB/dbHandlers";
 import { clearStore, saveCards } from "../indexedDB/dbUseCases";
 import type { WordCard, WordProg } from "../words/types";
+import fetchInitData from "./fetchInitData";
 
-export default function parseInitData() {
-    const initData = JSON.parse(localStorage.getItem('initData')) as any[]
+export default async function parseInitData() {
+    // const initData = JSON.parse(localStorage.getItem('initData')) as any[]
+    const initData = await fetchInitData()
     // console.log(initData)
 
     // const part = initData.slice(0, 100)
-    const part = initData;
-    console.log(part)
 
     const wordCards: WordCard[] = []
     const wordProgs: WordProg[] = []
 
-    for (const rawCard of part) {
+    for (const rawCard of initData) {
         // console.table(rawCard);
         const {
             id,
