@@ -1,4 +1,4 @@
-import { MSG, emit } from "../../global/events"
+import { EVT, emit } from "../../global/events"
 import type { CombinedCard } from "../types"
 import template from "./word-editor.html?raw"
 
@@ -24,8 +24,8 @@ export default class WordEditor extends HTMLElement {
     implementMutation(part: "card" | "prog") {
         this.word.v++ // to update views of the word
         this.wordV = this.word.v // not to update it here!
-        emit(MSG.WORD_UPDATED)
-        emit(MSG.CARD_MUTATED, {
+        emit(EVT.WORD_UPDATED)
+        emit(EVT.CARD_MUTATED, {
             type: part === "card" ? "wordCards" : "wordProgs",
             card: this.word[part]
         })

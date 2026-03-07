@@ -1,4 +1,4 @@
-import { emit, MSG } from "../global/events";
+import { emit, EVT } from "../global/events";
 import { saveWordCard } from "../indexedDB/dbUseCases";
 import { getCard as getWordCard } from "../words/data/data";
 import type { CombinedCard, Msg, SyncBlock, WordCard, WordProg } from "../words/types";
@@ -17,9 +17,11 @@ export async function implementUpdates(msg: Msg[], toSync: Record<string, Map<nu
 
             lc.syncV = rc.syncV
 
-            if (rc.v === lc.v) { 
+            if (rc.v === lc.v) { // succesfully synced
                 delete lc.toSync
                 toSync[m.type].delete(lc.id)
+            } else { // still needs to be synced
+                emit(EVT.UPDATE_NOT_ENDED)
             }
 
             updates.push(lc)
@@ -31,7 +33,7 @@ export async function implementUpdates(msg: Msg[], toSync: Record<string, Map<nu
             if (lc) {
                 lc.syncV = rc.syncV 
 
-                if (rc.v >= lc.v) { // update case
+                if (rc.v >= lc.v) { // accept update
                     delete lc.toSync
                     toSync[m.type].delete(lc.id)
 
@@ -39,6 +41,8 @@ export async function implementUpdates(msg: Msg[], toSync: Record<string, Map<nu
                     lc.data = rc.data
 
                     fullUpdates.push(lc)
+                } else { // reject update
+                    emit(EVT.UPDATE_NOT_ENDED)
                 }
 
                 updates.push(lc)
@@ -52,7 +56,7 @@ export async function implementUpdates(msg: Msg[], toSync: Record<string, Map<nu
         if (fullUpdates.length > 0) {
             console.log("update data!")
             if (m.type === "wordCards" || m.type === "wordProgs") {
-                emit(MSG.WORD_UPDATES_RECEIVED, { type: m.type, updates: fullUpdates })
+                emit(EVT.WORD_UPDATES_RECEIVED, { type: m.type, updates: fullUpdates })
             }
         }
     }

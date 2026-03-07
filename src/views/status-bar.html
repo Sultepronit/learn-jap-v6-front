@@ -1,0 +1,36 @@
+<style>
+.status-bar {
+    height: 3px;
+    /* background-color: yellow; */
+    display: grid;
+    /* flex-grow: 1; */
+    grid-template-columns: 1fr 3fr;
+}
+
+#sync-status {
+    /* width: 25%; */
+    background-color: green;
+}
+
+#sync-status.stale {
+    background-color: yellow;
+}
+
+#sync-status.disconnected {
+    background-color: orange;
+}
+
+.pending {
+    background-color: yellow;
+}
+
+.failed {
+    background-color: red;
+}
+</style>
+
+<div class="status-bar">
+    <!-- <div class="sync-status"></div> -->
+    <div id="sync-status"></div>
+    <div id="connection-status"></div>
+</div>

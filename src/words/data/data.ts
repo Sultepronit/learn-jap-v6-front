@@ -1,4 +1,4 @@
-import { emit, MSG, on } from "../../global/events"
+import { emit, EVT, on } from "../../global/events"
 import { useDb } from "../../indexedDB/dbHandlers"
 import type { CombinedCard, SyncBlock, WordCard } from "../types"
 
@@ -16,13 +16,13 @@ function setUpdates({ type, updates }: { type: string, updates: SyncBlock[] }) {
         // word[block] = u
         Object.defineProperty(word, block, { value: u })
     }
-    emit(MSG.WORD_UPDATED)
+    emit(EVT.WORD_UPDATED)
 }
 
 export async function loadData() {
     if (words) return words
 
-    on(MSG.WORD_UPDATES_RECEIVED, setUpdates)
+    on(EVT.WORD_UPDATES_RECEIVED, setUpdates)
 
     console.timeLog("t1", "cards init")
     const keys = await useDb("wordCards", "readonly", s => s.getAllKeys()) as number[]

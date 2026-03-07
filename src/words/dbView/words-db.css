@@ -18,7 +18,7 @@ word-editor * {
 
 .writings {
     display: grid;
-    gap: 0.3em;
+    gap: 0.2em;
     /* grid-template-columns: auto 1fr auto; */
     grid-template-columns: 1fr auto 1fr;
 }
@@ -37,7 +37,7 @@ word-editor * {
 
 .readings {
     display: flex;
-    gap: 0.3em;
+    gap: 0.2em;
 }
 
 .word-btr {
