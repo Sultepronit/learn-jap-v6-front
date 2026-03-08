@@ -5,16 +5,23 @@ const stores = [
         name: "wordCards",
         key: "id",
         indexes: [
-            ["toSync", "toSync", { unique: false }]
+            ["toSync", "toSync", { unique: false }],
         ] as indexDesc[]
     },
-    { name: "wordProgs", key: "id" }
+    {
+        name: "wordProgs",
+        key: "id",
+        indexes: [
+            ["toSync", "toSync", { unique: false }],
+            ["status", "data.status", { unique: false }]
+        ] as indexDesc[]
+    }
 ]
 
 function openDB(): Promise<IDBDatabase> {
     return new Promise((res, rej) => {
         // rej("testing reject")
-        const req = indexedDB.open("learnJap", 6)
+        const req = indexedDB.open("learnJap", 7)
         
         req.onupgradeneeded = (e: IDBVersionChangeEvent) => {
             console.log("upgrade me!")
@@ -97,10 +104,6 @@ export async function getIndexed(storeName: string, indexName: string, range?: I
         tx.onabort = () => rej(new Error("Transaction aborted!"))
     }).catch(dbErrorAlert)
 }
-
-// const i = await getIndexed("wordCards", "toSync")
-// const i = await getIndexed("wordCards", "toSync", IDBKeyRange.only(1))
-// console.log(i)
 
 export async function putMany(storeName: string, data: any[]) {
     const db = await dbPromise

@@ -1,5 +1,5 @@
 import { putMany } from "../indexedDB/dbHandlers";
-import { clearStore, saveCards } from "../indexedDB/dbUseCases";
+import { tempClearStore, saveCards } from "../indexedDB/dbUseCases";
 import type { WordCard, WordProg } from "../words/types";
 import fetchInitData from "./fetchInitData";
 
