@@ -1,7 +1,7 @@
 import { genRandomInt, randomize } from "../../helpers/random"
 import { getCardsStatusRange } from "../../indexedDB/dbUseCases"
 import { getWordById, loadData, setUpdates } from "../data/data"
-import type { WordProg } from "../types"
+import type { CombinedCard, WordProg } from "../types"
 
 function detectDirection(wData: WordProg["data"]) {
     return wData.f.progress === 1 ? "b" : "f"
@@ -73,16 +73,14 @@ export default async function prepareSession() {
     
     console.timeLog("t1", "session...")
 
-    const re = []
+    const re: CombinedCard[] = []
     for (const prog of list) {
         const word = getWordById(prog.id)
-        // const descriptor = Object.getOwnPropertyDescriptor(word, "prog")
-        // console.log(descriptor)
-        // if (descriptor.get) Object.defineProperty(word, "prog", { value: prog })
         re.push(word)
     }
 
     console.log(re)
 
     console.timeLog("t1", "session!")
+    return re
 }
