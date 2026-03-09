@@ -3,16 +3,20 @@ import { useDb } from "../../indexedDB/dbHandlers"
 import type { CombinedCard, SyncBlock, WordCard } from "../types"
 
 let words: CombinedCard[] = null
+let wordsIndex = new Map<number, CombinedCard>()
 
-function setUpdates({ type, updates }: { type: string, updates: SyncBlock[] }) {
+export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs", updates: SyncBlock[] }) {
     console.log(type, updates)
     const block = type === "wordCards" ? "card" : "prog"
     for (const u of updates) {
-        const word = words.find(c => c.id === u.id)
+        // const word = words.find(c => c.id === u.id)
+        const word = wordsIndex.get(u.id)
         if (!word) continue
         word.v++
-        if (word[block] === u) continue
-        console.log(word[block], u)
+        const descriptor = Object.getOwnPropertyDescriptor(word, block)
+        // const descriptor = null
+        if (!descriptor?.get && word[block] === u) continue
+        // console.log(word[block], u)
         // word[block] = u
         Object.defineProperty(word, block, { value: u })
     }
@@ -28,37 +32,46 @@ export async function loadData() {
     const keys = await useDb("wordCards", "readonly", s => s.getAllKeys()) as number[]
     console.timeLog("t1", "cards keys")
 
-    words = keys.map((id, i) => ({
-        id,
-        num: i + 1,
-        v: 0,
-        get card() {
-            loadCard(this)
-            return null
-        },
-        get prog() {
-            loadCard(this)
-            return null
+    words = keys.map((id, i) => {
+        const word = {
+            id,
+            num: i + 1,
+            v: 0,
+            get card() {
+                loadCard(this)
+                return null
+            },
+            get prog() {
+                loadCard(this)
+                return null
+            }
         }
-    }))
+        wordsIndex.set(id, word)
+        return word
+    })
     console.timeLog("t1", "cards parsed")
-    // console.log(cards)
+    console.log(wordsIndex)
     return words
 }
 
-export function getCard(num: number, id: number) {
-    if (num >= 0) {
-        let c = words[num - 1]
-        if (c.id === id) return c
-    }
-    return words.find(c => c.id === id)
+export function getWordById(id: number) {
+    return wordsIndex.get(id)
 }
+
+// export function getCard(num: number, id: number) {
+//     if (num >= 0) {
+//         let c = words[num - 1]
+//         if (c.id === id) return c
+//     }
+//     return words.find(c => c.id === id)
+// }
 
 let queue = new Set()
 let timeout = 0
 let isPlanned = false
 async function loadCard(word) {
     // console.log(queue.has(card.id))
+    // console.log("loading!")
     if (queue.has(word.id)) return
     queue.add(word.id)
     
@@ -89,6 +102,6 @@ async function loadCard(word) {
         // console.log(timeout)
         timeout = 0
         // console.log(timeout)
-    }, 50)
+    }, 1)
     // console.log(timeout)
 }

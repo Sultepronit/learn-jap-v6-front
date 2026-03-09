@@ -2,7 +2,7 @@ import { emit, EVT, on } from "../global/events"
 import { getIndexed } from "../indexedDB/dbHandlers"
 import type { WordCard } from "../words/types"
 import globalVersions from "./globalVersions"
-import { implementUpdates } from "./remoteMutaions"
+import { implementUpdates } from "./remoteMutations"
 
 export const toSync = {
     wordCards: new Map(),
