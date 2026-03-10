@@ -50,7 +50,7 @@ export async function loadData() {
         return word
     })
     console.timeLog("t1", "cards parsed")
-    console.log(wordsIndex)
+    // console.log(wordsIndex)
     return words
 }
 
@@ -93,15 +93,13 @@ async function loadCard(word) {
 
     document.dispatchEvent(new Event("word-updated"))
     timeout = setTimeout(() => {
+        // console.log("updte!")
         if (isPlanned) {
             isPlanned = false
             document.dispatchEvent(new Event("word-updated"))
         }
         
         clearTimeout(timeout)
-        // console.log(timeout)
         timeout = 0
-        // console.log(timeout)
-    }, 1)
-    // console.log(timeout)
+    }, 10)
 }

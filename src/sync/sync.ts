@@ -11,7 +11,7 @@ export const toSync = {
 
 async function checkUnsaved() {
     const wc = await getIndexed("wordCards", "toSync") as WordCard[]
-    console.log(wc)
+    // console.log(wc)
     console.timeLog("t1", "indexes!")
     for (const c of wc) {
         toSync.wordCards.set(c.id, c)

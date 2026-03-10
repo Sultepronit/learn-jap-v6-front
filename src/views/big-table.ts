@@ -159,7 +159,7 @@ export default class BigTable extends HTMLElement {
         this.render()
 
         document.addEventListener(this.updateEvent, () => {
-            // console.timeLog("t1", "start update")
+            console.timeLog("t1", "start update")
             // console.log("e")
             this.rows.forEach((row, i) => {
                 if (i >= this.data.length) {
@@ -174,7 +174,7 @@ export default class BigTable extends HTMLElement {
                 row.v = card.v
                 this.fillRow(row.element, card)
             })
-            // console.timeLog("t1", "end update")
+            console.timeLog("t1", "end update")
         })
     }
 
