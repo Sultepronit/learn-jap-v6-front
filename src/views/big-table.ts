@@ -35,14 +35,14 @@ export default class BigTable extends HTMLElement {
 
     select(cardNum: number, rowIdx: number) {
         this.selected.cardNum = cardNum
-        if (!rowIdx && rowIdx !== 0) {
-            rowIdx = this.data.findIndex(c => c.num === cardNum)
+        if (rowIdx < 0) {
+            rowIdx = this.rows.findIndex(r => r.card.num === cardNum)
         }
+
         if (rowIdx < 0) return
 
         this.selected.element = this.rows[rowIdx].element
         this.selected.element.classList.add("selected")
-        // console.log(this.selected)
     }
 
     private reselect(cardNum: number, rowIdx: number) {
@@ -53,8 +53,9 @@ export default class BigTable extends HTMLElement {
     navigate(delta: number) {
         this.top += delta
         // console.log(this.top)
-        this.scroller.value = (this.top / (this.data.length - this.rowsN) * 1000).toString()
-        console.log(this.scroller.value)
+        const scrollVal = (this.top / (this.data.length - this.rowsN) * 1000).toFixed(0)
+        this.scroller.value = scrollVal
+        // console.log(scrollVal, this.scroller.value)
 
         this.deselect();
 

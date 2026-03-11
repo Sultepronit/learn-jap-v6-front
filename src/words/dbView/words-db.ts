@@ -3,23 +3,28 @@ import type BigTable from "../../views/big-table"
 import { loadData } from "../data/data"
 import type { CombinedCard } from "../types"
 import type WordEditor from "./word-editor"
+import type WordsSearch from "./words-search"
 
 export default class WordsDb extends HTMLElement {
-    private allData: CombinedCard[]
-    private displayData: CombinedCard[]
-    private table: BigTable
+    allData: CombinedCard[]
+    displayData: CombinedCard[]
+
+    searchBar: WordsSearch
+    table: BigTable
         
     async connectedCallback() {
         this.allData = await loadData()
         // console.log(this.allData)
         this.render()
         this.querySelector<WordEditor>("word-editor").setData(this.allData)
+        this.setSearchBar()
         this.setTable()
     }
 
-    private render() {
+    render() {
         this.innerHTML = `
         <word-editor></word-editor>
+        <words-search></words-search>
         <big-table></big-table>
         `
     }
@@ -45,8 +50,8 @@ export default class WordsDb extends HTMLElement {
         rowElem.querySelector(".example").textContent = word.card?.data.example
     }
 
-    private sort(column: string, up: boolean) {
-        console.log(this.displayData[0])
+    sort(column: string, up: boolean) {
+        // console.log(this.displayData[0])
         switch (column) {
             case "num":
                 this.displayData.sort((a, b) => a.num - b.num)
@@ -60,7 +65,38 @@ export default class WordsDb extends HTMLElement {
         this.table.setData(this.displayData)
     }
 
-    private setTable() {
+    search(query: string) {
+        if (!query) {
+            this.displayData = [...this.allData].reverse()
+            this.table.setData(this.displayData)
+            return
+        }
+        console.log(query)
+
+        this.allData.forEach(w => w.card)
+        this.displayData = this.allData.filter(w => {
+            return [
+                ...w.card.data.writings.main,
+                ...(w.card.data.writings.rare || []),
+                ...w.card.data.readings.main,
+                ...(w.card.data.readings.rare || []),
+            ].join("").includes(query)
+        })
+        this.table.setData(this.displayData)
+        // console.log(re)
+    }
+
+    setSearchBar() {
+        this.searchBar = this.querySelector("words-search")
+        this.searchBar.setData(this.allData)
+        this.searchBar.addEventListener("search", (e: CustomEvent) => {
+            const query = e.detail.query
+            // console.log(query)
+            this.search(query)
+        })
+    }
+
+    setTable() {
         this.table = this.querySelector("big-table")
         // console.log(this.table)
         console.timeLog("t1", "table!")
