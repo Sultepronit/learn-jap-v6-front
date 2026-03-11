@@ -1,6 +1,6 @@
 import "./words-db.css"
 import type BigTable from "../../views/big-table"
-import { loadData } from "../data/data"
+import { loadAll, loadBasicList } from "../data/data"
 import type { CombinedCard } from "../types"
 import type WordEditor from "./word-editor"
 import type WordsSearch from "./words-search"
@@ -11,9 +11,14 @@ export default class WordsDb extends HTMLElement {
 
     searchBar: WordsSearch
     table: BigTable
+
+    sortParams = {
+        column: "num",
+        up: false
+    }
         
     async connectedCallback() {
-        this.allData = await loadData()
+        this.allData = await loadBasicList()
         // console.log(this.allData)
         this.render()
         this.querySelector<WordEditor>("word-editor").setData(this.allData)
@@ -23,10 +28,9 @@ export default class WordsDb extends HTMLElement {
 
     render() {
         this.innerHTML = `
-        <word-editor></word-editor>
-        <words-search></words-search>
-        <big-table></big-table>
-        `
+            <word-editor></word-editor>
+            <words-search></words-search>
+            <big-table></big-table>`
     }
 
     private colums = ["num", "status", "writings", "readings", "translation", "example"]
@@ -50,22 +54,42 @@ export default class WordsDb extends HTMLElement {
         rowElem.querySelector(".example").textContent = word.card?.data.example
     }
 
-    sort(column: string, up: boolean) {
+    async sort(column: string = this.sortParams.column, up: boolean = this.sortParams.up) {
+        const doNothing = column === "num" && this.sortParams.column === "num"
+        this.sortParams.column = column
+        this.sortParams.up = up
         // console.log(this.displayData[0])
+        // fallthrough
+        if (["writings", "readings"].includes(column)) {
+            await loadAll("wordCards")
+        } else if (["status"].includes(column)) {
+            await loadAll("wordProgs")
+        }
+
         switch (column) {
             case "num":
+                if (doNothing) break
+                console.log("sorting!")
                 this.displayData.sort((a, b) => a.num - b.num)
                 break
+            case "status":
+                this.displayData.sort((a, b) =>
+                    a.prog?.data.status - b.prog?.data.status)
+                break
             case "writings":
-                this.displayData.forEach(c => c.card)
-                this.displayData.sort((a, b) => a.card?.data.writings[0].localeCompare(b.card?.data.writings[0]))
+                this.displayData.sort((a, b) =>
+                    a.card?.data.writings.main[0].localeCompare(b.card?.data.writings.main[0]))
+                break
+            case "readings":
+                this.displayData.sort((a, b) =>
+                    a.card?.data.readings.main[0].localeCompare(b.card?.data.readings.main[0]))
                 break
         }
         if (!up) this.displayData.reverse();
         this.table.setData(this.displayData)
     }
 
-    search(query: string) {
+    async search(query: string) {
         if (!query) {
             this.displayData = [...this.allData].reverse()
             this.table.setData(this.displayData)
@@ -73,7 +97,8 @@ export default class WordsDb extends HTMLElement {
         }
         console.log(query)
 
-        this.allData.forEach(w => w.card)
+        // this.allData.forEach(w => w.card)
+        await loadAll("wordCards")
         this.displayData = this.allData.filter(w => {
             return [
                 ...w.card.data.writings.main,
@@ -82,8 +107,9 @@ export default class WordsDb extends HTMLElement {
                 ...(w.card.data.readings.rare || []),
             ].join("").includes(query)
         })
-        this.table.setData(this.displayData)
+        // this.table.setData(this.displayData)
         // console.log(re)
+        this.sort()
     }
 
     setSearchBar() {

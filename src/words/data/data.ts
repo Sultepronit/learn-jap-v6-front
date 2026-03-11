@@ -1,5 +1,6 @@
 import { emit, EVT, on } from "../../global/events"
 import { useDb } from "../../indexedDB/dbHandlers"
+import { getAllCards } from "../../indexedDB/dbUseCases"
 import type { CombinedCard, SyncBlock, WordCard, WordProg } from "../types"
 
 let words: CombinedCard[] = null
@@ -11,7 +12,7 @@ export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs",
     for (const u of updates) {
         const word = wordsIndex.get(u.id)
         if (!word) continue
-        word.v++
+        word.v++ // really? maybe no for all?
 
         const descriptor = Object.getOwnPropertyDescriptor(word, block)
         if (!descriptor?.get && word[block] === u) continue
@@ -21,7 +22,7 @@ export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs",
     emit(EVT.WORD_UPDATED)
 }
 
-export async function loadData() {
+export async function loadBasicList() {
     if (words) return words
 
     on(EVT.WORD_UPDATES_RECEIVED, setUpdates)
@@ -106,4 +107,29 @@ async function loadCard(word: CombinedCard) {
         clearTimeout(timeout)
         timeout = 0
     }, 50)
+}
+
+const loaded = {}
+export async function loadAll(type: "wordCards" | "wordProgs") {
+    if (loaded[type]) return
+
+    console.timeLog("t1", "start")
+    const entries = (await getAllCards(type) || []) as SyncBlock[]
+    // console.log(re)
+    console.timeLog("t1", "parsing")
+    const block = type === "wordCards" ? "card" : "prog"
+    for (const e of entries) {
+        const word = wordsIndex.get(e.id)
+        if (!word) continue
+
+        const descriptor = Object.getOwnPropertyDescriptor(word, block)
+        if (!descriptor?.get && word[block]) continue
+        word.v++
+
+        Object.defineProperty(word, block, { value: e })
+    }
+
+    loaded[type] = true
+    console.timeLog("t1", "end")
+    emit(EVT.WORD_UPDATED)
 }

@@ -1,6 +1,6 @@
 import { genRandomInt, randomize } from "../../helpers/random"
 import { getCardsStatusRange } from "../../indexedDB/dbUseCases"
-import { getWordById, loadData, setUpdates } from "../data/data"
+import { getWordById, loadBasicList, setUpdates } from "../data/data"
 import type { CombinedCard, WordProg } from "../types"
 
 function detectDirection(wData: WordProg["data"]) {
@@ -57,7 +57,7 @@ export default async function prepareSession() {
     console.timeLog("t1", "range init")
     // const range = (await getCardsStatusRange("wordProgs", 0, maxToRepeat) || []) as WordProg[]
     const rangePromise = getCardsStatusRange("wordProgs", 0, maxToRepeat)
-    const allWordsPromise = loadData()
+    const allWordsPromise = loadBasicList()
     const range = (await rangePromise || []) as WordProg[]
     // console.log(range)
     console.log(range.length)
