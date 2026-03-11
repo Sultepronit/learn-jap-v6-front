@@ -1,11 +1,17 @@
-.big-table {
+big-table {
     margin: 0.3rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+}
+
+.big-tbody {
+    /* margin: 0.3rem; */
     /* background-color: yellow; */
     border-top: 1px solid black;
     border-left: 1px solid black;
 }
 
-.big-table .btrh {
+.big-tbody .sort-bar {
     border-bottom: 1px solid black;
     height: 1.2em;
     user-select: none;
@@ -13,7 +19,7 @@
     color: lightgray;
 }
 
-.btrh .btd {
+.sort-bar .btd {
     padding: 0;
 }
 
@@ -36,4 +42,10 @@
 
 .active-sort {
     color: black;
+}
+
+.bt-scroller {
+    /* appearance: none; */
+    writing-mode: vertical-rl;
+    /* margin: 0 3px; */
 }

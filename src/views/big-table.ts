@@ -8,31 +8,32 @@ type Row = {
 }
 
 export default class BigTable extends HTMLElement {
-    private data: any[] = []
-    private rows: Row[] = []
-    private rowsArea: HTMLDivElement
-    // private selected: HTMLDivElement
-    private selected: {
+    data: any[] = []
+    rows: Row[] = []
+    rowsArea: HTMLDivElement
+    scroller: HTMLInputElement
+
+    selected: {
         element: HTMLDivElement,
         cardNum: number
     } = {
         element: null,
         cardNum: -1
     }
-    private rowsN = 15
-    private top = 0
+    rowsN = 15
+    top = 0
 
-    private columns: string[]
-    private btrClassName = ""
-    private fillRow: FillRow
-    private updateEvent = ""
+    columns: string[]
+    btrClassName = ""
+    fillRow: FillRow
+    updateEvent = ""
 
-    private deselect() {
+    deselect() {
         this.selected.element?.classList.remove("selected")
         this.selected.element = null
     }
 
-    private select(cardNum: number, rowIdx: number) {
+    select(cardNum: number, rowIdx: number) {
         this.selected.cardNum = cardNum
         if (!rowIdx && rowIdx !== 0) {
             rowIdx = this.data.findIndex(c => c.num === cardNum)
@@ -49,8 +50,11 @@ export default class BigTable extends HTMLElement {
         this.select(cardNum, rowIdx)
     }
 
-    private navigate(delta: number) {
+    navigate(delta: number) {
         this.top += delta
+        // console.log(this.top)
+        this.scroller.value = (this.top / (this.data.length - this.rowsN) * 1000).toString()
+        console.log(this.scroller.value)
 
         this.deselect();
 
@@ -91,30 +95,33 @@ export default class BigTable extends HTMLElement {
         })
     }
 
-    private render() {
-        const rowsTemp = []
-        const bth = this.columns.map(c => `<div class="btd" data-column="${c}"></div>`).join("")
+    render() {
+        const rowsTemplate = []
+        const sortBar = this.columns.map(c => `<div class="btd" data-column="${c}"></div>`).join("")
         const btd = this.columns.map(c => `<div class="btd ${c}"></div>`).join("")
         for (let i = 0; i < this.rowsN; i++) {
-            rowsTemp.push(`<div class="btr ${this.btrClassName}" data-i=${i} hidden">
+            rowsTemplate.push(`<div class="btr ${this.btrClassName}" data-i=${i} hidden">
                 ${btd}
             </div>`)
         }
             
-        this.innerHTML = `<div class="big-table">
-                <div class="btrh ${this.btrClassName}">${bth}</div>
-                <div class="rows-area">${rowsTemp.join("")}</div>
-            </div>`
+        this.innerHTML = `
+            <div class="big-tbody">
+                <div class="sort-bar ${this.btrClassName}">${sortBar}</div>
+                <div class="rows-area">${rowsTemplate.join("")}</div>
+            </div>
+            <input type="range" class="bt-scroller" min="0" max="1000" value="0">
+        `
         // this.rows = Array.from(this.querySelectorAll('.row'))
         const re = this.querySelectorAll<HTMLDivElement>('.btr')
         re.forEach(r => this.rows.push({ element: r, v: 0, card: null }))
         console.log(this.rows)
 
-        this.querySelector(".btrh").addEventListener("click", (e) => {
+        this.querySelector(".sort-bar").addEventListener("click", (e) => {
             const ch = e.target as HTMLDivElement
             const column = ch.dataset.column
             if (!column) return
-            console.log(column)
+            // console.log(column)
             
             this.querySelector(".active-sort")?.classList.remove("active-sort")
             ch.classList.add("active-sort")
@@ -128,6 +135,7 @@ export default class BigTable extends HTMLElement {
 
         this.rowsArea = this.querySelector(".rows-area")
         // console.log(this.rowsArea)
+        this.scroller = this.querySelector(".bt-scroller")
 
         this.rowsArea.addEventListener("click", (e) => {
             const clicked = (e.target as HTMLDivElement).closest(".btr") as HTMLDivElement
@@ -142,8 +150,16 @@ export default class BigTable extends HTMLElement {
                 { detail: { cardNum: Number(cardNum), rowIdx: Number(i) } }
             ))
         })
+
+        this.scroller.addEventListener("input", () => {
+            // this.scroller.value = (this.top / (this.data.length - this.rowsN) * 1000).toString()
+            const newTop = Number(this.scroller.value) / 1000 * (this.data.length - this.rowsN)
+            console.log(newTop)
+            this.navigate(Math.round(newTop - this.top))
+        })
     }
 
+    updateCounter = 0
     setParams(
         // tdTemplate: string,
         colums: string[],
@@ -159,8 +175,9 @@ export default class BigTable extends HTMLElement {
         this.render()
 
         document.addEventListener(this.updateEvent, () => {
-            console.timeLog("t1", "start update")
+            // console.timeLog("t1", "start update")
             // console.log("e")
+            console.log("update:", ++this.updateCounter)
             this.rows.forEach((row, i) => {
                 if (i >= this.data.length) {
                     row.element.classList.add("hidden")
@@ -174,7 +191,7 @@ export default class BigTable extends HTMLElement {
                 row.v = card.v
                 this.fillRow(row.element, card)
             })
-            console.timeLog("t1", "end update")
+            // console.timeLog("t1", "end update")
         })
     }
 
