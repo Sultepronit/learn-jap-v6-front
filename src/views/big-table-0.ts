@@ -41,10 +41,6 @@ export default class BigTable extends HTMLElement {
     }
 
     render() {
-        console.log(this.offsetHeight / 33)
-        console.log(this.scrollHeight)
-        this.rowsN = Math.round(this.offsetHeight / 35) - 2
-        console.log(this.rowsN)
         const rowsTemplate = []
         const sortBar = this.columns.map(c => `<div class="btd" data-column="${c}"></div>`).join("")
         const btd = this.columns.map(c => `<div class="btd ${c}"></div>`).join("")
@@ -55,9 +51,10 @@ export default class BigTable extends HTMLElement {
         }
             
         this.innerHTML = `
-            <div class="sort-bar ${this.btrClassName}">${sortBar}</div>
-            <div></div>
-            <div class="rows-area">${rowsTemplate.join("")}</div>
+            <div class="big-tbody">
+                <div class="sort-bar ${this.btrClassName}">${sortBar}</div>
+                <div class="rows-area">${rowsTemplate.join("")}</div>
+            </div>
             <input type="range" class="bt-scroller" min="0" max="1000" value="0">
         `
         // this.rows = Array.from(this.querySelectorAll('.row'))

@@ -67,7 +67,7 @@ export default class WordsSearch extends HTMLElement {
     updateSelected() {
         const num = Number(this.wordNum.value)
         const idx = this.displayData.findIndex(w => w.num === num)
-        console.log(idx)
+        // console.log(idx)
         const val = idx < 0 ? "-" : (idx + 1).toString()
         this.selectedWord.textContent = val;
     }

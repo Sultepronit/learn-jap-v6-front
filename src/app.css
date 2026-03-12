@@ -5,6 +5,10 @@
 }
 
 body {
+    height: 100svh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     font-size: 1.5rem;
 }
 
