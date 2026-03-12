@@ -34,6 +34,7 @@ export async function loadBasicList() {
     console.timeLog("t1", "cards init")
     const keys = await useDb("wordCards", "readonly", s => s.getAllKeys()) as number[]
     console.timeLog("t1", "cards keys")
+    // console.log(keys)
 
     words = keys.map((id, i) => {
         const word = {

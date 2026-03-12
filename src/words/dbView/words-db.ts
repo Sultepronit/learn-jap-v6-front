@@ -20,6 +20,11 @@ export default class WordsDb extends HTMLElement {
         
     async connectedCallback() {
         this.allData = await loadBasicList()
+        // this.allData.push({
+        //     id: -1,
+        //     num: 6000
+        // })
+        this.addEmptyCard()
         // console.log(this.allData)
         this.render()
         this.querySelector<WordEditor>("word-editor").setData(this.allData)
@@ -101,6 +106,43 @@ export default class WordsDb extends HTMLElement {
             await sort(this.displayData, column, up)
             // this.table.setData(this.displayData)
             this.updateDisplayData(this.displayData)
+        })
+    }
+
+    addEmptyCard() {
+        const id = Date.now()
+        console.log(id)
+        this.allData.push({
+            id,
+            num: this.allData.length + 1,
+            v: 0,
+            card: {
+                id,
+                v: 0,
+                syncV: -1,
+                data: {
+                    readings: { main: [""] },
+                    writings: { main: [""] },
+                    translation: "",
+                    example: ""
+                }
+            },
+            prog: {
+                id,
+                v: 0,
+                syncV: -1,
+                data: {
+                    status: -1,
+                    f: {
+                        progress: 0,
+                        record: 0
+                    },
+                    b: {
+                        progress: 0,
+                        record: 0
+                    }
+                }
+            }
         })
     }
 }

@@ -41,10 +41,21 @@ export default class BigTable extends HTMLElement {
     }
 
     render() {
+        const ro = new ResizeObserver(entries => {
+            // console.log(entries)
+            for (let entry of entries) {
+                const height = entry.contentRect.height;
+                console.log('Нова висота:', height);
+                // Тут ваш "пчих" для оновлення логіки
+            }
+        });
+        ro.observe(this);
+
         console.log(this.offsetHeight / 33)
         console.log(this.scrollHeight)
         this.rowsN = Math.round(this.offsetHeight / 35) - 2
         console.log(this.rowsN)
+
         const rowsTemplate = []
         const sortBar = this.columns.map(c => `<div class="btd" data-column="${c}"></div>`).join("")
         const btd = this.columns.map(c => `<div class="btd ${c}"></div>`).join("")
@@ -102,7 +113,7 @@ export default class BigTable extends HTMLElement {
         this.scroller.addEventListener("input", () => {
             // this.scroller.value = (this.top / (this.data.length - this.rowsN) * 1000).toString()
             const newTop = Number(this.scroller.value) / 1000 * (this.data.length - this.rowsN)
-            console.log(newTop)
+            // console.log(newTop)
             this.navigate(Math.round(newTop - this.top))
         })
     }
