@@ -4,6 +4,7 @@ import { loadAll, loadBasicList } from "../data/data"
 import type { CombinedCard } from "../types"
 import type WordEditor from "./word-editor"
 import type WordsSearch from "./words-search"
+import { searchSort, sort } from "./sortSearch"
 
 export default class WordsDb extends HTMLElement {
     allData: CombinedCard[]
@@ -54,103 +55,52 @@ export default class WordsDb extends HTMLElement {
         rowElem.querySelector(".example").textContent = word.card?.data.example
     }
 
-    async sort(column: string = this.sortParams.column, up: boolean = this.sortParams.up) {
-        const doNothing = column === "num" && this.sortParams.column === "num"
-        this.sortParams.column = column
-        this.sortParams.up = up
-        // console.log(this.displayData[0])
-        // fallthrough
-        if (["writings", "readings"].includes(column)) {
-            await loadAll("wordCards")
-        } else if (["status"].includes(column)) {
-            await loadAll("wordProgs")
-        }
-
-        switch (column) {
-            case "num":
-                if (doNothing) break
-                console.log("sorting!")
-                this.displayData.sort((a, b) => a.num - b.num)
-                break
-            case "status":
-                this.displayData.sort((a, b) =>
-                    a.prog?.data.status - b.prog?.data.status)
-                break
-            case "writings":
-                this.displayData.sort((a, b) =>
-                    a.card?.data.writings.main[0].localeCompare(b.card?.data.writings.main[0]))
-                break
-            case "readings":
-                this.displayData.sort((a, b) =>
-                    a.card?.data.readings.main[0].localeCompare(b.card?.data.readings.main[0]))
-                break
-        }
-        if (!up) this.displayData.reverse();
+    updateDisplayData(value: CombinedCard[]) {
+        this.displayData = value
         this.table.setData(this.displayData)
-    }
-
-    async search(query: string) {
-        if (!query) {
-            this.displayData = [...this.allData].reverse()
-            this.table.setData(this.displayData)
-            return
-        }
-        console.log(query)
-
-        // this.allData.forEach(w => w.card)
-        await loadAll("wordCards")
-        this.displayData = this.allData.filter(w => {
-            return [
-                ...w.card.data.writings.main,
-                ...(w.card.data.writings.rare || []),
-                ...w.card.data.readings.main,
-                ...(w.card.data.readings.rare || []),
-            ].join("").includes(query)
-        })
-        // this.table.setData(this.displayData)
-        // console.log(re)
-        this.sort()
+        this.searchBar.update(this.displayData)
     }
 
     setSearchBar() {
         this.searchBar = this.querySelector("words-search")
         this.searchBar.setData(this.allData)
-        this.searchBar.addEventListener("search", (e: CustomEvent) => {
+        this.searchBar.addEventListener("search", async (e: CustomEvent) => {
             const query = e.detail.query
-            // console.log(query)
-            this.search(query)
+            // this.displayData = await searchSort(this.allData, query)
+            // this.table.setData(this.displayData)
+            this.updateDisplayData(await searchSort(this.allData, query))
         })
     }
 
-    setTable() {
+    async setTable() {
         this.table = this.querySelector("big-table")
         // console.log(this.table)
         console.timeLog("t1", "table!")
         this.table.setParams(
-            // this.tdTemplate,
             this.colums,
             "word-btr",
             this.fillRow,
             "word-updated"
         )
         // this.table.setData(this.data.slice(100, 150))
-        this.displayData = [...this.allData].reverse()
-        this.table.setData(this.displayData)
+        // this.displayData = [...this.allData].reverse()
+        // this.displayData = await searchSort(this.allData, "")
+        // this.table.setData(this.displayData)
+        this.updateDisplayData(await searchSort(this.allData, ""))
 
         this.dispatchEvent(new CustomEvent(
             "card-selected",
             { detail: { cardNum: this.allData.length, rowIdx: 0 } }
         ))
 
-
-        this.table.addEventListener("sort", (e: CustomEvent) => {
+        this.table.addEventListener("sort", async (e: CustomEvent) => {
             // console.log(e)
             const { column, up } = e.detail
             console.log(column, up)
-            this.sort(column, up)
+            // this.sort(column, up)
+            await sort(this.displayData, column, up)
+            // this.table.setData(this.displayData)
+            this.updateDisplayData(this.displayData)
         })
-        // this.selectCard(this.data.length - 1)
-        // setTimeout(() => this.table.setData(this.data.slice(120, 150)), 2000)
-        // setTimeout(() => this.data.forEach(c => c.card), 2000)
     }
 }

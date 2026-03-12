@@ -12,12 +12,16 @@ export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs",
     for (const u of updates) {
         const word = wordsIndex.get(u.id)
         if (!word) continue
-        word.v++ // really? maybe no for all?
 
         const descriptor = Object.getOwnPropertyDescriptor(word, block)
         if (!descriptor?.get && word[block] === u) continue
 
-        Object.defineProperty(word, block, { value: u })
+        Object.defineProperty(word, block, {
+            value: u,
+            writable: true,
+            configurable: true
+        })
+        word.v++
     }
     emit(EVT.WORD_UPDATED)
 }
@@ -78,11 +82,15 @@ async function loadCard(word: CombinedCard) {
     
     // console.time("get1")
     Object.defineProperty(word, 'card', {
-        value: await useDb("wordCards", "readonly", s => s.get(word.id))
+        value: await useDb("wordCards", "readonly", s => s.get(word.id)),
+        writable: true,
+        configurable: true
     })
 
     Object.defineProperty(word, 'prog', {
-        value: await useDb("wordProgs", "readonly", s => s.get(word.id))
+        value: await useDb("wordProgs", "readonly", s => s.get(word.id)),
+        writable: true,
+        configurable: true
     })
     // console.timeEnd("get1")
 

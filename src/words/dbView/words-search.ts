@@ -8,6 +8,8 @@ export default class WordsSearch extends HTMLElement {
 
     wordNum: HTMLInputElement
     searchQuery: HTMLInputElement
+    selectedWord: HTMLSpanElement
+    listLength: HTMLSpanElement
 
     connectedCallback() {
         this.render()
@@ -19,6 +21,8 @@ export default class WordsSearch extends HTMLElement {
 
         this.wordNum = this.querySelector(".word-num")
         this.searchQuery = this.querySelector(".search-query")
+        this.selectedWord = this.querySelector(".selected-word")
+        this.listLength = this.querySelector(".list-length")
     }
 
     attachListeners() {
@@ -28,6 +32,8 @@ export default class WordsSearch extends HTMLElement {
             if (this.wordNum.value === newVal) return;
 
             this.wordNum.value = e.detail.cardNum
+            // console.log(this.wordNum.value)
+            this.updateSelected()
         })
 
         this.wordNum.addEventListener("input", () => {
@@ -47,7 +53,22 @@ export default class WordsSearch extends HTMLElement {
 
     setData(allData: CombinedCard[]) {
         this.allData = allData
-        console.log(this.allData.length)
         this.wordNum.max = this.allData.length.toString()
+    }
+
+    update(displayData: CombinedCard[]) {
+        this.displayData = displayData
+        this.listLength.textContent = displayData.length.toString()
+        // console.log(displayData.length)
+
+        this.updateSelected()
+    }
+
+    updateSelected() {
+        const num = Number(this.wordNum.value)
+        const idx = this.displayData.findIndex(w => w.num === num)
+        console.log(idx)
+        const val = idx < 0 ? "-" : (idx + 1).toString()
+        this.selectedWord.textContent = val;
     }
 }

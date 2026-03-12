@@ -28,62 +28,6 @@ export default class BigTable extends HTMLElement {
     fillRow: FillRow
     updateEvent = ""
 
-    deselect() {
-        this.selected.element?.classList.remove("selected")
-        this.selected.element = null
-    }
-
-    select(cardNum: number, rowIdx: number) {
-        this.selected.cardNum = cardNum
-        if (rowIdx < 0) {
-            rowIdx = this.rows.findIndex(r => r.card.num === cardNum)
-        }
-
-        if (rowIdx < 0) return
-
-        this.selected.element = this.rows[rowIdx].element
-        this.selected.element.classList.add("selected")
-    }
-
-    private reselect(cardNum: number, rowIdx: number) {
-        this.deselect()
-        this.select(cardNum, rowIdx)
-    }
-
-    navigate(delta: number) {
-        this.top += delta
-        // console.log(this.top)
-        const scrollVal = (this.top / (this.data.length - this.rowsN) * 1000).toFixed(0)
-        this.scroller.value = scrollVal
-        // console.log(scrollVal, this.scroller.value)
-
-        this.deselect();
-
-        this.rows.forEach((row, i) => {
-            const card = this.data[i + this.top]
-
-            if (card.num === this.selected.cardNum) this.select(card.num, i)
-
-            row.card = card
-            row.v = card.v
-            this.fillRow(row.element, card)
-        })
-    }
-
-    private navigateSafely(delta: number) {
-        if (this.data.length < this.rowsN) return
-        let newTop = this.top + delta
-        if (newTop < 0) newTop = 0
-        if (newTop + this.rowsN > this.data.length) newTop = this.data.length - this.rowsN
-        if (this.top === newTop) return
-
-        this.navigate(newTop - this.top)
-    }
-
-    private doScroll(rawDelta: number) {
-        this.navigateSafely(rawDelta > 0 ? 3 : -3)
-    }
-
     connectedCallback() {
         // this.render()
         this.addEventListener("wheel", (e) => {
@@ -180,10 +124,10 @@ export default class BigTable extends HTMLElement {
             // console.log("e")
             console.log("update:", ++this.updateCounter)
             this.rows.forEach((row, i) => {
-                if (i >= this.data.length) {
-                    row.element.classList.add("hidden")
-                    return
-                }
+                // if (i >= this.data.length) {
+                //     row.element.classList.add("hidden")
+                //     return
+                // }
                 // console.log("t")
                 // console.log(row.dataset.t)
                 const card = row.card
@@ -199,6 +143,10 @@ export default class BigTable extends HTMLElement {
     setData(data: any[]) {
         this.data = data
         this.top = 0
+        this.scroller.value = "0"
+
+        this.deselect()
+
         this.rows.forEach((row, i) => {
             if (i >= this.data.length) {
                 row.element.classList.add("hidden")
@@ -209,14 +157,64 @@ export default class BigTable extends HTMLElement {
             row.v = card.v
             this.fillRow(row.element, card)
             row.element.classList.remove("hidden")
-            // console.log(row)
+
+            if (card.num === this.selected.cardNum) this.select(card.num, i)
         })
-        // this.data.forEach(c => console.log(c.card?.data))
-        // this.data.forEach(c => c.card)
-        // this.rows[this.rowsN - 1].element.classList.add("hidden")
-        // this.parentNode.dispatchEvent(new CustomEvent(
-        //     "card-selected",
-        //     { detail: { num: this.data[0].num, rowI: 0 } }
-        // ))
+    }
+
+    deselect() {
+        this.selected.element?.classList.remove("selected")
+        this.selected.element = null
+    }
+
+    select(cardNum: number, rowIdx: number) {
+        this.selected.cardNum = cardNum
+        if (rowIdx < 0) {
+            rowIdx = this.rows.findIndex(r => r.card.num === cardNum)
+        }
+
+        if (rowIdx < 0) return
+
+        this.selected.element = this.rows[rowIdx].element
+        this.selected.element.classList.add("selected")
+    }
+
+    reselect(cardNum: number, rowIdx: number) {
+        this.deselect()
+        this.select(cardNum, rowIdx)
+    }
+
+    navigate(delta: number) {
+        this.top += delta
+        // console.log(this.top)
+        const scrollVal = (this.top / (this.data.length - this.rowsN) * 1000).toFixed(0)
+        this.scroller.value = scrollVal
+        // console.log(scrollVal, this.scroller.value)
+
+        this.deselect()
+
+        this.rows.forEach((row, i) => {
+            const card = this.data[i + this.top]
+
+            row.card = card
+            row.v = card.v
+            this.fillRow(row.element, card)
+
+            if (card.num === this.selected.cardNum) this.select(card.num, i)
+        })
+    }
+
+    navigateSafely(delta: number) {
+        if (this.data.length < this.rowsN) return
+        let newTop = this.top + delta
+        if (newTop < 0) newTop = 0
+        if (newTop + this.rowsN > this.data.length) newTop = this.data.length - this.rowsN
+        if (this.top === newTop) return
+
+        this.navigate(newTop - this.top)
+    }
+
+    doScroll(rawDelta: number) {
+        this.navigateSafely(rawDelta > 0 ? 3 : -3)
     }
 }
