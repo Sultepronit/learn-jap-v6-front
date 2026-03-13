@@ -219,6 +219,7 @@ export default class BigTable extends HTMLElement {
     }
 
     navigateSafely(delta: number) {
+        console.log(this.data.length)
         if (this.data.length < this.rowsN) return
         let newTop = this.top + delta
         if (newTop < 0) newTop = 0

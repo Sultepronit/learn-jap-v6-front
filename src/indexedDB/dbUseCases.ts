@@ -1,26 +1,26 @@
 import type { WordCard } from "../words/types"
 import { getIndexed, putMany, useDb } from "./dbHandlers"
 
-// function dbErrorAlert(e: Error) {
-//     console.warn(e)
-//     // alert(e.message)
-// }
-
 type CardStore = "wordCards" | "wordProgs"
-export async function saveCards(store: CardStore, data: any[]) {
-    await putMany(store, data)
+
+export async function getCard(store: CardStore, id: number) {
+    return await useDb(store, "readonly", s => s.get(id))
+}
+
+export async function getAllCards(store: CardStore) {
+    return await useDb(store, "readonly", s => s.getAll())
 }
 
 export async function getCardsStatusRange(store: CardStore, from: number, to: number) {
     return await getIndexed(store, "status", IDBKeyRange.bound(from, to))
 }
 
-export async function saveWordCard(card: WordCard) {
-    return await useDb("wordCards", "readwrite", s => s.put(card))
+export async function saveCards(store: CardStore, data: any[]) {
+    await putMany(store, data)
 }
 
-export async function getAllCards(store: CardStore) {
-    return await useDb(store, "readonly", s => s.getAll())
+export async function saveWordCard(card: WordCard) {
+    return await useDb("wordCards", "readwrite", s => s.put(card))
 }
 
 export async function tempClearStore(store: CardStore) {

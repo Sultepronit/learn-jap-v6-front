@@ -24,8 +24,8 @@ export default class WordEditor extends HTMLElement {
     implementMutation(part: "card" | "prog") {
         this.word.v++ // to update views of the word
         this.wordV = this.word.v // not to update it here!
-        emit(EVT.WORD_UPDATED)
-        emit(EVT.CARD_MUTATED, {
+        emit(EVT.WORD_UPDATED) // for the views
+        emit(EVT.CARD_MUTATED, { // for the DBs
             type: part === "card" ? "wordCards" : "wordProgs",
             card: this.word[part]
         })

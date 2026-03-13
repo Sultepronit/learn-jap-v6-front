@@ -1,6 +1,6 @@
 import { emit, EVT, on } from "../../global/events"
 import { useDb } from "../../indexedDB/dbHandlers"
-import { getAllCards } from "../../indexedDB/dbUseCases"
+import { getAllCards, getCard } from "../../indexedDB/dbUseCases"
 import type { CombinedCard, SyncBlock, WordCard, WordProg } from "../types"
 
 let words: CombinedCard[] = null
@@ -83,13 +83,15 @@ async function loadCard(word: CombinedCard) {
     
     // console.time("get1")
     Object.defineProperty(word, 'card', {
-        value: await useDb("wordCards", "readonly", s => s.get(word.id)),
+        // value: await useDb("wordCards", "readonly", s => s.get(word.id)),
+        value: await getCard("wordCards", word.id),
         writable: true,
         configurable: true
     })
 
     Object.defineProperty(word, 'prog', {
-        value: await useDb("wordProgs", "readonly", s => s.get(word.id)),
+        // value: await useDb("wordProgs", "readonly", s => s.get(word.id)),
+        value: await getCard("wordProgs", word.id),
         writable: true,
         configurable: true
     })
@@ -141,4 +143,62 @@ export async function loadAll(type: "wordCards" | "wordProgs") {
     loaded[type] = true
     console.timeLog("t1", "end")
     emit(EVT.WORD_UPDATED)
+}
+
+export async function checkAndCreateEmpty() {
+    const last = words[words.length - 1]
+    // console.log(last)
+    const lastStatus = last.prog?.data.status
+        ?? (await getCard("wordProgs", last.id) as WordProg).data.status
+    console.log(lastStatus)
+    if (lastStatus !== -10) createEmpty()
+}
+
+function createEmpty() {
+    const id = Date.now()
+    console.log(id)
+    const card: WordCard = {
+        id,
+        v: 0,
+        syncV: -1,
+        // toSync: 1,
+        data: {
+            readings: { main: [""] },
+            writings: { main: [""] },
+            translation: "",
+            example: ""
+        }
+    }
+
+    const prog: WordProg = {
+        id,
+        v: 0,
+        syncV: -1,
+        // toSync: 1,
+        data: {
+            status: -10,
+            f: {
+                progress: 0,
+                record: 0
+            },
+            b: {
+                progress: 0,
+                record: 0
+            }
+        }
+    }
+
+    const word = {
+        id,
+        num: words.length + 1,
+        v: 0,
+        card,
+        prog
+    }
+    console.log(word)
+    words.push(word)
+    console.log(words.length)
+    emit(EVT.WORDS_COUNT_CHANGED)
+    emit(EVT.CARD_MUTATED, { type: "wordCards", card })
+    emit(EVT.CARD_MUTATED, { type: "wordProgs", card: prog })
 }

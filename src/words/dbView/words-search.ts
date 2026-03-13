@@ -1,6 +1,7 @@
 import template from "./words-search.html?raw"
 
 import type { CombinedCard } from "../types"
+import { EVT, on } from "../../global/events"
 
 export default class WordsSearch extends HTMLElement {
     allData: CombinedCard[]
@@ -26,6 +27,10 @@ export default class WordsSearch extends HTMLElement {
     }
 
     attachListeners() {
+        on(EVT.WORDS_COUNT_CHANGED, async () => {
+            this.wordNum.max = this.allData.length.toString()
+        })
+
         this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
             const newVal = e.detail.cardNum.toString()
             // console.log(this.wordNum.value, newVal)
@@ -37,6 +42,7 @@ export default class WordsSearch extends HTMLElement {
         })
 
         this.wordNum.addEventListener("input", () => {
+            this.updateSelected()
             this.parentElement.dispatchEvent(new CustomEvent(
                 "card-selected",
                 { detail: { cardNum: Number(this.wordNum.value), rowIdx: -1 } }

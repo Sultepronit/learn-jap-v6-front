@@ -1,10 +1,11 @@
 import "./words-db.css"
 import type BigTable from "../../views/big-table"
-import { loadAll, loadBasicList } from "../data/data"
+import { checkAndCreateEmpty, loadBasicList } from "../data/data"
 import type { CombinedCard } from "../types"
 import type WordEditor from "./word-editor"
 import type WordsSearch from "./words-search"
 import { searchSort, sort } from "./sortSearch"
+import { EVT, on } from "../../global/events"
 
 export default class WordsDb extends HTMLElement {
     allData: CombinedCard[]
@@ -20,16 +21,17 @@ export default class WordsDb extends HTMLElement {
         
     async connectedCallback() {
         this.allData = await loadBasicList()
-        // this.allData.push({
-        //     id: -1,
-        //     num: 6000
-        // })
-        this.addEmptyCard()
+        // this.addEmptyCard()
+        checkAndCreateEmpty()
         // console.log(this.allData)
         this.render()
         this.querySelector<WordEditor>("word-editor").setData(this.allData)
         this.setSearchBar()
         this.setTable()
+
+        on(EVT.WORDS_COUNT_CHANGED, async () => {
+            this.updateDisplayData(await searchSort(this.allData, ""))
+        })
     }
 
     render() {
@@ -106,43 +108,6 @@ export default class WordsDb extends HTMLElement {
             await sort(this.displayData, column, up)
             // this.table.setData(this.displayData)
             this.updateDisplayData(this.displayData)
-        })
-    }
-
-    addEmptyCard() {
-        const id = Date.now()
-        console.log(id)
-        this.allData.push({
-            id,
-            num: this.allData.length + 1,
-            v: 0,
-            card: {
-                id,
-                v: 0,
-                syncV: -1,
-                data: {
-                    readings: { main: [""] },
-                    writings: { main: [""] },
-                    translation: "",
-                    example: ""
-                }
-            },
-            prog: {
-                id,
-                v: 0,
-                syncV: -1,
-                data: {
-                    status: -1,
-                    f: {
-                        progress: 0,
-                        record: 0
-                    },
-                    b: {
-                        progress: 0,
-                        record: 0
-                    }
-                }
-            }
         })
     }
 }

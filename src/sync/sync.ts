@@ -1,6 +1,6 @@
 import { emit, EVT, on } from "../global/events"
 import { getIndexed } from "../indexedDB/dbHandlers"
-import type { WordCard } from "../words/types"
+import type { SyncBlock, WordCard } from "../words/types"
 import globalVersions from "./globalVersions"
 import { implementUpdates } from "./remoteMutations"
 
@@ -10,11 +10,18 @@ export const toSync = {
 }
 
 async function checkUnsaved() {
-    const wc = await getIndexed("wordCards", "toSync") as WordCard[]
-    // console.log(wc)
-    console.timeLog("t1", "indexes!")
-    for (const c of wc) {
-        toSync.wordCards.set(c.id, c)
+    // const wc = await getIndexed("wordCards", "toSync") as WordCard[]
+    // // console.log(wc)
+    // console.timeLog("t1", "indexes!")
+    // for (const c of wc) {
+    //     toSync.wordCards.set(c.id, c)
+    // }
+    // console.log(toSync)
+    for (const [type, map] of Object.entries(toSync)) {
+        const blocks = await getIndexed(type, "toSync") as SyncBlock[]
+        for (const b of blocks) {
+            map.set(b.id, b)
+        }
     }
     console.log(toSync)
     sync();
@@ -22,40 +29,72 @@ async function checkUnsaved() {
 
 checkUnsaved()
 
-function prepareToSend(map: Map<number, WordCard>) {
-    return map.size === 0 ? null : Array.from(map.values())
-        .map(({ id, v, syncV, data }) => ({ id, v, syncV, data }))
+// function parseBlock(map: Map<number, WordCard>) {
+//     return map.size === 0 ? null : Array.from(map.values())
+//         .map(({ id, v, syncV, data }) => ({ id, v, syncV, data }))
+// }
+
+function prepareMsg() {
+    const msg = []
+    for (const [type, map] of Object.entries(toSync)) {
+        // console.log(type, map)
+        const updated = [], created = []
+        for (const { id, v, syncV, data } of map.values()) {
+            if (syncV < 0) {
+                created.push({ id, v, syncV, data })
+            } else {
+                updated.push({ id, v, syncV, data })
+            }
+        }
+        console.log(updated)
+        msg.push({
+            type,
+            v: globalVersions.get(type),
+            ...(updated.length && { updated }),
+            ...(created.length && { created })
+        })
+    }
+    console.log("sent:")
+    console.table(msg)
+
+    return JSON.stringify(msg)
 }
+
+// prepareMsg();
 
 const apiUrl = import.meta.env.VITE_API_URL
 
 let disconnected = false
 
 async function sync() {
-    const wc = prepareToSend(toSync.wordCards)
-    const wp = prepareToSend(toSync.wordProgs)
-    const msg = [
-        {
-            type: "wordCards",
-            v: globalVersions.get("wordCards"),
-            ...(wc && { updated: wc })
-        },
-        {
-            type: "wordProgs",
-            v: globalVersions.get("wordProgs"),
-            ...(wp && { updated: wp })
-        }
-    ]
-    // console.log("sent:", msg)
-    console.log("sent:")
-    console.table(msg)
+    const msg = prepareMsg()
+    communicate(msg)
+    // const wc = parseBlock(toSync.wordCards)
+    // const wp = parseBlock(toSync.wordProgs)
+    // const msg = [
+    //     {
+    //         type: "wordCards",
+    //         v: globalVersions.get("wordCards"),
+    //         ...(wc && { updated: wc })
+    //     },
+    //     {
+    //         type: "wordProgs",
+    //         v: globalVersions.get("wordProgs"),
+    //         ...(wp && { updated: wp })
+    //     }
+    // ]
+    // // console.log("sent:", msg)
+    // console.log("sent:")
+    // console.table(msg)    
+}
 
+async function communicate(msg) {
     try {
         emit(EVT.CONNECTION_STATUS_UPDATED, "pending")
 
         const j = await fetch(`${apiUrl}/sync`, {
             method: "POST",
-            body: JSON.stringify(msg)
+            body: msg
         })
         
         const r = await j.json()
