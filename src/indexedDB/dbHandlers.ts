@@ -123,3 +123,21 @@ export async function putMany(storeName: string, data: any[]) {
         tx.onabort = () => rej(new Error("Transaction aborted!"))
     }).catch(dbErrorAlert)
 }
+
+export async function removeWordFromDb(id: number) {
+    const db = await dbPromise
+    if (!db) return null
+    
+    return new Promise((res, rej) => {
+        const tx = db.transaction(["wordCards", "wordProgs"], "readwrite")
+        const cardsStore = tx.objectStore("wordCards")
+        const progsStore = tx.objectStore("wordProgs")
+        
+        cardsStore.delete(id)
+        progsStore.delete(id)
+
+        tx.oncomplete = () => res("success")
+        tx.onerror = () => rej(tx.error)
+        tx.onabort = () => rej(new Error("Transaction aborted!"))
+    }).catch(dbErrorAlert)
+}

@@ -97,4 +97,4 @@ setInterval(() => {
         window.addEventListener("click", syncWithControl, { once: true })
     }
     // console.log(time)
-}, 2_000)
+}, 20_000)

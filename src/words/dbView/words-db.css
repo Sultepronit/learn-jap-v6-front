@@ -20,6 +20,17 @@ word-editor * {
     margin-block: 1px;
 }
 
+.delete-word {
+    font: inherit;
+    font-size: 0.9em;
+    padding: 0 1em 0.1em;
+}
+
+.flex-space {
+    display: flex;
+    justify-content: space-between;
+}
+
 words-search {
     display: flex;
     gap: 0.2em;

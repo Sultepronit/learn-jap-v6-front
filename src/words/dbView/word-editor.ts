@@ -1,51 +1,27 @@
 import { EVT, emit } from "../../global/events"
-import { addNew } from "../data/data"
+import { addNew, removeWord } from "../data/data"
 import type { CombinedCard } from "../types"
 import template from "./word-editor.html?raw"
 
 export default class WordEditor extends HTMLElement {
-    private data: CombinedCard[]
-    private word: CombinedCard
-    private wordV = 0
-    private status: HTMLInputElement
-    private writings: HTMLInputElement
-    private altWrit: HTMLButtonElement
-    private readings: HTMLInputElement
-    private translation: HTMLInputElement
+    data: CombinedCard[]
+    word: CombinedCard
+    wordV = 0
+    delete: HTMLButtonElement
+    status: HTMLInputElement
+    writings: HTMLInputElement
+    altWrit: HTMLButtonElement
+    readings: HTMLInputElement
+    translation: HTMLInputElement
 
     render() {
         this.innerHTML = template
+        this.delete = this.querySelector('.delete-word')
         this.status = this.querySelector('[name="status"]')
         this.writings = this.querySelector('[name="writings"]')
         this.altWrit = this.querySelector('[name="toggle-alt"]')
         this.readings = this.querySelector('[name="readings"]')
         this.translation = this.querySelector('[name="translation"]')
-    }
-
-    addNew() {
-        const id = Date.now()
-        this.word.id = id
-        this.word.card.id = id
-        this.word.prog.id = id
-
-        addNew(this.word)
-
-        emit(EVT.WORD_UPDATED) 
-        emit(EVT.CARD_MUTATED, { type: "wordCards", card: this.word.card })
-        emit(EVT.CARD_MUTATED, { type: "wordProgs", card: this.word.prog })
-    }
-
-    implementMutation(part: "card" | "prog") {
-        this.word.v++ // to update views of the word
-        this.wordV = this.word.v // not to update it here!
-        
-        if (this.word.id === Infinity) return this.addNew()
-
-        emit(EVT.WORD_UPDATED) // for the views
-        emit(EVT.CARD_MUTATED, { // for the DBs
-            type: part === "card" ? "wordCards" : "wordProgs",
-            card: this.word[part]
-        })
     }
 
     connectedCallback() {
@@ -64,6 +40,11 @@ export default class WordEditor extends HTMLElement {
 
         document.addEventListener("word-updated", () => {
             if (this.wordV !== this.word.v) this.updateEditorContent()
+        })
+
+        this.delete.addEventListener("click", () => {
+            console.log("remove ", this.word.id)
+            removeWord(this.word.id)
         })
 
         this.status.addEventListener("change", () => {
@@ -107,5 +88,31 @@ export default class WordEditor extends HTMLElement {
         }
         this.readings.value = this.word.card?.data.readings.main.join(", ")
         this.translation.value = this.word.card?.data.translation
+    }
+
+    addNew() {
+        const id = Date.now()
+        this.word.id = id
+        this.word.card.id = id
+        this.word.prog.id = id
+
+        addNew(this.word)
+
+        emit(EVT.WORD_UPDATED) 
+        emit(EVT.CARD_MUTATED, { type: "wordCards", card: this.word.card })
+        emit(EVT.CARD_MUTATED, { type: "wordProgs", card: this.word.prog })
+    }
+
+    implementMutation(part: "card" | "prog") {
+        this.word.v++ // to update views of the word
+        this.wordV = this.word.v // not to update it here!
+        
+        if (this.word.id === Infinity) return this.addNew()
+
+        emit(EVT.WORD_UPDATED) // for the views
+        emit(EVT.CARD_MUTATED, { // for the DBs
+            type: part === "card" ? "wordCards" : "wordProgs",
+            card: this.word[part]
+        })
     }
 }

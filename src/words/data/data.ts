@@ -183,3 +183,14 @@ export function addNew(word: CombinedCard) {
     addVoid()
     emit(EVT.WORDS_COUNT_CHANGED)
 }
+
+export function removeWord(id: number) {
+    const index = wordsIndex.get(id).num - 1
+    console.log(index)
+    words.splice(index, 1)
+    for (let i = index; i < words.length; i++) {
+        // console.log(i, words[i])
+        words[i].num = i + 1
+    }
+    emit(EVT.WORDS_COUNT_CHANGED)
+}
