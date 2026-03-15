@@ -1,17 +1,50 @@
 import { emit, EVT, on } from "../../global/events"
 import { useDb } from "../../indexedDB/dbHandlers"
 import { getAllCards, getCard } from "../../indexedDB/dbUseCases"
-import type { CombinedCard, SyncBlock, WordCard, WordProg } from "../types"
+import { toSync } from "../../sync/sync"
+import type { CombinedCard, SyncBlock } from "../types"
+import { createWord } from "./creation"
 
 let words: CombinedCard[] = null
 let wordsIndex = new Map<number, CombinedCard>()
 
+function setNewWords(newWords: SyncBlock[], block: "card" | "prog") {
+    console.log(newWords)
+    for (const nwb of newWords) {
+        const test = wordsIndex.get(nwb.id)
+        if (test) { // ALREADY EXISTS!
+            console.log("already exists!")
+            continue
+        }
+        console.log(nwb)
+        const word = createWord(0, nwb.id)
+        word[block] = nwb
+        words.push(word)
+        wordsIndex.set(word.id, word)
+    }
+    words.sort((a, b) => a.id - b.id)
+
+    for (let i = words.length - 1; i >= 0; i--) {
+        if (words[i].num === i + 1) break
+        words[i].num = i + 1
+        console.log(words[i])
+    }
+    emit(EVT.WORDS_COUNT_CHANGED)
+}
+
 export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs", updates: SyncBlock[] }) {
     console.log(type, updates)
     const block = type === "wordCards" ? "card" : "prog"
+
+    const newWords = []
+
     for (const u of updates) {
         const word = wordsIndex.get(u.id)
-        if (!word) continue
+        // if (!word) continue
+        if (!word) {
+            newWords.push(u)
+            continue
+        }
 
         const descriptor = Object.getOwnPropertyDescriptor(word, block)
         if (!descriptor?.get && word[block] === u) continue
@@ -23,6 +56,10 @@ export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs",
         })
         word.v++
     }
+    if (newWords.length > 0) {
+        setNewWords(newWords, block)
+    }
+
     emit(EVT.WORD_UPDATED)
 }
 
@@ -55,6 +92,7 @@ export async function loadBasicList() {
         wordsIndex.set(id, word)
         return word
     })
+    addVoid()
     console.timeLog("t1", "cards parsed")
     // console.log(wordsIndex)
     return words
@@ -63,14 +101,6 @@ export async function loadBasicList() {
 export function getWordById(id: number) {
     return wordsIndex.get(id)
 }
-
-// export function getCard(num: number, id: number) {
-//     if (num >= 0) {
-//         let c = words[num - 1]
-//         if (c.id === id) return c
-//     }
-//     return words.find(c => c.id === id)
-// }
 
 let queue = new Set()
 let timeout = 0
@@ -83,15 +113,13 @@ async function loadCard(word: CombinedCard) {
     
     // console.time("get1")
     Object.defineProperty(word, 'card', {
-        // value: await useDb("wordCards", "readonly", s => s.get(word.id)),
-        value: await getCard("wordCards", word.id),
+        value: toSync.wordCards.get(word.id) || await getCard("wordCards", word.id),
         writable: true,
         configurable: true
     })
 
     Object.defineProperty(word, 'prog', {
-        // value: await useDb("wordProgs", "readonly", s => s.get(word.id)),
-        value: await getCard("wordProgs", word.id),
+        value: toSync.wordProgs.get(word.id) || await getCard("wordProgs", word.id),
         writable: true,
         configurable: true
     })
@@ -145,60 +173,13 @@ export async function loadAll(type: "wordCards" | "wordProgs") {
     emit(EVT.WORD_UPDATED)
 }
 
-export async function checkAndCreateEmpty() {
-    const last = words[words.length - 1]
-    // console.log(last)
-    const lastStatus = last.prog?.data.status
-        ?? (await getCard("wordProgs", last.id) as WordProg).data.status
-    console.log(lastStatus)
-    if (lastStatus !== -10) createEmpty()
+function addVoid() {
+    const word = createWord(words.length + 1)
+    words.push(word)
 }
 
-function createEmpty() {
-    const id = Date.now()
-    console.log(id)
-    const card: WordCard = {
-        id,
-        v: 0,
-        syncV: -1,
-        // toSync: 1,
-        data: {
-            readings: { main: [""] },
-            writings: { main: [""] },
-            translation: "",
-            example: ""
-        }
-    }
-
-    const prog: WordProg = {
-        id,
-        v: 0,
-        syncV: -1,
-        // toSync: 1,
-        data: {
-            status: -10,
-            f: {
-                progress: 0,
-                record: 0
-            },
-            b: {
-                progress: 0,
-                record: 0
-            }
-        }
-    }
-
-    const word = {
-        id,
-        num: words.length + 1,
-        v: 0,
-        card,
-        prog
-    }
-    console.log(word)
-    words.push(word)
-    console.log(words.length)
+export function addNew(word: CombinedCard) {
+    wordsIndex.set(word.id, word)
+    addVoid()
     emit(EVT.WORDS_COUNT_CHANGED)
-    emit(EVT.CARD_MUTATED, { type: "wordCards", card })
-    emit(EVT.CARD_MUTATED, { type: "wordProgs", card: prog })
 }

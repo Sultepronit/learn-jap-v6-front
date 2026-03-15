@@ -1,11 +1,12 @@
 import "./words-db.css"
 import type BigTable from "../../views/big-table"
-import { checkAndCreateEmpty, loadBasicList } from "../data/data"
+import { loadBasicList } from "../data/data"
 import type { CombinedCard } from "../types"
 import type WordEditor from "./word-editor"
 import type WordsSearch from "./words-search"
 import { searchSort, sort } from "./sortSearch"
 import { EVT, on } from "../../global/events"
+import { createWord } from "../data/creation"
 
 export default class WordsDb extends HTMLElement {
     allData: CombinedCard[]
@@ -18,11 +19,17 @@ export default class WordsDb extends HTMLElement {
         column: "num",
         up: false
     }
+
+    // addEmpty() {
+    //     const empty = createEmptyWord(6000, this.allData.length + 1)
+    //     console.log(empty)
+    //     this.allData.push(empty)
+    // }
         
     async connectedCallback() {
         this.allData = await loadBasicList()
-        // this.addEmptyCard()
-        checkAndCreateEmpty()
+        // this.addEmpty()
+        // checkAndCreateEmpty()
         // console.log(this.allData)
         this.render()
         this.querySelector<WordEditor>("word-editor").setData(this.allData)

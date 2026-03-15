@@ -1,4 +1,5 @@
 import { EVT, emit } from "../../global/events"
+import { addNew } from "../data/data"
 import type { CombinedCard } from "../types"
 import template from "./word-editor.html?raw"
 
@@ -21,19 +22,30 @@ export default class WordEditor extends HTMLElement {
         this.translation = this.querySelector('[name="translation"]')
     }
 
+    addNew() {
+        const id = Date.now()
+        this.word.id = id
+        this.word.card.id = id
+        this.word.prog.id = id
+
+        addNew(this.word)
+
+        emit(EVT.WORD_UPDATED) 
+        emit(EVT.CARD_MUTATED, { type: "wordCards", card: this.word.card })
+        emit(EVT.CARD_MUTATED, { type: "wordProgs", card: this.word.prog })
+    }
+
     implementMutation(part: "card" | "prog") {
         this.word.v++ // to update views of the word
         this.wordV = this.word.v // not to update it here!
+        
+        if (this.word.id === Infinity) return this.addNew()
+
         emit(EVT.WORD_UPDATED) // for the views
         emit(EVT.CARD_MUTATED, { // for the DBs
             type: part === "card" ? "wordCards" : "wordProgs",
             card: this.word[part]
         })
-        // const { num, id } = this.word
-        // emit(MSG.WORD_CARD_MUTATED, { num, id })
-        // if (part === "card") {
-        //     emit(MSG.WORD_CARD_MUTATED, this.word[part])
-        // }
     }
 
     connectedCallback() {

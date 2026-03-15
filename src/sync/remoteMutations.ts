@@ -1,6 +1,5 @@
 import { emit, EVT } from "../global/events"
-import { saveWordCard } from "../indexedDB/dbUseCases"
-import type { CombinedCard, Msg, SyncBlock, WordCard, WordProg } from "../words/types"
+import type { Msg, SyncBlock } from "../words/types"
 import { useSaveQuery } from "./localDbQuery";
 
 export async function implementUpdates(msg: Msg[], toSync: Record<string, Map<number, any>>) {
