@@ -53,7 +53,10 @@ function prepareMsg() {
 
 async function sync() {
     const msg = prepareMsg()
-    communicate(msg) 
+    const r = await communicate(msg) 
+    console.log("received:")
+    console.table(r)
+    implementUpdates(r.standard, toSync)
 }
 
 const apiUrl = import.meta.env.VITE_API_URL
@@ -68,12 +71,11 @@ async function communicate(msg) {
         })
         
         const r = await j.json()
-        console.log("received:")
-        console.table(r)
-        implementUpdates(r, toSync)
 
         emit(EVT.SYNC_STATUS_CHANGED, "")
         disconnected = false
+
+        return r
     } catch (error) {
         emit(EVT.SYNC_STATUS_CHANGED, "disconnected")
         disconnected = true

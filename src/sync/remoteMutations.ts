@@ -2,8 +2,8 @@ import { emit, EVT } from "../global/events"
 import type { SyncBlock, SyncCard } from "../global/types";
 import { useSaveQuery } from "./localDbQuery";
 
-export async function implementUpdates(msg: SyncBlock[], toSync: Record<string, Map<number, any>>) {
-    for (const m of msg) {
+export async function implementUpdates(blocks: SyncBlock[], toSync: Record<string, Map<number, any>>) {
+    for (const m of blocks) {
         console.log(m)
         const updates: SyncCard[] = []
         const fullUpdates: SyncCard[] = []

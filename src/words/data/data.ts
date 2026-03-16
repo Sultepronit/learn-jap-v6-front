@@ -34,16 +34,39 @@ function setNewWords(newWords: SyncCard[], block: "card" | "prog") {
     emit(EVT.WORDS_COUNT_CHANGED)
 }
 
+function setDeleted(id: number) {
+    const index = wordsIndex.get(id).num - 1
+    wordsIndex.delete(id)
+    console.log(index)
+    words.splice(index, 1)
+    for (let i = index; i < words.length; i++) {
+        // console.log(i, words[i])
+        words[i].num = i + 1
+    }
+    emit(EVT.WORDS_COUNT_CHANGED) // for the view
+
+    deletedWords.add(id)
+}
+
 export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs", updates: SyncCard[] }) {
     console.log(type, updates)
     const block = type === "wordCards" ? "card" : "prog"
 
     const newWords = []
+    const deleted = []
 
     for (const u of updates) {
+        console.log(u)
+
+        if(u.v === -100) { // deleted
+            deleted.push(u.id)
+            console.log("delete me!")
+            continue
+        }
+
         const word = wordsIndex.get(u.id)
-        // if (!word) continue
-        if (!word) {
+
+        if (!word) { // new
             newWords.push(u)
             continue
         }
@@ -188,6 +211,7 @@ export function addNew(word: CombinedCard) {
 
 export function deleteWord(id: number) {
     const index = wordsIndex.get(id).num - 1
+    wordsIndex.delete(id)
     console.log(index)
     words.splice(index, 1)
     for (let i = index; i < words.length; i++) {
