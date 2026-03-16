@@ -1,9 +1,8 @@
-import type { SyncBlock, WordCard } from "../words/types";
+import type { SyncCard } from "./types"
 
 export const EVT = {
     CARD_MUTATED: "card-mutated",
     WORD_UPDATED: "word-updated",
-    // WORD_CARD_MUTATED: "word-card-mutated",
     WORD_UPDATES_RECEIVED: "word-updates-received",
     WORDS_COUNT_CHANGED: "words-count-changed",
     UPDATE_NOT_ENDED: "update-not-ended",
@@ -14,10 +13,9 @@ export const EVT = {
 type EventName = typeof EVT[keyof typeof EVT]
 
 interface EventPayloads {
-    "card-mutated": { type: string, card: SyncBlock }
+    "card-mutated": { type: string, card: SyncCard }
     "word-updated": undefined
-    // "word-card-mutated": WordCard
-    "word-updates-received": { type: string, updates: SyncBlock[] }
+    "word-updates-received": { type: string, updates: SyncCard[] }
     "words-count-changed": undefined
     "update-not-ended": undefined
     "sync-status-changed": string

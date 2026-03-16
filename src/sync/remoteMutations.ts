@@ -1,15 +1,15 @@
 import { emit, EVT } from "../global/events"
-import type { Msg, SyncBlock } from "../words/types"
+import type { SyncBlock, SyncCard } from "../global/types";
 import { useSaveQuery } from "./localDbQuery";
 
-export async function implementUpdates(msg: Msg[], toSync: Record<string, Map<number, any>>) {
+export async function implementUpdates(msg: SyncBlock[], toSync: Record<string, Map<number, any>>) {
     for (const m of msg) {
         console.log(m)
-        const updates: SyncBlock[] = []
-        const fullUpdates: SyncBlock[] = []
+        const updates: SyncCard[] = []
+        const fullUpdates: SyncCard[] = []
         
         for (const rc of m.accepted ?? []) {
-            const lc = toSync[m.type].get(rc.id) as SyncBlock
+            const lc = toSync[m.type].get(rc.id) as SyncCard
             console.log(rc, lc)
             if (!lc) console.warn("What the heck?")
 
@@ -26,7 +26,7 @@ export async function implementUpdates(msg: Msg[], toSync: Record<string, Map<nu
         }
         
         for (const rc of m.updated ?? []) {
-            const lc = toSync[m.type].get(rc.id) as SyncBlock
+            const lc = toSync[m.type].get(rc.id) as SyncCard
             console.log(rc, lc)
             if (lc) {
                 lc.syncV = rc.syncV 

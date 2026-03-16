@@ -1,14 +1,16 @@
+import deletedWords from "../../global/deletedWords"
 import { emit, EVT, on } from "../../global/events"
+import type { SyncCard } from "../../global/types"
 import { useDb } from "../../indexedDB/dbHandlers"
 import { getAllCards, getCard } from "../../indexedDB/dbUseCases"
 import { toSync } from "../../sync/sync"
-import type { CombinedCard, SyncBlock } from "../types"
+import type { CombinedCard } from "../types"
 import { createWord } from "./creation"
 
 let words: CombinedCard[] = null
 let wordsIndex = new Map<number, CombinedCard>()
 
-function setNewWords(newWords: SyncBlock[], block: "card" | "prog") {
+function setNewWords(newWords: SyncCard[], block: "card" | "prog") {
     console.log(newWords)
     for (const nwb of newWords) {
         const test = wordsIndex.get(nwb.id)
@@ -32,7 +34,7 @@ function setNewWords(newWords: SyncBlock[], block: "card" | "prog") {
     emit(EVT.WORDS_COUNT_CHANGED)
 }
 
-export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs", updates: SyncBlock[] }) {
+export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs", updates: SyncCard[] }) {
     console.log(type, updates)
     const block = type === "wordCards" ? "card" : "prog"
 
@@ -153,7 +155,7 @@ export async function loadAll(type: "wordCards" | "wordProgs") {
     if (loaded[type]) return
 
     console.timeLog("t1", "start")
-    const entries = (await getAllCards(type) || []) as SyncBlock[]
+    const entries = (await getAllCards(type) || []) as SyncCard[]
     // console.log(re)
     console.timeLog("t1", "parsing")
     const block = type === "wordCards" ? "card" : "prog"
@@ -184,7 +186,7 @@ export function addNew(word: CombinedCard) {
     emit(EVT.WORDS_COUNT_CHANGED)
 }
 
-export function removeWord(id: number) {
+export function deleteWord(id: number) {
     const index = wordsIndex.get(id).num - 1
     console.log(index)
     words.splice(index, 1)
@@ -192,5 +194,7 @@ export function removeWord(id: number) {
         // console.log(i, words[i])
         words[i].num = i + 1
     }
-    emit(EVT.WORDS_COUNT_CHANGED)
+    emit(EVT.WORDS_COUNT_CHANGED) // for the view
+
+    deletedWords.add(id)
 }

@@ -1,6 +1,7 @@
+import deletedWords from "../global/deletedWords"
 import { emit, EVT, on } from "../global/events"
+import type { Message, SyncCard } from "../global/types"
 import { getIndexed } from "../indexedDB/dbHandlers"
-import type { SyncBlock } from "../words/types"
 import globalVersions from "./globalVersions"
 import { implementUpdates } from "./remoteMutations"
 
@@ -11,7 +12,7 @@ export const toSync = {
 
 async function checkUnsaved() {
     for (const [type, map] of Object.entries(toSync)) {
-        const blocks = await getIndexed(type, "toSync") as SyncBlock[]
+        const blocks = await getIndexed(type, "toSync") as SyncCard[]
         for (const b of blocks) {
             map.set(b.id, b)
         }
@@ -23,21 +24,30 @@ async function checkUnsaved() {
 checkUnsaved()
 
 function prepareMsg() {
-    const msg = []
+    const standard = []
     for (const [type, map] of Object.entries(toSync)) {
         const updated = map.size === 0 ? null : Array.from(map.values())
             .map(({ id, v, syncV, data }) => ({ id, v, syncV, data }))
 
         console.log(updated)
-        msg.push({
+        standard.push({
             type,
             v: globalVersions.get(type),
             ...(updated && { updated })
         })
     }
-    console.log("sent:")
-    console.table(msg)
 
+    const deleted = deletedWords.get()
+
+    const msg: Message = {
+        standard,
+        ...(deleted && { deletedWords: deleted })
+    }
+    console.log("sent:")
+    console.log(msg)
+    console.table(standard)
+
+    // return JSON.stringify(standard)
     return JSON.stringify(msg)
 }
 

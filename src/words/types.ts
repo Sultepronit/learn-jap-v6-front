@@ -1,60 +1,3 @@
-// interface BaseWordCard {
-//     id: number,
-//     v: number,
-//     toSync: boolean
-// }
-
-// export interface ActiveWordCard extends BaseWordCard {
-//     data: {
-//         num: number,
-//         writings: string[],
-//         altWriting: boolean,
-//         rareWritings: string[],
-//         readings: string[],
-//         rareReadings: string[],
-//         translation: string[],
-//         example: string
-//     }
-// }
-
-// interface DeletedWordCard extends BaseWordCard {
-//     deleted: true
-// }
-
-// export type WordCard = ActiveWordCard | DeletedWordCard
-
-// export type WordCard = {
-//     id: number,
-//     v: number,
-//     toSync?: true,
-//     data: {
-//         num: number,
-//         writings: string[],
-//         altWriting: boolean,
-//         rareWritings: string[],
-//         readings: string[],
-//         rareReadings: string[],
-//         translation: string[],
-//         example: string
-//     }
-// }
-
-// export type WordCard = {
-//     id: number
-//     v: number
-//     syncV: number
-//     toSync?: 1
-//     data: {
-//         writings: string[]
-//         altWriting: boolean
-//         rareWritings: string[]
-//         readings: string[]
-//         rareReadings: string[]
-//         translation: string
-//         example: string
-//     }
-// }
-
 export type WordCard = {
     id: number
     v: number
@@ -81,15 +24,6 @@ interface Progress {
     autorepeat?: true
 }
 
-// export type WordProg = {
-//     id: number,
-//     v: number,
-//     tempV?: number
-//     status: number,
-//     f: Progress,
-//     b: Progress
-// }
-
 export type WordProg = {
     id: number,
     v: number,
@@ -110,19 +44,19 @@ export type CombinedCard = {
     prog: WordProg
 }
 
-export interface SyncBlock {
-    id: number,
-    v: number,
-    syncV: number
-    toSync?: 1
-    data: any
-}
+// export interface SyncBlock {
+//     id: number,
+//     v: number,
+//     syncV: number
+//     toSync?: 1
+//     data: any
+// }
 
-export type Msg = {
-    type: string
-    v: number
-    // updated?: WordCard[] | WordProg[]
-    updated?: SyncBlock[]
-    // accepted?: WordCard[] | WordProg[]
-    accepted?: WordCard[] | WordProg[]
-}
+// export type Msg = {
+//     type: string
+//     v: number
+//     // updated?: WordCard[] | WordProg[]
+//     updated?: SyncBlock[]
+//     // accepted?: WordCard[] | WordProg[]
+//     accepted?: WordCard[] | WordProg[]
+// }

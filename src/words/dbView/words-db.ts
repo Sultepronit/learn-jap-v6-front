@@ -6,7 +6,6 @@ import type WordEditor from "./word-editor"
 import type WordsSearch from "./words-search"
 import { searchSort, sort } from "./sortSearch"
 import { EVT, on } from "../../global/events"
-import { createWord } from "../data/creation"
 
 export default class WordsDb extends HTMLElement {
     allData: CombinedCard[]
@@ -20,12 +19,6 @@ export default class WordsDb extends HTMLElement {
         up: false
     }
 
-    // addEmpty() {
-    //     const empty = createEmptyWord(6000, this.allData.length + 1)
-    //     console.log(empty)
-    //     this.allData.push(empty)
-    // }
-        
     async connectedCallback() {
         this.allData = await loadBasicList()
         // this.addEmpty()
@@ -38,6 +31,10 @@ export default class WordsDb extends HTMLElement {
 
         on(EVT.WORDS_COUNT_CHANGED, async () => {
             this.updateDisplayData(await searchSort(this.allData, ""))
+            this.dispatchEvent(new CustomEvent(
+                "card-selected",
+                { detail: { cardNum: this.allData.length, rowIdx: 0 } }
+            ))
         })
     }
 
