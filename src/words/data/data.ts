@@ -1,4 +1,3 @@
-import deletedWords from "../../global/deletedWords"
 import { emit, EVT, on } from "../../global/events"
 import type { SyncCard } from "../../global/types"
 import { useDb } from "../../indexedDB/dbHandlers"
@@ -34,18 +33,25 @@ function setNewWords(newWords: SyncCard[], block: "card" | "prog") {
     emit(EVT.WORDS_COUNT_CHANGED)
 }
 
-function setDeleted(id: number) {
-    const index = wordsIndex.get(id).num - 1
-    wordsIndex.delete(id)
-    console.log(index)
-    words.splice(index, 1)
-    for (let i = index; i < words.length; i++) {
-        // console.log(i, words[i])
+function setDeleted({ ids }: { ids: number[] }) {
+    const indexes = []
+    for (const id of ids) {
+        const word = wordsIndex.get(id)
+        if (!word) continue
+
+        const index = word.num - 1
+        indexes.push(index)
+        wordsIndex.delete(id)
+        words.splice(index, 1)
+    }
+    
+    if (indexes.length < 1) return
+
+    for (let i = Math.min(...indexes); i < words.length; i++) {
+        console.log(i, words[i])
         words[i].num = i + 1
     }
     emit(EVT.WORDS_COUNT_CHANGED) // for the view
-
-    deletedWords.add(id)
 }
 
 export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs", updates: SyncCard[] }) {
@@ -53,17 +59,9 @@ export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs",
     const block = type === "wordCards" ? "card" : "prog"
 
     const newWords = []
-    const deleted = []
 
     for (const u of updates) {
         console.log(u)
-
-        if(u.v === -100) { // deleted
-            deleted.push(u.id)
-            console.log("delete me!")
-            continue
-        }
-
         const word = wordsIndex.get(u.id)
 
         if (!word) { // new
@@ -92,6 +90,7 @@ export async function loadBasicList() {
     if (words) return words
 
     on(EVT.WORD_UPDATES_RECEIVED, setUpdates)
+    on(EVT.WORDS_DELETED, setDeleted)
 
     console.timeLog("t1", "cards init")
     const keys = await useDb("wordCards", "readonly", s => s.getAllKeys()) as number[]
@@ -209,16 +208,16 @@ export function addNew(word: CombinedCard) {
     emit(EVT.WORDS_COUNT_CHANGED)
 }
 
-export function deleteWord(id: number) {
-    const index = wordsIndex.get(id).num - 1
-    wordsIndex.delete(id)
-    console.log(index)
-    words.splice(index, 1)
-    for (let i = index; i < words.length; i++) {
-        // console.log(i, words[i])
-        words[i].num = i + 1
-    }
-    emit(EVT.WORDS_COUNT_CHANGED) // for the view
+// export function deleteWord(id: number) {
+//     const index = wordsIndex.get(id).num - 1
+//     wordsIndex.delete(id)
+//     console.log(index)
+//     words.splice(index, 1)
+//     for (let i = index; i < words.length; i++) {
+//         // console.log(i, words[i])
+//         words[i].num = i + 1
+//     }
+//     emit(EVT.WORDS_COUNT_CHANGED) // for the view
 
-    deletedWords.add(id)
-}
+//     // deletedWords.add(id)
+// }

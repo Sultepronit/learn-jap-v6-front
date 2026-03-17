@@ -1,7 +1,7 @@
-import deletedWords from "../global/deletedWords"
 import { emit, EVT, on } from "../global/events"
 import type { Message, SyncCard } from "../global/types"
 import { getIndexed } from "../indexedDB/dbHandlers"
+import { deletedWords } from "./deleteWords"
 import globalVersions from "./globalVersions"
 import { implementUpdates } from "./remoteMutations"
 
@@ -37,11 +37,11 @@ function prepareMsg() {
         })
     }
 
-    const deleted = deletedWords.get()
+    // const deleted = deletedWords.get()
 
     const msg: Message = {
         standard,
-        ...(deleted && { deletedWords: deleted })
+        ...(deletedWords.value && { deletedWords: deletedWords.value })
     }
     console.log("sent:")
     console.log(msg)
@@ -85,28 +85,29 @@ async function communicate(msg) {
 }
 
 let time = 0
-let pending = false
+let planned = false
 function planSync() {
-    pending = true
+    planned = true
     emit(EVT.SYNC_STATUS_CHANGED, "stale")
 }
 on(EVT.CARD_MUTATED, planSync)
+on(EVT.WORDS_DELETED, planSync)
 on(EVT.UPDATE_NOT_ENDED, planSync)
 
 function syncWithControl() {
     sync()
     time = 0
-    pending = false
+    planned = false
     window.removeEventListener("click", syncWithControl)
 }
 
 setInterval(() => {
     time++
-    if (pending || disconnected) {
+    if (planned || disconnected) {
         syncWithControl()
     } else if (time === 3) {
         emit(EVT.SYNC_STATUS_CHANGED, "stale")
         window.addEventListener("click", syncWithControl, { once: true })
     }
     // console.log(time)
-}, 20_000)
+}, 10_000)

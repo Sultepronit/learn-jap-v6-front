@@ -1,7 +1,8 @@
-import { EVT, emit } from "../../global/events"
-import { addNew, deleteWord } from "../data/data"
-import type { CombinedCard } from "../types"
 import template from "./word-editor.html?raw"
+
+import { EVT, emit } from "../../global/events"
+import { addNew } from "../data/data"
+import type { CombinedCard } from "../types"
 
 export default class WordEditor extends HTMLElement {
     data: CombinedCard[]
@@ -44,7 +45,7 @@ export default class WordEditor extends HTMLElement {
 
         this.delete.addEventListener("click", () => {
             console.log("remove ", this.word.id)
-            deleteWord(this.word.id)
+            this.deleteWord(this.word.id)
         })
 
         this.status.addEventListener("change", () => {
@@ -114,5 +115,9 @@ export default class WordEditor extends HTMLElement {
             type: part === "card" ? "wordCards" : "wordProgs",
             card: this.word[part]
         })
+    }
+
+    deleteWord(id: number) {
+        emit(EVT.WORDS_DELETED, { ids: [id], locally: true })
     }
 }

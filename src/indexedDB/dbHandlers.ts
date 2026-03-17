@@ -124,7 +124,7 @@ export async function putMany(storeName: string, data: any[]) {
     }).catch(dbErrorAlert)
 }
 
-export async function removeWordFromDb(id: number) {
+export async function deleteWordsFromDb(ids: number[]) {
     const db = await dbPromise
     if (!db) return null
     
@@ -133,8 +133,10 @@ export async function removeWordFromDb(id: number) {
         const cardsStore = tx.objectStore("wordCards")
         const progsStore = tx.objectStore("wordProgs")
         
-        cardsStore.delete(id)
-        progsStore.delete(id)
+        for (const id of ids) {
+            cardsStore.delete(id)
+            progsStore.delete(id)
+        }
 
         tx.oncomplete = () => res("success")
         tx.onerror = () => rej(tx.error)
