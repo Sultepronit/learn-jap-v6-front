@@ -34,6 +34,7 @@ export async function deleteRemotely(ids: number[]) {
     return "success"
 }
 
-on(EVT.WORDS_DELETED, ({ ids, locally }) => {
-    if (locally) deleteLocally(ids)
-})
+// on(EVT.WORDS_DELETED, ({ ids, locally }) => {
+//     if (locally) deleteLocally(ids)
+// })
+on(EVT.WORD_DELETE_INIT, (id) => deleteLocally([id]))

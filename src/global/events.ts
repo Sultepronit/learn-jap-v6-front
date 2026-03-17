@@ -5,6 +5,7 @@ export const EVT = {
     WORD_UPDATED: "word-updated",
     WORD_UPDATES_RECEIVED: "word-updates-received",
     WORDS_COUNT_CHANGED: "words-count-changed",
+    WORD_DELETE_INIT: "word-delete-init",
     WORDS_DELETED: "words-deleted",
     UPDATE_NOT_ENDED: "update-not-ended",
     SYNC_STATUS_CHANGED: "sync-status-changed",
@@ -18,6 +19,7 @@ interface EventPayloads {
     "word-updated": undefined
     "word-updates-received": { type: string, updates: SyncCard[] }
     "words-count-changed": undefined
+    "word-delete-init": number
     "words-deleted": { ids: number[], locally?: true }
     "update-not-ended": undefined
     "sync-status-changed": string
