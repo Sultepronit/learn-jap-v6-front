@@ -119,6 +119,6 @@ export default class WordEditor extends HTMLElement {
 
     deleteWord(id: number) {
         emit(EVT.WORD_DELETE_INIT, id)
-        emit(EVT.WORDS_DELETED, { ids: [id], locally: true })
+        emit(EVT.WORDS_DELETED, [id])
     }
 }

@@ -91,7 +91,6 @@ function planSync() {
     emit(EVT.SYNC_STATUS_CHANGED, "stale")
 }
 on(EVT.CARD_MUTATED, planSync)
-// on(EVT.WORDS_DELETED, planSync)
 on(EVT.WORD_DELETE_INIT, planSync)
 on(EVT.UPDATE_NOT_ENDED, planSync)
 

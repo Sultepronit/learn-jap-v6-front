@@ -33,7 +33,7 @@ function setNewWords(newWords: SyncCard[], block: "card" | "prog") {
     emit(EVT.WORDS_COUNT_CHANGED)
 }
 
-function setDeleted({ ids }: { ids: number[] }) {
+function setDeleted(ids: number[]) {
     const indexes = []
     for (const id of ids) {
         const word = wordsIndex.get(id)

@@ -19,9 +19,9 @@ export const deletedWords = {
     }
 }
 
-export function deleteLocally(ids: number[]) {
-    deleteWordsFromDb(ids)
-    deletedWords.add(ids[0])
+export function deleteLocally(id: number) {
+    deleteWordsFromDb([id])
+    deletedWords.add(id)
 }
 
 export async function deleteRemotely(ids: number[]) {
@@ -29,12 +29,9 @@ export async function deleteRemotely(ids: number[]) {
     if (re !== "success") return 
 
     deletedWords.remove(ids)
-    emit(EVT.WORDS_DELETED, { ids })
+    emit(EVT.WORDS_DELETED, ids)
 
     return "success"
 }
 
-// on(EVT.WORDS_DELETED, ({ ids, locally }) => {
-//     if (locally) deleteLocally(ids)
-// })
-on(EVT.WORD_DELETE_INIT, (id) => deleteLocally([id]))
+on(EVT.WORD_DELETE_INIT, (id) => deleteLocally(id))
