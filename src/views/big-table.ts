@@ -30,7 +30,6 @@ export default class BigTable extends HTMLElement {
     updateEvent = ""
 
     connectedCallback() {
-        // this.render()
         this.addEventListener("wheel", (e) => {
             this.doScroll(e.deltaY)
         })
@@ -41,58 +40,80 @@ export default class BigTable extends HTMLElement {
         })
     }
 
-    addRow() {
-        this.rowsN++
-        if (this.rowsN < this.rows.length) {
-            this.rows[this.rowsN - 1].element.classList.remove("hidden")
-            return
-        }
+    // addRow() {
+    //     this.rowsN++
+    //     if (this.rowsN < this.rows.length) {
+    //         this.rows[this.rowsN - 1].element.classList.remove("hidden")
+    //         return
+    //     }
         
-        const newRowElement = this.rowsArea.firstElementChild.cloneNode(true) as HTMLDivElement
-        newRowElement.dataset.i = (this.rowsN - 1).toString()
-        newRowElement.classList.remove("selected")
-        this.rowsArea.appendChild(newRowElement)
-        // console.log(newRowElement)
-        // this.rows.push({ element: newRowElement, v: 0, card: {} })
-        this.rows.push({ element: newRowElement, v: 0, card: null })
-    }
+    //     const element = this.rowsArea.firstElementChild.cloneNode(true) as HTMLDivElement
+    //     element.dataset.i = (this.rowsN - 1).toString()
+    //     element.classList.remove("selected")
+    //     this.rowsArea.appendChild(element)
+    //     this.rows.push({ element, v: 0, card: null })
+    // }
 
-    removeRow() {
-        this.rowsN--;
-        this.rows[this.rowsN - 1].element.classList.add("hidden")
-        console.log(this.rowsN, this.rows.length)
+    // removeRow() {
+    //     this.rowsN--;
+    //     this.rows[this.rowsN - 1].element.classList.add("hidden")
+    //     console.log(this.rowsN, this.rows.length)
+    // }
+
+    // resize0() {
+    //     const newHeight = this.clientHeight
+    //     if (newHeight === this.lastHight) return
+        
+    //     this.lastHight = newHeight
+    //     console.log("resize!")
+    //     for (let i = 0; i < 100; i++) {
+    //         console.log(this.scrollHeight, newHeight)
+    //         if (this.scrollHeight > newHeight) break
+    //         this.addRow()
+    //     }
+
+    //     while (this.rowsN > 3) {
+    //         if (this.scrollHeight <= newHeight) break
+    //         console.log(this.scrollHeight, newHeight)
+    //         this.removeRow()
+    //     }
+        
+    //     this.setData(this.data) // IMPROVE THIS!!!
+    // }
+
+    addRow2() {       
+        const element = this.rowsArea.firstElementChild.cloneNode(true) as HTMLDivElement
+        element.dataset.i = (this.rowsN - 1).toString()
+        element.classList.remove("selected")
+        this.rowsArea.appendChild(element)
+        this.rows.push({ element, v: 0, card: null })
     }
 
     resize() {
-        const newHeight = this.clientHeight
-        if (newHeight === this.lastHight) return
-        
-        this.lastHight = newHeight
+        const prevN = this.rowsN
+        this.calcRowsN()
+        if (prevN === this.rowsN) return;
         console.log("resize!")
-        // console.log(this.clientHeight, newHeight)
-        for (let i = 0; i < 100; i++) {
-            console.log(this.scrollHeight, newHeight)
-            if (this.scrollHeight > newHeight) break
-            this.addRow()
-        }
+        console.log(prevN, this.rowsN)
 
-        while (this.rowsN > 3) {
-            if (this.scrollHeight <= newHeight) break
-            console.log(this.scrollHeight, newHeight)
-            this.removeRow()
+        for (let i = this.rows.length; i < this.rowsN; i++) {
+            console.log(this.rows.length, this.rowsN)
+            this.addRow2()
         }
-        
+        // console.log(this.rows)
+
         this.setData(this.data) // IMPROVE THIS!!!
     }
 
-    render() {
-        window.addEventListener("resize", () => {
-            this.resize()
-        })
-        // const io = new IntersectionObserver(e => {
+    calcRowsN() {
+        console.log(this.offsetHeight)
+        const comp = Math.round(this.offsetHeight / 35 - 2.1)
+        this.rowsN = comp > 3 ? comp : 3
+    }
 
-        // })
-        // io.observe(this)
+    render() {
+        window.addEventListener("resize", () => this.resize())
+
         // const ro = new ResizeObserver(e => {
         //     this.resize()
         //     // console.log(entries)
@@ -108,8 +129,9 @@ export default class BigTable extends HTMLElement {
         // ro.observe(this.parentElement);
 
         // console.log(this.scrollHeight)
-        this.rowsN = Math.round(this.offsetHeight / 35) - 2
+        // this.rowsN = Math.round(this.offsetHeight / 35) - 2
         // console.log(this.rowsN)
+        this.calcRowsN()
 
         const rowsTemplate = []
         const sortBar = this.columns.map(c => `<div class="btd" data-column="${c}"></div>`).join("")
@@ -188,7 +210,7 @@ export default class BigTable extends HTMLElement {
         this.updateEvent = updateEvent
 
         this.render()
-        this.resize()
+        // this.resize()
 
         document.addEventListener(this.updateEvent, () => {
             // console.timeLog("t1", "start update")
