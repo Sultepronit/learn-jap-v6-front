@@ -20,8 +20,9 @@ export default class BigTable extends HTMLElement {
         element: null,
         cardNum: -1
     }
-    rowsN = 15
+    rowsN = 3
     top = 0
+    lastHight = 0
 
     columns: string[]
     btrClassName = ""
@@ -40,30 +41,85 @@ export default class BigTable extends HTMLElement {
         })
     }
 
-    render() {
-        const ro = new ResizeObserver(entries => {
-            // console.log(entries)
-            for (let entry of entries) {
-                const height = entry.contentRect.height;
-                console.log('Нова висота:', height);
-                // Тут ваш "пчих" для оновлення логіки
-            }
-        });
-        ro.observe(this);
+    addRow() {
+        this.rowsN++
+        if (this.rowsN < this.rows.length) {
+            this.rows[this.rowsN - 1].element.classList.remove("hidden")
+            return
+        }
+        
+        const newRowElement = this.rowsArea.firstElementChild.cloneNode(true) as HTMLDivElement
+        newRowElement.dataset.i = (this.rowsN - 1).toString()
+        newRowElement.classList.remove("selected")
+        this.rowsArea.appendChild(newRowElement)
+        // console.log(newRowElement)
+        // this.rows.push({ element: newRowElement, v: 0, card: {} })
+        this.rows.push({ element: newRowElement, v: 0, card: null })
+    }
 
-        console.log(this.offsetHeight / 33)
-        console.log(this.scrollHeight)
+    removeRow() {
+        this.rowsN--;
+        this.rows[this.rowsN - 1].element.classList.add("hidden")
+        console.log(this.rowsN, this.rows.length)
+    }
+
+    resize() {
+        const newHeight = this.clientHeight
+        if (newHeight === this.lastHight) return
+        
+        this.lastHight = newHeight
+        console.log("resize!")
+        // console.log(this.clientHeight, newHeight)
+        for (let i = 0; i < 100; i++) {
+            console.log(this.scrollHeight, newHeight)
+            if (this.scrollHeight > newHeight) break
+            this.addRow()
+        }
+
+        while (this.rowsN > 3) {
+            if (this.scrollHeight <= newHeight) break
+            console.log(this.scrollHeight, newHeight)
+            this.removeRow()
+        }
+        
+        this.setData(this.data) // IMPROVE THIS!!!
+    }
+
+    render() {
+        window.addEventListener("resize", () => {
+            this.resize()
+        })
+        // const io = new IntersectionObserver(e => {
+
+        // })
+        // io.observe(this)
+        // const ro = new ResizeObserver(e => {
+        //     this.resize()
+        //     // console.log(entries)
+        //     // console.log(this.offsetHeight)
+        //     for (let entry of e) {
+        //         const height = entry.contentRect.height;
+        //         console.log('Нова висота:', height);
+        //         // console.log(entry.borderBoxSize[0])
+        //     }
+        //     // console.log(this.rowsArea.clientHeight, this.rowsArea.scrollHeight)
+        //     // console.log(this.clientHeight, this.scrollHeight)
+        // });
+        // ro.observe(this.parentElement);
+
+        // console.log(this.scrollHeight)
         this.rowsN = Math.round(this.offsetHeight / 35) - 2
-        console.log(this.rowsN)
+        // console.log(this.rowsN)
 
         const rowsTemplate = []
         const sortBar = this.columns.map(c => `<div class="btd" data-column="${c}"></div>`).join("")
         const btd = this.columns.map(c => `<div class="btd ${c}"></div>`).join("")
         for (let i = 0; i < this.rowsN; i++) {
-            rowsTemplate.push(`<div class="btr ${this.btrClassName}" data-i=${i} hidden">
+            rowsTemplate.push(`<div class="btr ${this.btrClassName}" data-i="${i}">
                 ${btd}
             </div>`)
         }
+        // rowsTemplate.push(`<div class="control-row ${this.btrClassName}">*</div>`)
             
         this.innerHTML = `
             <div class="sort-bar ${this.btrClassName}">${sortBar}</div>
@@ -103,7 +159,7 @@ export default class BigTable extends HTMLElement {
             // console.log(clicked)
             // console.log(clicked.dataset.i)
             const { cardNum, i } = clicked.dataset
-            // console.log(cardNum, i)
+            console.log(cardNum, i)
             this.parentNode.dispatchEvent(new CustomEvent(
                 "card-selected",
                 { detail: { cardNum: Number(cardNum), rowIdx: Number(i) } }
@@ -118,7 +174,7 @@ export default class BigTable extends HTMLElement {
         })
     }
 
-    updateCounter = 0
+    // updateCounter = 0
     setParams(
         // tdTemplate: string,
         colums: string[],
@@ -132,11 +188,12 @@ export default class BigTable extends HTMLElement {
         this.updateEvent = updateEvent
 
         this.render()
+        this.resize()
 
         document.addEventListener(this.updateEvent, () => {
             // console.timeLog("t1", "start update")
             // console.log("e")
-            console.log("update:", ++this.updateCounter)
+            // console.log("update:", ++this.updateCounter)
             this.rows.forEach((row, i) => {
                 // if (i >= this.data.length) {
                 //     row.element.classList.add("hidden")
@@ -162,7 +219,8 @@ export default class BigTable extends HTMLElement {
         this.deselect()
 
         this.rows.forEach((row, i) => {
-            if (i >= this.data.length) {
+            // console.log(i)
+            if (i >= this.data.length || i >= this.rowsN) {
                 row.element.classList.add("hidden")
                 return
             }
@@ -188,7 +246,6 @@ export default class BigTable extends HTMLElement {
         }
 
         if (rowIdx < 0) return
-
         this.selected.element = this.rows[rowIdx].element
         this.selected.element.classList.add("selected")
     }

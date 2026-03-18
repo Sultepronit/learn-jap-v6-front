@@ -1,5 +1,6 @@
 big-table {
     height: 100%;
+    overflow: hidden;
     margin: 0.3rem;
     display: grid;
     grid-template-columns: 1fr auto;

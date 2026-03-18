@@ -17,7 +17,7 @@ async function checkUnsaved() {
             map.set(b.id, b)
         }
     }
-    console.log(toSync)
+    // console.log(toSync)
     sync();
 }
 
@@ -29,7 +29,7 @@ function prepareMsg() {
         const updated = map.size === 0 ? null : Array.from(map.values())
             .map(({ id, v, syncV, data }) => ({ id, v, syncV, data }))
 
-        console.log(updated)
+        // console.log(updated)
         standard.push({
             type,
             v: globalVersions.get(type),
@@ -37,15 +37,13 @@ function prepareMsg() {
         })
     }
 
-    // const deleted = deletedWords.get()
-
     const msg: Message = {
         standard,
         ...(deletedWords.value && { deletedWords: deletedWords.value })
     }
     console.log("sent:")
     console.log(msg)
-    console.table(standard)
+    // console.table(standard)
 
     // return JSON.stringify(standard)
     return JSON.stringify(msg)
@@ -55,8 +53,8 @@ async function sync() {
     const msg = prepareMsg()
     const r = await communicate(msg) 
     console.log("received:")
-    console.table(r)
-    implementUpdates(r.standard, toSync)
+    // console.table(r)
+    implementUpdates(r?.standard, toSync)
 }
 
 const apiUrl = import.meta.env.VITE_API_URL

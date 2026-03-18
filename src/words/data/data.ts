@@ -61,7 +61,7 @@ export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs",
     const newWords = []
 
     for (const u of updates) {
-        console.log(u)
+        // console.log(u)
         const word = wordsIndex.get(u.id)
 
         if (!word) { // new
