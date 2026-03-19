@@ -3,6 +3,7 @@ import { getCardsStatusRange } from "../../indexedDB/dbUseCases"
 import { getWordById, loadBasicList, setUpdates } from "../data/data"
 import { computeAll } from "../parsers/readingsWritings"
 import type { CombinedWord, WordProg } from "../types"
+import { emitLwe, LWE } from "./events"
 
 function detectDirection(wData: WordProg["data"]) {
     return wData.f.progress === 1 ? "b" : "f"
@@ -103,5 +104,6 @@ export async function getNext() {
     
     console.log(session)
     console.log(word)
-    return word
+    // return word
+    emitLwe(LWE.NEXT_WORD, word)
 }

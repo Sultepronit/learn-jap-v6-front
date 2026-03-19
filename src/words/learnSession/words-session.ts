@@ -3,6 +3,7 @@ import type { CombinedWord } from "../types";
 import prepareSession, { getNext } from "./sessionData";
 import { EVT, on } from "../../global/events";
 import { computeAll } from "../parsers/readingsWritings";
+import { LWE, onLwe } from "./events";
 
 export default class WordsSession extends HTMLElement {
     // words: CombinedCard[]
@@ -13,8 +14,9 @@ export default class WordsSession extends HTMLElement {
 
     async connectedCallback() {
         // const session = await prepareSession()
-        this.word = await getNext()
+        // this.word = await getNext()
         // console.log(this.word)
+        getNext()
         this.innerHTML = template
 
         this.writings = this.querySelector(".writings")
@@ -25,6 +27,12 @@ export default class WordsSession extends HTMLElement {
             this.updateCardView()
         })
 
+        // this.updateCardView()
+        onLwe(LWE.NEXT_WORD, (e) => this.ask(e))
+    }
+
+    ask(word: CombinedWord) {
+        this.word = word
         this.updateCardView()
     }
 
