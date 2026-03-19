@@ -2,11 +2,11 @@ import template from "./word-editor.html?raw"
 
 import { EVT, emit } from "../../global/events"
 import { addNew } from "../data/data"
-import type { CombinedCard } from "../types"
+import type { CombinedWord } from "../types"
 
 export default class WordEditor extends HTMLElement {
-    data: CombinedCard[]
-    word: CombinedCard
+    data: CombinedWord[]
+    word: CombinedWord
     wordV = 0
     delete: HTMLButtonElement
     status: HTMLInputElement
@@ -71,7 +71,7 @@ export default class WordEditor extends HTMLElement {
         })
     }
 
-    setData(data: CombinedCard[]) {
+    setData(data: CombinedWord[]) {
         this.data = data
     }
 

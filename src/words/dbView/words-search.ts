@@ -1,11 +1,11 @@
 import template from "./words-search.html?raw"
 
-import type { CombinedCard } from "../types"
+import type { CombinedWord } from "../types"
 import { EVT, on } from "../../global/events"
 
 export default class WordsSearch extends HTMLElement {
-    allData: CombinedCard[]
-    displayData: CombinedCard[]
+    allData: CombinedWord[]
+    displayData: CombinedWord[]
 
     wordNum: HTMLInputElement
     searchQuery: HTMLInputElement
@@ -57,12 +57,12 @@ export default class WordsSearch extends HTMLElement {
         })
     }
 
-    setData(allData: CombinedCard[]) {
+    setData(allData: CombinedWord[]) {
         this.allData = allData
         this.wordNum.max = this.allData.length.toString()
     }
 
-    update(displayData: CombinedCard[]) {
+    update(displayData: CombinedWord[]) {
         this.displayData = displayData
         this.listLength.textContent = displayData.length.toString()
         // console.log(displayData.length)

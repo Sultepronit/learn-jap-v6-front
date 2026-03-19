@@ -1,7 +1,8 @@
 import { genRandomInt, randomize } from "../../helpers/random"
 import { getCardsStatusRange } from "../../indexedDB/dbUseCases"
 import { getWordById, loadBasicList, setUpdates } from "../data/data"
-import type { CombinedCard, WordProg } from "../types"
+import { computeAll } from "../parsers/readingsWritings"
+import type { CombinedWord, WordProg } from "../types"
 
 function detectDirection(wData: WordProg["data"]) {
     return wData.f.progress === 1 ? "b" : "f"
@@ -12,13 +13,13 @@ function prepareRepeatList(all: WordProg[], length: number) {
     let normal = 0
     for (let i = 0; i < 1000; i++) {
         const ri = genRandomInt(all.length)
-        const word = all[ri]
-        if (!word) continue
+        const wProg = all[ri]
+        if (!wProg) continue
 
-        re.push(word)
+        re.push(wProg)
         delete all[ri]
-        const d = detectDirection(word.data)
-        if (!word.data[d].autorepeat) normal++
+        const d = detectDirection(wProg.data)
+        if (!wProg.data[d].autorepeat) normal++
         if (normal >= length) break
     }
     return re
@@ -73,7 +74,7 @@ export default async function prepareSession() {
     
     console.timeLog("t1", "session...")
 
-    const re: CombinedCard[] = []
+    const re: CombinedWord[] = []
     for (const prog of list) {
         const word = getWordById(prog.id)
         re.push(word)
@@ -83,4 +84,24 @@ export default async function prepareSession() {
 
     console.timeLog("t1", "session!")
     return re
+}
+
+function papareWord(word: CombinedWord) {
+    word.comp = {
+        dir: detectDirection(word.prog.data)
+    } as CombinedWord["comp"]
+    
+}
+
+let session: CombinedWord[] = null
+export async function getNext() {
+    if (!session) session = await prepareSession()
+    if (session.length === 0) return null
+
+    const word = session[0]
+    papareWord(word)
+    
+    console.log(session)
+    console.log(word)
+    return word
 }

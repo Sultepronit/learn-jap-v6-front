@@ -1,12 +1,12 @@
 import { loadAll } from "../data/data"
-import type { CombinedCard } from "../types"
+import type { CombinedWord } from "../types"
 
 const lastSort = {
     column: "num",
     up: false
 }
 
-export async function sort(data: CombinedCard[], column: string, up: boolean) {
+export async function sort(data: CombinedWord[], column: string, up: boolean) {
     // console.log(data[0])
     if (column === lastSort.column) {
         if (up !== lastSort.up) {
@@ -47,7 +47,7 @@ export async function sort(data: CombinedCard[], column: string, up: boolean) {
     if (!up) data.reverse();
 }
 
-async function search(data: CombinedCard[], query: string) {
+async function search(data: CombinedWord[], query: string) {
     await loadAll("wordCards")
     return data.filter(w => {
         return [
@@ -59,8 +59,8 @@ async function search(data: CombinedCard[], query: string) {
     })
 }
 
-export async function searchSort(data: CombinedCard[], query: string) {
-    let re: CombinedCard[]
+export async function searchSort(data: CombinedWord[], query: string) {
+    let re: CombinedWord[]
     
     if (query) {
         re = await search(data, query)

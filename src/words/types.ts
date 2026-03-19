@@ -25,23 +25,57 @@ interface Progress {
 }
 
 export type WordProg = {
-    id: number,
-    v: number,
+    id: number
+    v: number
     syncV: number
     toSync?: 1
     data: {
-        status: number,
-        f: Progress,
+        status: number
+        f: Progress
         b: Progress
+        t: number
     }
 }
 
-export type CombinedCard = {
+type styledText = {
+    value: string,
+    isHtml: boolean
+}
+
+type Computed = {
+    common?: {
+        v: number,
+        writings: {
+            main: styledText
+            rare?: styledText
+        },
+        readings: {
+            main: string,
+            rare?: string
+        }
+    }
+    learn?: {
+        v: number
+        writQuest: string[]
+        readKata: {
+            question: string[],
+            answer: {
+                main: string,
+                rare?: string
+            }
+        }
+    }
+    dir?: "f" | "b" 
+}
+
+export type CombinedWord = {
     id: number
     num: number
     v: number
     card: WordCard
     prog: WordProg
+    // ses?: Session
+    comp?: Computed
 }
 
 // export interface SyncBlock {

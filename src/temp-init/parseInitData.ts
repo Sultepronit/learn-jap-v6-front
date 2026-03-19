@@ -75,7 +75,8 @@ export default async function parseInitData() {
                     progress: bProgress,
                     record: bRecord,
                     ...(bAutorepeat && { autorepeat: true })
-                }
+                },
+                t: 0
             }
         }
         // console.table(wordProg)

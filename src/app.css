@@ -23,3 +23,19 @@ input, button {
 .blue {
     color: blue;
 }
+
+.rare {
+    color: gray
+}
+
+.rare-w {
+    color: yellow;
+}
+
+.normal-w {
+    color: blue;
+}
+
+.alternant-w {
+    color: green;
+}

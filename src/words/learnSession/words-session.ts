@@ -1,19 +1,20 @@
 import template from "./word-session.html?raw"
-import type { CombinedCard } from "../types";
-import prepareSession from "./sessionData";
+import type { CombinedWord } from "../types";
+import prepareSession, { getNext } from "./sessionData";
 import { EVT, on } from "../../global/events";
+import { computeAll } from "../parsers/readingsWritings";
 
 export default class WordsSession extends HTMLElement {
     // words: CombinedCard[]
-    word: CombinedCard
+    word: CombinedWord
     writings: HTMLDialogElement
     readings: HTMLDialogElement
     translation: HTMLDialogElement
 
     async connectedCallback() {
-        const session = await prepareSession()
-        this.word = session[0]
-        console.log(session[0])
+        // const session = await prepareSession()
+        this.word = await getNext()
+        // console.log(this.word)
         this.innerHTML = template
 
         this.writings = this.querySelector(".writings")
@@ -28,6 +29,7 @@ export default class WordsSession extends HTMLElement {
     }
 
     updateCardView() {
+        computeAll(this.word)
         // console.log("editor update!")
         const card = this.word.card?.data
         const prog = this.word.prog?.data

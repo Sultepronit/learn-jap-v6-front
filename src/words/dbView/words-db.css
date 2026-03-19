@@ -41,7 +41,7 @@ words-search {
     width: 5em;
 }
 
-.writings {
+.writings-edit {
     display: grid;
     gap: 0.2em;
     /* grid-template-columns: auto 1fr auto; */
@@ -54,15 +54,21 @@ words-search {
     border: none;
     background-color: black;
     /* margin: 0 0.3rem; */
+    border-radius: 50%;
 }
 
 .is-alt {
     background-color: blue;
 }
 
-.readings {
+.readings-edit {
     display: flex;
     gap: 0.2em;
+}
+
+.btd.writings, .btd.readings {
+    display: flex;
+    gap: 1.2em;
 }
 
 .word-btr {

@@ -1,15 +1,17 @@
 // import css from "./big-table.css?inline"
 import "./big-table.css"
-type FillRow = (elem: HTMLDivElement, card: any) => void
-type Row = {
-    element: HTMLDivElement,
-    v: number,
+export type BTRow = {
+    v: number
     card: any
+    element: HTMLDivElement
+    refs?: Record<string, HTMLElement>
 }
+// type FillRow = (elem: HTMLDivElement, refs: Record<string, HTMLElement>, card: any) => void
+type FillRow = (row: BTRow) => void
 
 export default class BigTable extends HTMLElement {
     data: any[] = []
-    rows: Row[] = []
+    rows: BTRow[] = []
     rowsArea: HTMLDivElement
     scroller: HTMLInputElement
 
@@ -60,7 +62,6 @@ export default class BigTable extends HTMLElement {
                 ${btd}
             </div>`)
         }
-        // rowsTemplate.push(`<div class="control-row ${this.btrClassName}">*</div>`)
             
         this.innerHTML = `
             <div class="sort-bar ${this.btrClassName}">${sortBar}</div>
@@ -70,7 +71,7 @@ export default class BigTable extends HTMLElement {
         `
         // this.rows = Array.from(this.querySelectorAll('.row'))
         const re = this.querySelectorAll<HTMLDivElement>('.btr')
-        re.forEach(r => this.rows.push({ element: r, v: 0, card: null }))
+        re.forEach(r => this.rows.push({ v: 0, card: null, element: r }))
         console.log(this.rows)
 
         this.querySelector(".sort-bar").addEventListener("click", (e) => {
@@ -142,7 +143,8 @@ export default class BigTable extends HTMLElement {
                 if (card.v === row.v) return
                 // console.log(card.v, row.v)
                 row.v = card.v
-                this.fillRow(row.element, card)
+                // this.fillRow(row.element, card)
+                this.fillRow(row)
             })
         })
     }
@@ -163,7 +165,8 @@ export default class BigTable extends HTMLElement {
             const card = this.data[i]
             row.card = card
             row.v = card.v
-            this.fillRow(row.element, card)
+            // this.fillRow(row.element, card)
+            this.fillRow(row)
             row.element.classList.remove("hidden")
 
             if (card.num === this.selected.cardNum) this.select(card.num, i)
@@ -193,7 +196,8 @@ export default class BigTable extends HTMLElement {
             const card = this.data[di]
             row.card = card
             row.v = card.v
-            this.fillRow(row.element, card)
+            // this.fillRow(row.element, card)
+            this.fillRow(row)
             if (card.num === this.selected.cardNum) this.select(card.num, i)
 
             row.element.classList.remove("hidden")
@@ -205,7 +209,8 @@ export default class BigTable extends HTMLElement {
         element.dataset.i = (this.rowsN - 1).toString()
         element.classList.remove("selected")
         this.rowsArea.appendChild(element)
-        this.rows.push({ element, v: 0, card: null })
+        // this.rows.push({ element, v: 0, card: null })
+        this.rows.push({ v: 0, card: null, element })
     }
 
     resize() {
@@ -259,7 +264,8 @@ export default class BigTable extends HTMLElement {
 
             row.card = card
             row.v = card.v
-            this.fillRow(row.element, card)
+            // this.fillRow(row.element, card)
+            this.fillRow(row)
             if (card.num === this.selected.cardNum) this.select(card.num, i)
         })
     }

@@ -1,15 +1,16 @@
 import "./words-db.css"
 import type BigTable from "../../views/big-table"
 import { loadBasicList } from "../data/data"
-import type { CombinedCard } from "../types"
+import type { CombinedWord } from "../types"
 import type WordEditor from "./word-editor"
 import type WordsSearch from "./words-search"
 import { searchSort, sort } from "./sortSearch"
 import { EVT, on } from "../../global/events"
+import fillRow from "./fillBTRow"
 
 export default class WordsDb extends HTMLElement {
-    allData: CombinedCard[]
-    displayData: CombinedCard[]
+    allData: CombinedWord[]
+    displayData: CombinedWord[]
 
     searchBar: WordsSearch
     table: BigTable
@@ -45,28 +46,8 @@ export default class WordsDb extends HTMLElement {
             <big-table></big-table>`
     }
 
-    private colums = ["num", "status", "writings", "readings", "translation", "example"]
-    private fillRow(rowElem: HTMLDivElement, word: CombinedCard) {
-        const strNum = word.num.toString()
-        rowElem.dataset.cardNum = strNum
-        rowElem.querySelector(".num").textContent = strNum
-
-        rowElem.querySelector(".status").textContent = word.prog?.data.status.toString()
-
-        const writ = rowElem.querySelector(".writings")
-        if (word.card?.data.writings.alt) {
-            writ.classList.add("blue")
-        } else {
-            writ.classList.remove("blue")
-        }
-        writ.textContent = (word.card?.data.writings.main.join(" ") || "")
-
-        rowElem.querySelector(".readings").textContent = word.card?.data.readings.main.join(" ")
-        rowElem.querySelector(".translation").textContent = word.card?.data.translation
-        rowElem.querySelector(".example").textContent = word.card?.data.example
-    }
-
-    updateDisplayData(value: CombinedCard[]) {
+    
+    updateDisplayData(value: CombinedWord[]) {
         this.displayData = value
         this.table.setData(this.displayData)
         this.searchBar.update(this.displayData)
@@ -83,6 +64,7 @@ export default class WordsDb extends HTMLElement {
         })
     }
 
+    colums = ["num", "status", "writings", "readings", "translation", "example"]
     async setTable() {
         this.table = this.querySelector("big-table")
         // console.log(this.table)
@@ -90,7 +72,8 @@ export default class WordsDb extends HTMLElement {
         this.table.setParams(
             this.colums,
             "word-btr",
-            this.fillRow,
+            // this.fillRow,
+            fillRow,
             "word-updated"
         )
         // this.table.setData(this.data.slice(100, 150))

@@ -3,11 +3,11 @@ import type { SyncCard } from "../../global/types"
 import { useDb } from "../../indexedDB/dbHandlers"
 import { getAllCards, getCard } from "../../indexedDB/dbUseCases"
 import { toSync } from "../../sync/sync"
-import type { CombinedCard } from "../types"
+import type { CombinedWord } from "../types"
 import { createWord } from "./creation"
 
-let words: CombinedCard[] = null
-let wordsIndex = new Map<number, CombinedCard>()
+let words: CombinedWord[] = null
+let wordsIndex = new Map<number, CombinedWord>()
 
 function setNewWords(newWords: SyncCard[], block: "card" | "prog") {
     console.log(newWords)
@@ -129,7 +129,7 @@ export function getWordById(id: number) {
 let queue = new Set()
 let timeout = 0
 let isPlanned = false
-async function loadCard(word: CombinedCard) {
+async function loadCard(word: CombinedWord) {
     // console.log(queue.has(word.id))
     // console.log("loading!")
     if (queue.has(word.id)) return
@@ -202,7 +202,7 @@ function addVoid() {
     words.push(word)
 }
 
-export function addNew(word: CombinedCard) {
+export function addNew(word: CombinedWord) {
     wordsIndex.set(word.id, word)
     addVoid()
     emit(EVT.WORDS_COUNT_CHANGED)
