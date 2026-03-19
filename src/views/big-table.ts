@@ -31,6 +31,8 @@ export default class BigTable extends HTMLElement {
 
     connectedCallback() {
         this.addEventListener("wheel", (e) => {
+            if (e.ctrlKey) return
+
             this.doScroll(e.deltaY)
         })
         this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
@@ -38,71 +40,6 @@ export default class BigTable extends HTMLElement {
             const { cardNum, rowIdx } = e.detail
             this.reselect(cardNum, rowIdx)
         })
-    }
-
-    // addRow() {
-    //     this.rowsN++
-    //     if (this.rowsN < this.rows.length) {
-    //         this.rows[this.rowsN - 1].element.classList.remove("hidden")
-    //         return
-    //     }
-        
-    //     const element = this.rowsArea.firstElementChild.cloneNode(true) as HTMLDivElement
-    //     element.dataset.i = (this.rowsN - 1).toString()
-    //     element.classList.remove("selected")
-    //     this.rowsArea.appendChild(element)
-    //     this.rows.push({ element, v: 0, card: null })
-    // }
-
-    // removeRow() {
-    //     this.rowsN--;
-    //     this.rows[this.rowsN - 1].element.classList.add("hidden")
-    //     console.log(this.rowsN, this.rows.length)
-    // }
-
-    // resize0() {
-    //     const newHeight = this.clientHeight
-    //     if (newHeight === this.lastHight) return
-        
-    //     this.lastHight = newHeight
-    //     console.log("resize!")
-    //     for (let i = 0; i < 100; i++) {
-    //         console.log(this.scrollHeight, newHeight)
-    //         if (this.scrollHeight > newHeight) break
-    //         this.addRow()
-    //     }
-
-    //     while (this.rowsN > 3) {
-    //         if (this.scrollHeight <= newHeight) break
-    //         console.log(this.scrollHeight, newHeight)
-    //         this.removeRow()
-    //     }
-        
-    //     this.setData(this.data) // IMPROVE THIS!!!
-    // }
-
-    addRow2() {       
-        const element = this.rowsArea.firstElementChild.cloneNode(true) as HTMLDivElement
-        element.dataset.i = (this.rowsN - 1).toString()
-        element.classList.remove("selected")
-        this.rowsArea.appendChild(element)
-        this.rows.push({ element, v: 0, card: null })
-    }
-
-    resize() {
-        const prevN = this.rowsN
-        this.calcRowsN()
-        if (prevN === this.rowsN) return;
-        console.log("resize!")
-        console.log(prevN, this.rowsN)
-
-        for (let i = this.rows.length; i < this.rowsN; i++) {
-            console.log(this.rows.length, this.rowsN)
-            this.addRow2()
-        }
-        // console.log(this.rows)
-
-        this.setData(this.data) // IMPROVE THIS!!!
     }
 
     calcRowsN() {
@@ -113,24 +50,6 @@ export default class BigTable extends HTMLElement {
 
     render() {
         window.addEventListener("resize", () => this.resize())
-
-        // const ro = new ResizeObserver(e => {
-        //     this.resize()
-        //     // console.log(entries)
-        //     // console.log(this.offsetHeight)
-        //     for (let entry of e) {
-        //         const height = entry.contentRect.height;
-        //         console.log('Нова висота:', height);
-        //         // console.log(entry.borderBoxSize[0])
-        //     }
-        //     // console.log(this.rowsArea.clientHeight, this.rowsArea.scrollHeight)
-        //     // console.log(this.clientHeight, this.scrollHeight)
-        // });
-        // ro.observe(this.parentElement);
-
-        // console.log(this.scrollHeight)
-        // this.rowsN = Math.round(this.offsetHeight / 35) - 2
-        // console.log(this.rowsN)
         this.calcRowsN()
 
         const rowsTemplate = []
@@ -213,23 +132,18 @@ export default class BigTable extends HTMLElement {
         // this.resize()
 
         document.addEventListener(this.updateEvent, () => {
-            // console.timeLog("t1", "start update")
-            // console.log("e")
             // console.log("update:", ++this.updateCounter)
             this.rows.forEach((row, i) => {
                 // if (i >= this.data.length) {
                 //     row.element.classList.add("hidden")
                 //     return
                 // }
-                // console.log("t")
-                // console.log(row.dataset.t)
                 const card = row.card
                 if (card.v === row.v) return
                 // console.log(card.v, row.v)
                 row.v = card.v
                 this.fillRow(row.element, card)
             })
-            // console.timeLog("t1", "end update")
         })
     }
 
@@ -254,6 +168,60 @@ export default class BigTable extends HTMLElement {
 
             if (card.num === this.selected.cardNum) this.select(card.num, i)
         })
+    }
+
+    reRender() {
+        // console.log(this.top + this.rowsN, this.data.length)
+        if (this.top + this.rowsN > this.data.length) {
+            this.top = this.data.length - this.rowsN
+        }
+
+        const scrollVal = (this.top / (this.data.length - this.rowsN) * 1000).toFixed(0)
+        this.scroller.value = scrollVal
+
+        this.deselect()
+    
+        for (let i = 0; i < this.rows.length; i++) {
+            const di = i + this.top
+            const row = this.rows[i]
+
+            if (di >= this.data.length || i >= this.rowsN) {
+                row.element.classList.add("hidden")
+                continue
+            }
+
+            const card = this.data[di]
+            row.card = card
+            row.v = card.v
+            this.fillRow(row.element, card)
+            if (card.num === this.selected.cardNum) this.select(card.num, i)
+
+            row.element.classList.remove("hidden")
+        }
+    }
+
+    addRow() {       
+        const element = this.rowsArea.firstElementChild.cloneNode(true) as HTMLDivElement
+        element.dataset.i = (this.rowsN - 1).toString()
+        element.classList.remove("selected")
+        this.rowsArea.appendChild(element)
+        this.rows.push({ element, v: 0, card: null })
+    }
+
+    resize() {
+        const prevN = this.rowsN
+        this.calcRowsN()
+        if (prevN === this.rowsN) return;
+        console.log("resize!")
+        console.log(prevN, this.rowsN)
+
+        for (let i = this.rows.length; i < this.rowsN; i++) {
+            console.log(this.rows.length, this.rowsN)
+            this.addRow()
+        }
+        // console.log(this.rows)
+
+        this.reRender()
     }
 
     deselect() {
@@ -292,7 +260,6 @@ export default class BigTable extends HTMLElement {
             row.card = card
             row.v = card.v
             this.fillRow(row.element, card)
-
             if (card.num === this.selected.cardNum) this.select(card.num, i)
         })
     }

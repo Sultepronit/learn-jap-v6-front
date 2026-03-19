@@ -1,3 +1,5 @@
-add to the server & the client forced update if the client update is too 
+Add to the server & the client forced update if the client update is too stale
 
-do something with creation of half card
+Do something with creation of half card
+
+Big-table to be refactored & cleaned! All the loops should go through rows with rowsN as the limit! Test resize with limited data. FIX THAT STRANGE BUG!
