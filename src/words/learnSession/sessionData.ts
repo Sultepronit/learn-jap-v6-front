@@ -60,7 +60,7 @@ export default async function prepareSession() {
     // const range = (await getCardsStatusRange("wordProgs", 0, maxToRepeat) || []) as WordProg[]
     const rangePromise = getCardsStatusRange("wordProgs", 0, maxToRepeat)
     const allWordsPromise = loadBasicList()
-    const range = (await rangePromise || []) as WordProg[]
+    const range = ((await rangePromise) || []) as WordProg[]
     // console.log(range)
     console.log(range.length)
     console.timeLog("t1", "range here")
@@ -70,9 +70,12 @@ export default async function prepareSession() {
     setUpdates({ type: "wordProgs", updates: range })
     console.timeLog("t1", "updated!")
 
-    const { learnNumber, repeatNumber, list } = prepareSessionContent(range, sessionLenth)
+    const { learnNumber, repeatNumber, list } = prepareSessionContent(
+        range,
+        sessionLenth
+    )
     console.log(learnNumber, repeatNumber, list)
-    
+
     console.timeLog("t1", "session...")
 
     const re: CombinedWord[] = []
@@ -91,7 +94,6 @@ function papareWord(word: CombinedWord) {
     word.comp = {
         dir: detectDirection(word.prog.data)
     } as CombinedWord["comp"]
-    
 }
 
 let session: CombinedWord[] = null
@@ -101,7 +103,7 @@ export async function getNext() {
 
     const word = session[0]
     papareWord(word)
-    
+
     console.log(session)
     console.log(word)
     // return word

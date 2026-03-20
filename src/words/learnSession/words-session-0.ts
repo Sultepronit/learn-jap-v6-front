@@ -1,13 +1,11 @@
 import template from "./word-session.html?raw"
-import type { CombinedWord } from "../types"
-import { getNext } from "./sessionData"
-import { EVT, on } from "../../global/events"
-import { computeAll } from "../parsers/readingsWritings"
-import { LWE, onLwe } from "./events"
-import BaseComponent from "../../global/BaseComponent"
+import type { CombinedWord } from "../types";
+import { getNext } from "./sessionData";
+import { EVT, on } from "../../global/events";
+import { computeAll } from "../parsers/readingsWritings";
+import { LWE, onLwe } from "./events";
 
-type RefKeys = "writings" | "readings" | "translation"
-export default class WordsSession extends BaseComponent<RefKeys> {
+export default class WordsSession extends HTMLElement {
     // words: CombinedCard[]
     word: CombinedWord
     writings: HTMLDialogElement
@@ -21,15 +19,11 @@ export default class WordsSession extends BaseComponent<RefKeys> {
         const initPromise = getNext()
         this.innerHTML = template
 
-        this.collectRefs()
-        console.log(this.refs)
-        console.log(this.refs.readings)
-
         this.writings = this.querySelector(".writings")
         this.readings = this.querySelector(".readings")
         this.translation = this.querySelector(".translation")
 
-        onLwe(LWE.NEXT_WORD, e => this.ask(e))
+        onLwe(LWE.NEXT_WORD, (e) => this.ask(e))
 
         await initPromise
         on(EVT.WORD_UPDATED, () => {
@@ -43,8 +37,6 @@ export default class WordsSession extends BaseComponent<RefKeys> {
         this.word = word
         this.updateCardView()
     }
-
-    updateCardContent() {}
 
     updateCardView() {
         computeAll(this.word)
