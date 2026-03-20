@@ -12,14 +12,14 @@ function genAWrit(input: string[]) {
     console.log("gen!")
 
     let isHtml = false
-    const value = text.replace(/[(\[{}\])]/g, (match) => {
+    const value = text.replace(/[(\[{}\])]/g, match => {
         if (match) isHtml = true
         return accents[match] ? `<span class="${accents[match]}">` : "</span>"
     })
     return { value, isHtml }
 }
 
-const brackets = [/\([^)]*\)|[[\]{}]/g, /\([^)]*\)|\{[^}]*\}|[[\]]/g];
+const brackets = [/\([^)]*\)|[[\]{}]/g, /\([^)]*\)|\{[^}]*\}|[[\]]/g]
 function genQWrit(input: string[]) {
     console.log("gen!")
     const ri = genRandomInt(1)
@@ -29,12 +29,12 @@ function genQWrit(input: string[]) {
 export function computeCommon(word: CombinedWord) {
     const input = word.card?.data
     if (!input) return
-    if (word.comp?.common?.v === word.v) return
+    if (word.comp?.common?.v === word.card.v) return
 
     if (!word.comp) word.comp = {} as CombinedWord["comp"]
 
     word.comp.common = {
-        v: word.v,
+        v: word.card.v,
         writings: {
             main: genAWrit(input.writings.main),
             ...(input.writings.rare && { rare: genAWrit(input.writings.rare) })
@@ -54,16 +54,16 @@ export function computeAll(word: CombinedWord) {
     computeCommon(word)
     const input = word.card?.data
     if (!input) return
-    if (word.comp?.learn?.v === word.v) return
+    if (word.comp?.learn?.v === word.card.v) return
 
     const mainReadKata = input.readings.main.map(e => fakeToKata(e))
     const rareReadKata = input.readings.rare?.map(e => fakeToKata(e))
 
     word.comp.learn = {
-        v: word.v,
+        v: word.card.v,
         writQuest: genQWrit(input.writings.main),
         readKata: {
-            question: mainReadKata ,
+            question: mainReadKata,
             answer: {
                 main: mainReadKata.join("　"),
                 ...(rareReadKata && { rare: rareReadKata.join("　") })
@@ -71,4 +71,3 @@ export function computeAll(word: CombinedWord) {
         }
     }
 }
-
