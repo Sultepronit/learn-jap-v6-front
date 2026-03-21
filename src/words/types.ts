@@ -8,8 +8,8 @@ export type WordCard = {
             main: string[]
             alt?: true
             rare?: string[]
-        } 
-        readings: { 
+        }
+        readings: {
             main: string[]
             rare?: string[]
         }
@@ -19,8 +19,8 @@ export type WordCard = {
 }
 
 interface Progress {
-    progress: number,
-    record: number,
+    progress: number
+    record: number
     autorepeat?: true
 }
 
@@ -37,20 +37,20 @@ export type WordProg = {
     }
 }
 
-type styledText = {
-    value: string,
+export type StyledText = {
+    value: string
     isHtml: boolean
 }
 
 type Computed = {
     common?: {
-        v: number,
+        v: number
         writings: {
-            main: styledText
-            rare?: styledText
-        },
+            main: StyledText
+            rare?: StyledText
+        }
         readings: {
-            main: string,
+            main: string
             rare?: string
         }
     }
@@ -58,14 +58,15 @@ type Computed = {
         v: number
         writQuest: string[]
         readKata: {
-            question: string[],
+            question: string[]
             answer: {
-                main: string,
+                main: string
                 rare?: string
             }
         }
     }
-    dir?: "f" | "b" 
+    dir?: "f" | "b"
+    auto?: true
 }
 
 export type CombinedWord = {

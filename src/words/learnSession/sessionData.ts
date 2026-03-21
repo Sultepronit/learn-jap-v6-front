@@ -91,17 +91,24 @@ export default async function prepareSession() {
 }
 
 function papareWord(word: CombinedWord) {
-    word.comp = {
-        dir: detectDirection(word.prog.data)
-    } as CombinedWord["comp"]
+    if (!word.comp) word.comp = {}
+    // word.comp = {
+    //     dir: detectDirection(word.prog.data)
+    // } as CombinedWord["comp"]
+    word.comp.dir = detectDirection(word.prog.data)
+    if (word.prog.data[word.comp.dir].autorepeat) word.comp.auto = true
 }
 
 let session: CombinedWord[] = null
 export async function getNext() {
-    if (!session) session = await prepareSession()
+    if (!session) {
+        session = await prepareSession()
+    } else {
+        session.pop()
+    }
     if (session.length === 0) return null
 
-    const word = session[0]
+    const word = session[session.length - 1]
     papareWord(word)
 
     console.log(session)

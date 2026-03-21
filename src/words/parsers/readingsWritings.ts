@@ -22,7 +22,7 @@ function genAWrit(input: string[]) {
 const brackets = [/\([^)]*\)|[[\]{}]/g, /\([^)]*\)|\{[^}]*\}|[[\]]/g]
 function genQWrit(input: string[]) {
     console.log("gen!")
-    const ri = genRandomInt(1)
+    const ri = genRandomInt(2)
     return input.map(e => e.replace(brackets[ri], ""))
 }
 

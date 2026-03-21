@@ -8,6 +8,8 @@ import { loadAll } from "./words/data/data"
 import WordEditor from "./words/dbView/word-editor"
 import WordsDb from "./words/dbView/words-db"
 import WordsSearch from "./words/dbView/words-search"
+import WordButtons from "./words/learnSession/word-buttons"
+import WordCard from "./words/learnSession/word-card"
 import WordsSession from "./words/learnSession/words-session"
 
 console.time("t1")
@@ -19,6 +21,8 @@ customElements.define("big-table", BigTable)
 customElements.define("words-search", WordsSearch)
 customElements.define("word-editor", WordEditor)
 customElements.define("words-db", WordsDb)
+customElements.define("word-card", WordCard)
+customElements.define("word-buttons", WordButtons)
 customElements.define("words-session", WordsSession)
 
 // loadAll("wordCards")
@@ -26,5 +30,3 @@ customElements.define("words-session", WordsSession)
 // parseInitData()
 
 // loadToServer()
-
-
