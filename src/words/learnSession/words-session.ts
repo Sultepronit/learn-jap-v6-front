@@ -37,6 +37,7 @@ export default class WordsSession extends BaseComponent<RefKeys> {
         })
 
         // setInterval(getNext, 5000)
+        onLwe(LWE.WORD_EVALUATED, () => getNext())
     }
 
     // ask(word: CombinedWord) {

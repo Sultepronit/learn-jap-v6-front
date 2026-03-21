@@ -1,5 +1,11 @@
+words-session {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr auto;
+}
+
 word-buttons {
     display: block;
-    background-color: yellow;
+    /* background-color: yellow; */
     height: 3em;
 }

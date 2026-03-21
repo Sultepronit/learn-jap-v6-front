@@ -12,7 +12,8 @@ body {
     font-size: 1.5rem;
 }
 
-input, button {
+input,
+button {
     font: inherit;
 }
 
@@ -25,7 +26,7 @@ input, button {
 }
 
 .rare {
-    color: gray
+    color: gray;
 }
 
 .rare-w {
@@ -38,4 +39,32 @@ input, button {
 
 .alternant-w {
     color: green;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 0.7em;
+    margin-bottom: 1em;
+}
+
+.nav-buttons button {
+    flex-grow: 6;
+    border: none;
+    border-radius: 15px;
+}
+
+.nav-buttons .good {
+    background-color: green;
+}
+
+.nav-buttons .pass {
+    background-color: gray;
+}
+
+.nav-buttons .retry {
+    background-color: yellow;
+}
+
+.nav-buttons .bad {
+    background-color: red;
 }
