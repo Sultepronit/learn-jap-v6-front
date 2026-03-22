@@ -3,11 +3,11 @@ import type { CombinedWord, StyledText } from "../types"
 import { getNext } from "./sessionData"
 import { EVT, on } from "../../global/events"
 import { computeAll } from "../parsers/readingsWritings"
-import { LWE, onLwe } from "./events"
 import BaseComponent from "../../global/BaseComponent"
 import { genRandomInt } from "../../helpers/random"
 
 type RefKeys =
+    | "stats"
     | "writings"
     | "readings"
     | "readMain"
@@ -39,23 +39,36 @@ export default class WordCard extends BaseComponent<RefKeys> {
         this.collectRefs()
         // console.log(this.refs)
 
-        onLwe(LWE.NEXT_WORD, e => this.ask(e))
-        onLwe(LWE.HINT_REQUESTED, () => this.hint())
-        onLwe(LWE.ANSWER_REQUESTED, () => this.answer())
+        // onLwe(LWE.NEXT_WORD, e => this.ask(e))
+        // onLwe(LWE.HINT_REQUESTED, () => this.hint())
+        // onLwe(LWE.ANSWER_REQUESTED, () => this.answer())
+        on(EVT.WS.NEXT_CARD, w => this.ask(w))
+        on(EVT.WS.HINT_REQUESTED, () => this.hint())
+        on(EVT.WS.ANSWER_REQUESTED, () => this.answer())
 
-        // on(EVT.WORD_UPDATED, () => {
-        onLwe(LWE.WORD_UPDATED, () => this.updateCardView())
+        // onLwe(LWE.WORD_UPDATED, () => this.updateCardView())
+        on(EVT.WS.WORD_UPDATED, () => this.updateCardView())
+    }
 
-        // setInterval(getNext, 5000)
+    updateStats() {
+        const p = this.word.prog.data
+        this.refs.stats
+            .text(
+                `
+                ${this.word.num} [${p.status}] ${p.f.progress} ${p.b.progress}
+                | ${p.f.record}${p.f.autorepeat ? "*" : ""}
+                ${p.b.record}${p.b.autorepeat ? "*" : ""}
+                `
+            )
+            .replaceClasses(["stats", this.word.comp.stage])
     }
 
     ask(word: CombinedWord) {
+        console.log(word)
         this.word = word
-        this.stage = this.word.comp.auto ? "answer" : "question"
-        // this.stage = "question"
-        // this.stage = "hint"
-        // this.stage = "answer"
-        // this.updateCardContent()
+        this.stage =
+            this.word.comp.stage === "autorepeat" ? "answer" : "question"
+        this.updateStats()
         this.updateCardView()
     }
 

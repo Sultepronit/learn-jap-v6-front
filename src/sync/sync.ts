@@ -1,4 +1,4 @@
-import { emit, EVT, on } from "../global/events"
+import { EVT, emit, on } from "../global/events"
 import type { Message, SyncCard } from "../global/types"
 import { getIndexed } from "../indexedDB/dbHandlers"
 import { deletedWords } from "./deleteWords"
@@ -12,13 +12,13 @@ export const toSync = {
 
 async function checkUnsaved() {
     for (const [type, map] of Object.entries(toSync)) {
-        const blocks = await getIndexed(type, "toSync") as SyncCard[]
+        const blocks = (await getIndexed(type, "toSync")) as SyncCard[]
         for (const b of blocks) {
             map.set(b.id, b)
         }
     }
     // console.log(toSync)
-    sync();
+    sync()
 }
 
 checkUnsaved()
@@ -26,8 +26,15 @@ checkUnsaved()
 function prepareMsg() {
     const standard = []
     for (const [type, map] of Object.entries(toSync)) {
-        const updated = map.size === 0 ? null : Array.from(map.values())
-            .map(({ id, v, syncV, data }) => ({ id, v, syncV, data }))
+        const updated =
+            map.size === 0
+                ? null
+                : Array.from(map.values()).map(({ id, v, syncV, data }) => ({
+                      id,
+                      v,
+                      syncV,
+                      data
+                  }))
 
         // console.log(updated)
         standard.push({
@@ -51,7 +58,7 @@ function prepareMsg() {
 
 async function sync() {
     const msg = prepareMsg()
-    const r = await communicate(msg) 
+    const r = await communicate(msg)
     console.log("received:")
     // console.table(r)
     implementUpdates(r?.standard, toSync)
@@ -67,7 +74,7 @@ async function communicate(msg) {
             method: "POST",
             body: msg
         })
-        
+
         const r = await j.json()
 
         emit(EVT.SYNC_STATUS_CHANGED, "")

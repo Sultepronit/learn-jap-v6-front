@@ -1,9 +1,9 @@
+import { emit, EVT } from "../../global/events"
 import { genRandomInt, randomize } from "../../helpers/random"
 import { getCardsStatusRange } from "../../indexedDB/dbUseCases"
 import { getWordById, loadBasicList, setUpdates } from "../data/data"
 import { computeAll } from "../parsers/readingsWritings"
 import type { CombinedWord, WordProg } from "../types"
-import { emitLwe, LWE } from "./events"
 
 function detectDirection(wData: WordProg["data"]) {
     return wData.f.progress === 1 ? "b" : "f"
@@ -92,11 +92,13 @@ export default async function prepareSession() {
 
 function papareWord(word: CombinedWord) {
     if (!word.comp) word.comp = {}
-    // word.comp = {
-    //     dir: detectDirection(word.prog.data)
-    // } as CombinedWord["comp"]
     word.comp.dir = detectDirection(word.prog.data)
-    if (word.prog.data[word.comp.dir].autorepeat) word.comp.auto = true
+    word.comp.actual = word.prog.data[word.comp.dir]
+    word.comp.stage = word.comp.actual.autorepeat
+        ? "autorepeat"
+        : word.prog.data.status > 0
+          ? "repeat"
+          : "learn"
 }
 
 let session: CombinedWord[] = null
@@ -114,5 +116,6 @@ export async function getNext() {
     console.log(session)
     console.log(word)
     // return word
-    emitLwe(LWE.NEXT_WORD, word)
+    // emitLwe(LWE.NEXT_WORD, word)
+    emit(EVT.WS.NEXT_CARD, word)
 }

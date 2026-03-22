@@ -44,7 +44,7 @@ button {
 .nav-buttons {
     display: flex;
     gap: 0.7em;
-    margin-bottom: 1em;
+    /* margin-bottom: 1em; */
 }
 
 .nav-buttons button {

@@ -31,13 +31,14 @@ class SmartRef {
         this.el.classList.remove("hidden")
         return this
     }
+
+    replaceClasses(classes: string[]) {
+        this.el.className = classes.join(" ")
+        return this
+    }
 }
 
-// export default class BaseComponent extends HTMLElement {
-// export default class BaseComponent<TRefs extends Record<string, SmartRef>> extends HTMLElement {
 export default class BaseComponent<TKeys extends string> extends HTMLElement {
-    // refs: Record<string, HTMLElement> = {}
-    // refs: Record<string, SmartRef> = {}
     refs = {} as Record<TKeys, SmartRef>
 
     collectRefs() {

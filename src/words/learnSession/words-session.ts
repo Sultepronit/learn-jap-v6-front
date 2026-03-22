@@ -2,9 +2,8 @@ import template from "./words-session.html?raw"
 import "./words-session.css"
 import type { CombinedWord, StyledText } from "../types"
 import { getNext } from "./sessionData"
-import { EVT, on } from "../../global/events"
+import { emit, EVT, on } from "../../global/events"
 import { computeAll } from "../parsers/readingsWritings"
-import { emitLwe, LWE, onLwe } from "./events"
 import BaseComponent from "../../global/BaseComponent"
 import { genRandomInt } from "../../helpers/random"
 
@@ -12,7 +11,6 @@ type RefKeys = "card" | "buttons"
 export default class WordsSession extends BaseComponent<RefKeys> {
     word: CombinedWord
     wordV = 0
-    // stage: "question" | "hint" | "answer"
 
     async connectedCallback() {
         this.innerHTML = template
@@ -21,10 +19,10 @@ export default class WordsSession extends BaseComponent<RefKeys> {
         // console.log(this.refs)
 
         // onLwe(LWE.NEXT_WORD, e => this.ask(e))
-        onLwe(LWE.NEXT_WORD, w => {
+        // onLwe(LWE.NEXT_WORD, w => {
+        on(EVT.WS.NEXT_CARD, w => {
             this.word = w
             this.wordV = w.v
-            // console.log(this.word)
         })
 
         await getNext()
@@ -32,21 +30,11 @@ export default class WordsSession extends BaseComponent<RefKeys> {
             // console.log(this.word)
             // console.log(this.word.v)
             if (this.word.v === this.wordV) return
-            // console.warn("CHANGE!")
-            emitLwe(LWE.WORD_UPDATED)
+            // emitLwe(LWE.WORD_UPDATED)
+            emit(EVT.WS.WORD_UPDATED)
         })
 
-        // setInterval(getNext, 5000)
-        onLwe(LWE.WORD_EVALUATED, () => getNext())
+        // onLwe(LWE.WORD_EVALUATED, () => getNext())
+        on(EVT.WS.WORD_EVALUATED, () => getNext())
     }
-
-    // ask(word: CombinedWord) {
-    //     this.word = word
-    //     this.stage = this.word.comp.auto ? "answer" : "question"
-    //     // this.stage = "question"
-    //     // this.stage = "hint"
-    //     // this.stage = "answer"
-    //     // this.updateCardContent()
-    //     this.updateCardView()
-    // }
 }

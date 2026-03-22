@@ -1,3 +1,4 @@
+import type { CombinedWord } from "../words/types"
 import type { SyncCard } from "./types"
 
 export const EVT = {
@@ -16,10 +17,24 @@ export const EVT = {
 
     UPDATE_NOT_ENDED: "update-not-ended",
     SYNC_STATUS_CHANGED: "sync-status-changed",
-    CONNECTION_STATUS_UPDATED: "connection-status-updated"
+    CONNECTION_STATUS_UPDATED: "connection-status-updated",
+    /** words learning session */
+    WS: {
+        NEXT_CARD: "ws:next-card",
+        WORD_UPDATED: "ws:word-updated",
+        HINT_REQUESTED: "ws:hint-requested",
+        ANSWER_REQUESTED: "ws:answer-requested",
+        WORD_EVALUATED: "ws:word-evaluated"
+    }
 } as const
 
-type EventName = (typeof EVT)[keyof typeof EVT]
+type DeepValue<T> = T extends string
+    ? T
+    : T extends object
+      ? DeepValue<T[keyof T]>
+      : never
+type EventName = DeepValue<typeof EVT>
+// type EventName = (typeof EVT)[keyof typeof EVT]
 
 interface EventPayloads {
     "card-mutated": { type: string; card: SyncCard }
@@ -31,6 +46,12 @@ interface EventPayloads {
     "update-not-ended": undefined
     "sync-status-changed": string
     "connection-status-updated": string
+
+    "ws:next-card": CombinedWord
+    "ws:word-updated": undefined
+    "ws:hint-requested": undefined
+    "ws:answer-requested": undefined
+    "ws:word-evaluated": string
 }
 
 export function emit<T extends EventName>(
@@ -40,11 +61,19 @@ export function emit<T extends EventName>(
     document.dispatchEvent(new CustomEvent(eventName, { detail }))
 }
 
-type eventCallback<T extends EventName> = (detail: EventPayloads[T]) => void
-export function on<T extends EventName>(
+export function on<T extends keyof EventPayloads>(
     eventName: T,
-    callback: eventCallback<T>
+    callback: (detail: EventPayloads[T]) => void
 ) {
-    const handler = (e: Event) => callback((e as CustomEvent).detail)
-    document.addEventListener(eventName, handler)
+    const handler = (e: CustomEvent<EventPayloads[T]>) => callback(e.detail)
+    document.addEventListener(eventName, handler as EventListener)
 }
+
+// type eventCallback<T extends EventName> = (detail: EventPayloads[T]) => void
+// export function on<T extends EventName>(
+//     eventName: T,
+//     callback: eventCallback<T>
+// ) {
+//     const handler = (e: Event) => callback((e as CustomEvent).detail)
+//     document.addEventListener(eventName, handler)
+// }

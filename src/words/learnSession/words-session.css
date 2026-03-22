@@ -2,6 +2,32 @@ words-session {
     height: 100%;
     display: grid;
     grid-template-rows: 1fr auto;
+    margin: 0.5rem 0.2rem 1.5rem;
+}
+
+words-session .stats {
+    width: fit-content;
+    border-bottom: 3px solid;
+}
+
+.stats.learn {
+    border-color: yellow;
+}
+
+.stats.repeat {
+    border-color: blue;
+}
+
+word-card .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-size: 2rem;
+}
+
+word-card .writings {
+    font-size: 3rem;
 }
 
 word-buttons {

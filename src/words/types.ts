@@ -66,7 +66,8 @@ type Computed = {
         }
     }
     dir?: "f" | "b"
-    auto?: true
+    stage?: "learn" | "repeat" | "autorepeat"
+    actual?: Progress
 }
 
 export type CombinedWord = {
