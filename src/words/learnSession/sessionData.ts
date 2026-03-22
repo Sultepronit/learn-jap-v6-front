@@ -2,7 +2,6 @@ import { emit, EVT, on } from "../../global/events"
 import { genRandomInt, randomize } from "../../helpers/random"
 import { getCardsStatusRange } from "../../indexedDB/dbUseCases"
 import { getWordById, loadBasicList, setUpdates } from "../data/data"
-import { computeAll } from "../parsers/readingsWritings"
 import type { CombinedWord, WordProg } from "../types"
 import update from "./update"
 
@@ -94,7 +93,7 @@ export default async function prepareSession() {
 function papareWord(word: CombinedWord) {
     if (!word.comp) word.comp = {}
     word.comp.dir = detectDirection(word.prog.data)
-    word.comp.actual = word.prog.data[word.comp.dir]
+    // word.comp.actual = word.prog.data[word.comp.dir]
     word.comp.stage = word.comp.actual.autorepeat
         ? "autorepeat"
         : word.prog.data.status > 0

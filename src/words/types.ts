@@ -18,7 +18,7 @@ export type WordCard = {
     }
 }
 
-interface Progress {
+export interface Progress {
     progress: number
     record: number
     autorepeat?: true

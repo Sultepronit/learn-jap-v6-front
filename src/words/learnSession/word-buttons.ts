@@ -31,15 +31,18 @@ export default class WordButtons extends BaseComponent<Mark> {
     setNext(word: CombinedWord) {
         this.word = word
 
-        this.setButtons(["pass"])
+        let button: Mark = "pass"
 
         if (this.word.comp.stage === "autorepeat") {
             this.expected = "evaluation"
+            button = "good"
         } else if (this.word.comp.dir === "f") {
             this.expected = "hint"
         } else {
             this.expected = "answer"
         }
+
+        this.setButtons([button])
     }
 
     setButtons(list: Mark[]) {

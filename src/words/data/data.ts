@@ -1,5 +1,6 @@
 import { emit, EVT, on } from "../../global/events"
 import type { SyncCard } from "../../global/types"
+import { defineProperty, isGetter } from "../../helpers/object"
 import { useDb } from "../../indexedDB/dbHandlers"
 import { getAllCards, getCard } from "../../indexedDB/dbUseCases"
 import { toSync } from "../../sync/sync"
@@ -13,7 +14,8 @@ function setNewWords(newWords: SyncCard[], block: "card" | "prog") {
     console.log(newWords)
     for (const nwb of newWords) {
         const test = wordsIndex.get(nwb.id)
-        if (test) { // ALREADY EXISTS!
+        if (test) {
+            // ALREADY EXISTS!
             console.log("already exists!")
             continue
         }
@@ -44,7 +46,7 @@ function setDeleted(ids: number[]) {
         wordsIndex.delete(id)
         words.splice(index, 1)
     }
-    
+
     if (indexes.length < 1) return
 
     for (let i = Math.min(...indexes); i < words.length; i++) {
@@ -54,7 +56,13 @@ function setDeleted(ids: number[]) {
     emit(EVT.WORDS_COUNT_CHANGED) // for the view
 }
 
-export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs", updates: SyncCard[] }) {
+export function setUpdates({
+    type,
+    updates
+}: {
+    type: "wordCards" | "wordProgs"
+    updates: SyncCard[]
+}) {
     console.log(type, updates)
     const block = type === "wordCards" ? "card" : "prog"
 
@@ -64,19 +72,22 @@ export function setUpdates({ type, updates }: { type: "wordCards" | "wordProgs",
         // console.log(u)
         const word = wordsIndex.get(u.id)
 
-        if (!word) { // new
+        if (!word) {
+            // new
             newWords.push(u)
             continue
         }
 
-        const descriptor = Object.getOwnPropertyDescriptor(word, block)
-        if (!descriptor?.get && word[block] === u) continue
+        // const descriptor = Object.getOwnPropertyDescriptor(word, block)
+        // if (!descriptor?.get && word[block] === u) continue
+        if (!isGetter(word, block) && word[block] === u) continue
 
-        Object.defineProperty(word, block, {
-            value: u,
-            writable: true,
-            configurable: true
-        })
+        // Object.defineProperty(word, block, {
+        //     value: u,
+        //     writable: true,
+        //     configurable: true
+        // })
+        defineProperty(word, block, u)
         word.v++
     }
     if (newWords.length > 0) {
@@ -93,7 +104,9 @@ export async function loadBasicList() {
     on(EVT.WORDS_DELETED, setDeleted)
 
     console.timeLog("t1", "cards init")
-    const keys = await useDb("wordCards", "readonly", s => s.getAllKeys()) as number[]
+    const keys = (await useDb("wordCards", "readonly", s =>
+        s.getAllKeys()
+    )) as number[]
     console.timeLog("t1", "cards keys")
     // console.log(keys)
 
@@ -134,19 +147,29 @@ async function loadCard(word: CombinedWord) {
     // console.log("loading!")
     if (queue.has(word.id)) return
     queue.add(word.id)
-    
-    // console.time("get1")
-    Object.defineProperty(word, 'card', {
-        value: toSync.wordCards.get(word.id) || await getCard("wordCards", word.id),
-        writable: true,
-        configurable: true
-    })
 
-    Object.defineProperty(word, 'prog', {
-        value: toSync.wordProgs.get(word.id) || await getCard("wordProgs", word.id),
-        writable: true,
-        configurable: true
-    })
+    // console.time("get1")
+    for (const block of ["card", "prog"]) {
+        if (word[block]) continue
+        const type = block === "card" ? "wordCards" : "wordProgs"
+        const val = toSync[type].get(word.id) || (await getCard(type, word.id))
+        defineProperty(word, block, val)
+    }
+    // Object.defineProperty(word, "card", {
+    //     value:
+    //         toSync.wordCards.get(word.id) ||
+    //         (await getCard("wordCards", word.id)),
+    //     writable: true,
+    //     configurable: true
+    // })
+
+    // Object.defineProperty(word, "prog", {
+    //     value:
+    //         toSync.wordProgs.get(word.id) ||
+    //         (await getCard("wordProgs", word.id)),
+    //     writable: true,
+    //     configurable: true
+    // })
     // console.timeEnd("get1")
 
     word.v++
@@ -159,14 +182,14 @@ async function loadCard(word: CombinedWord) {
 
     // for this result:
     document.dispatchEvent(new Event("word-updated"))
-    
+
     // for next results:
     timeout = setTimeout(() => {
         if (isPlanned) {
             isPlanned = false
             document.dispatchEvent(new Event("word-updated"))
         }
-        
+
         clearTimeout(timeout)
         timeout = 0
     }, 50)
@@ -177,7 +200,7 @@ export async function loadAll(type: "wordCards" | "wordProgs") {
     if (loaded[type]) return
 
     console.timeLog("t1", "start")
-    const entries = (await getAllCards(type) || []) as SyncCard[]
+    const entries = ((await getAllCards(type)) || []) as SyncCard[]
     // console.log(re)
     console.timeLog("t1", "parsing")
     const block = type === "wordCards" ? "card" : "prog"
@@ -185,11 +208,13 @@ export async function loadAll(type: "wordCards" | "wordProgs") {
         const word = wordsIndex.get(e.id)
         if (!word) continue
 
-        const descriptor = Object.getOwnPropertyDescriptor(word, block)
-        if (!descriptor?.get && word[block]) continue
+        // const descriptor = Object.getOwnPropertyDescriptor(word, block)
+        // if (!descriptor?.get && word[block]) continue
+        if (!isGetter(word, block) && word[block]) continue
         word.v++
 
-        Object.defineProperty(word, block, { value: e })
+        // Object.defineProperty(word, block, { value: e })
+        defineProperty(word, block, e)
     }
 
     loaded[type] = true
