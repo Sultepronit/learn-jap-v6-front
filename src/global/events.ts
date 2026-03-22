@@ -1,5 +1,5 @@
 import type { CombinedWord } from "../words/types"
-import type { SyncCard } from "./types"
+import type { Mark, SyncCard } from "./types"
 
 export const EVT = {
     /** send data for sync */
@@ -51,7 +51,7 @@ interface EventPayloads {
     "ws:word-updated": undefined
     "ws:hint-requested": undefined
     "ws:answer-requested": undefined
-    "ws:word-evaluated": string
+    "ws:word-evaluated": Mark
 }
 
 export function emit<T extends EventName>(

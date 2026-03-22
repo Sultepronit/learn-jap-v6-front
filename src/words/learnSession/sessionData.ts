@@ -1,9 +1,10 @@
-import { emit, EVT } from "../../global/events"
+import { emit, EVT, on } from "../../global/events"
 import { genRandomInt, randomize } from "../../helpers/random"
 import { getCardsStatusRange } from "../../indexedDB/dbUseCases"
 import { getWordById, loadBasicList, setUpdates } from "../data/data"
 import { computeAll } from "../parsers/readingsWritings"
 import type { CombinedWord, WordProg } from "../types"
+import update from "./update"
 
 function detectDirection(wData: WordProg["data"]) {
     return wData.f.progress === 1 ? "b" : "f"
@@ -102,20 +103,30 @@ function papareWord(word: CombinedWord) {
 }
 
 let session: CombinedWord[] = null
-export async function getNext() {
+let lastWord: CombinedWord
+export async function getNext(retry = false) {
     if (!session) {
         session = await prepareSession()
     } else {
-        session.pop()
+        if (retry) {
+            session.unshift(session.pop())
+        } else {
+            session.pop()
+        }
     }
     if (session.length === 0) return null
 
-    const word = session[session.length - 1]
-    papareWord(word)
+    lastWord = session[session.length - 1]
+    papareWord(lastWord)
 
     console.log(session)
-    console.log(word)
+    console.log(lastWord)
     // return word
     // emitLwe(LWE.NEXT_WORD, word)
-    emit(EVT.WS.NEXT_CARD, word)
+    emit(EVT.WS.NEXT_CARD, lastWord)
 }
+
+on(EVT.WS.WORD_EVALUATED, mark => {
+    update(lastWord, mark)
+    getNext(mark === "retry")
+})

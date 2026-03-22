@@ -66,10 +66,10 @@ words-search {
     gap: 0.2em;
 }
 
-.btd.writings, .btd.readings {
+/* .btd.writings, .btd.readings {
     display: flex;
     gap: 1.2em;
-}
+} */
 
 .word-btr {
     display: grid;

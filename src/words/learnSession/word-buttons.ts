@@ -3,8 +3,9 @@ import template from "./word-buttons.html?raw"
 import BaseComponent from "../../global/BaseComponent"
 import type { CombinedWord } from "../types"
 import { emit, EVT, on } from "../../global/events"
+import type { Mark } from "../../global/types"
 
-type Mark = "good" | "pass" | "retry" | "bad"
+// type Mark = "good" | "pass" | "retry" | "bad"
 
 export default class WordButtons extends BaseComponent<Mark> {
     word: CombinedWord

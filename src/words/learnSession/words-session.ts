@@ -35,6 +35,8 @@ export default class WordsSession extends BaseComponent<RefKeys> {
         })
 
         // onLwe(LWE.WORD_EVALUATED, () => getNext())
-        on(EVT.WS.WORD_EVALUATED, () => getNext())
+        on(EVT.WS.WORD_EVALUATED, mark => {
+            getNext(mark === "retry")
+        })
     }
 }
