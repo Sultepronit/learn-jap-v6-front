@@ -49,3 +49,8 @@ word-buttons {
     /* background-color: yellow; */
     height: 3em;
 }
+
+word-card .writings,
+word-card .readings {
+    justify-content: center; /* maybe not all the cases */
+}

@@ -32,10 +32,11 @@ export default class WordsDb extends HTMLElement {
 
         on(EVT.WORDS_COUNT_CHANGED, async () => {
             this.updateDisplayData(await searchSort(this.allData, ""))
-            this.dispatchEvent(new CustomEvent(
-                "card-selected",
-                { detail: { cardNum: this.allData.length, rowIdx: 0 } }
-            ))
+            this.dispatchEvent(
+                new CustomEvent("card-selected", {
+                    detail: { cardNum: this.allData.length, rowIdx: 0 }
+                })
+            )
         })
     }
 
@@ -46,7 +47,6 @@ export default class WordsDb extends HTMLElement {
             <big-table></big-table>`
     }
 
-    
     updateDisplayData(value: CombinedWord[]) {
         this.displayData = value
         this.table.setData(this.displayData)
@@ -64,28 +64,31 @@ export default class WordsDb extends HTMLElement {
         })
     }
 
-    colums = ["num", "status", "writings", "readings", "translation", "example"]
     async setTable() {
+        const colums = [
+            "num",
+            "status",
+            "writings",
+            "readings",
+            "translation",
+            "example"
+        ]
         this.table = this.querySelector("big-table")
         // console.log(this.table)
         console.timeLog("t1", "table!")
-        this.table.setParams(
-            this.colums,
-            "word-btr",
-            // this.fillRow,
-            fillRow,
-            "word-updated"
-        )
+        // this.table.setParams(colums, "word-btr", fillRow, "word-updated")
+        this.table.setParams(colums, "word-btr", fillRow, EVT.WORD_UPDATED)
         // this.table.setData(this.data.slice(100, 150))
         // this.displayData = [...this.allData].reverse()
         // this.displayData = await searchSort(this.allData, "")
         // this.table.setData(this.displayData)
         this.updateDisplayData(await searchSort(this.allData, ""))
 
-        this.dispatchEvent(new CustomEvent(
-            "card-selected",
-            { detail: { cardNum: this.allData.length, rowIdx: 0 } }
-        ))
+        this.dispatchEvent(
+            new CustomEvent("card-selected", {
+                detail: { cardNum: this.allData.length, rowIdx: 0 }
+            })
+        )
 
         this.table.addEventListener("sort", async (e: CustomEvent) => {
             // console.log(e)

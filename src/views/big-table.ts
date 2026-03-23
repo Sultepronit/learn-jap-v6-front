@@ -1,4 +1,4 @@
-// import css from "./big-table.css?inline"
+import { on, type EventName } from "../global/events"
 import "./big-table.css"
 export type BTRow = {
     v: number
@@ -6,7 +6,7 @@ export type BTRow = {
     element: HTMLDivElement
     refs?: Record<string, HTMLElement>
 }
-// type FillRow = (elem: HTMLDivElement, refs: Record<string, HTMLElement>, card: any) => void
+
 type FillRow = (row: BTRow) => void
 
 export default class BigTable extends HTMLElement {
@@ -16,7 +16,7 @@ export default class BigTable extends HTMLElement {
     scroller: HTMLInputElement
 
     selected: {
-        element: HTMLDivElement,
+        element: HTMLDivElement
         cardNum: number
     } = {
         element: null,
@@ -24,25 +24,8 @@ export default class BigTable extends HTMLElement {
     }
     rowsN = 3
     top = 0
-    lastHight = 0
 
-    columns: string[]
-    btrClassName = ""
     fillRow: FillRow
-    updateEvent = ""
-
-    connectedCallback() {
-        this.addEventListener("wheel", (e) => {
-            if (e.ctrlKey) return
-
-            this.doScroll(e.deltaY)
-        })
-        this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
-            // console.log(e.detail)
-            const { cardNum, rowIdx } = e.detail
-            this.reselect(cardNum, rowIdx)
-        })
-    }
 
     calcRowsN() {
         console.log(this.offsetHeight)
@@ -50,140 +33,140 @@ export default class BigTable extends HTMLElement {
         this.rowsN = comp > 3 ? comp : 3
     }
 
-    render() {
+    render(columns: string[], btrClassName: string) {
         window.addEventListener("resize", () => this.resize())
         this.calcRowsN()
 
         const rowsTemplate = []
-        const sortBar = this.columns.map(c => `<div class="btd" data-column="${c}"></div>`).join("")
-        const btd = this.columns.map(c => `<div class="btd ${c}"></div>`).join("")
+        const sortBar = columns
+            .map(c => `<div class="btd" data-column="${c}"></div>`)
+            .join("")
+
+        const btds = columns.map(c => `<div class="btd ${c}"></div>`).join("")
+
         for (let i = 0; i < this.rowsN; i++) {
-            rowsTemplate.push(`<div class="btr ${this.btrClassName}" data-i="${i}">
-                ${btd}
+            rowsTemplate.push(`<div class="btr ${btrClassName}" data-i="${i}">
+                ${btds}
             </div>`)
         }
-            
+
         this.innerHTML = `
-            <div class="sort-bar ${this.btrClassName}">${sortBar}</div>
+            <div class="sort-bar ${btrClassName}">${sortBar}</div>
             <div></div>
             <div class="rows-area">${rowsTemplate.join("")}</div>
             <input type="range" class="bt-scroller" min="0" max="1000" value="0">
         `
-        // this.rows = Array.from(this.querySelectorAll('.row'))
-        const re = this.querySelectorAll<HTMLDivElement>('.btr')
+
+        const re = this.querySelectorAll<HTMLDivElement>(".btr")
         re.forEach(r => this.rows.push({ v: 0, card: null, element: r }))
         console.log(this.rows)
 
-        this.querySelector(".sort-bar").addEventListener("click", (e) => {
-            const ch = e.target as HTMLDivElement
-            const column = ch.dataset.column
-            if (!column) return
-            // console.log(column)
-            
-            this.querySelector(".active-sort")?.classList.remove("active-sort")
-            ch.classList.add("active-sort")
+        this.rowsArea = this.querySelector(".rows-area")
+        this.scroller = this.querySelector(".bt-scroller")
+    }
 
-            ch.textContent = ch.textContent === "▲" ? "▼" : "▲"
-            // this.parentNode.dispatchEvent(new CustomEvent("sort", { detail: {
-            this.dispatchEvent(new CustomEvent("sort", { detail: {
-                column, up: ch.textContent === "▲"
-            } }))
+    addListeners() {
+        this.addEventListener("wheel", e => {
+            if (e.ctrlKey) return
+
+            this.doScroll(e.deltaY)
         })
 
-        this.rowsArea = this.querySelector(".rows-area")
-        // console.log(this.rowsArea)
-        this.scroller = this.querySelector(".bt-scroller")
+        this.parentElement.addEventListener(
+            "card-selected",
+            (e: CustomEvent) => {
+                const { cardNum, rowIdx } = e.detail
+                this.reselect(cardNum, rowIdx)
+            }
+        )
 
-        this.rowsArea.addEventListener("click", (e) => {
-            const clicked = (e.target as HTMLDivElement).closest(".btr") as HTMLDivElement
+        this.rowsArea.addEventListener("click", e => {
+            const clicked = (e.target as HTMLDivElement).closest(
+                ".btr"
+            ) as HTMLDivElement
             if (clicked === this.selected.element) return
 
-            // console.log(clicked)
-            // console.log(clicked.dataset.i)
             const { cardNum, i } = clicked.dataset
-            console.log(cardNum, i)
-            this.parentNode.dispatchEvent(new CustomEvent(
-                "card-selected",
-                { detail: { cardNum: Number(cardNum), rowIdx: Number(i) } }
-            ))
+
+            this.parentNode.dispatchEvent(
+                new CustomEvent("card-selected", {
+                    detail: { cardNum: Number(cardNum), rowIdx: Number(i) }
+                })
+            )
         })
 
         this.scroller.addEventListener("input", () => {
-            // this.scroller.value = (this.top / (this.data.length - this.rowsN) * 1000).toString()
-            const newTop = Number(this.scroller.value) / 1000 * (this.data.length - this.rowsN)
-            // console.log(newTop)
+            const newTop =
+                (Number(this.scroller.value) / 1000) *
+                (this.data.length - this.rowsN)
+
             this.navigate(Math.round(newTop - this.top))
         })
     }
 
-    // updateCounter = 0
-    setParams(
-        // tdTemplate: string,
-        colums: string[],
-        btrClassName: string,
-        fillRow: FillRow,
-        updateEvent: string
-    ) {
-        this.columns = colums
-        this.btrClassName = btrClassName
-        this.fillRow = fillRow
-        this.updateEvent = updateEvent
+    prevSortColumn = null as HTMLDivElement
+    setSorting() {
+        this.querySelector(".sort-bar").addEventListener("click", e => {
+            const clicked = e.target as HTMLDivElement
+            const column = clicked.dataset.column
+            if (!column) return
 
-        this.render()
-        // this.resize()
+            if (this.prevSortColumn !== clicked) {
+                clicked.classList.add("active-sort")
+                this.prevSortColumn?.classList.remove("active-sort")
+                this.prevSortColumn = clicked
+            }
 
-        document.addEventListener(this.updateEvent, () => {
-            // console.log("update:", ++this.updateCounter)
-            this.rows.forEach((row, i) => {
-                // if (i >= this.data.length) {
-                //     row.element.classList.add("hidden")
-                //     return
-                // }
-                const card = row.card
-                if (card.v === row.v) return
-                // console.log(card.v, row.v)
-                row.v = card.v
-                // this.fillRow(row.element, card)
-                this.fillRow(row)
-            })
+            const dirPic = clicked.textContent === "▲" ? "▼" : "▲"
+            clicked.textContent = dirPic
+
+            this.dispatchEvent(
+                new CustomEvent("sort", {
+                    detail: { column, up: dirPic === "▲" }
+                })
+            )
         })
     }
 
+    updateContent() {
+        for (let i = 0; i < this.rowsN; i++) {
+            const row = this.rows[i]
+            if (row.v === row.card.v) continue
+
+            row.v = row.card.v
+            this.fillRow(row)
+        }
+    }
+
+    // updateCounter = 0
+    // outer
+    setParams(
+        colums: string[],
+        btrClassName: string,
+        fillRow: FillRow,
+        updateEvent: EventName
+    ) {
+        this.fillRow = fillRow
+
+        this.render(colums, btrClassName)
+        this.addListeners()
+        this.setSorting()
+
+        on(updateEvent, () => this.updateContent())
+    }
+
+    // outer
     setData(data: any[]) {
         this.data = data
         this.top = 0
         this.scroller.value = "0"
 
-        this.deselect()
-
-        this.rows.forEach((row, i) => {
-            // console.log(i)
-            if (i >= this.data.length || i >= this.rowsN) {
-                row.element.classList.add("hidden")
-                return
-            }
-            const card = this.data[i]
-            row.card = card
-            row.v = card.v
-            // this.fillRow(row.element, card)
-            this.fillRow(row)
-            row.element.classList.remove("hidden")
-
-            if (card.num === this.selected.cardNum) this.select(card.num, i)
-        })
+        this.resetRows()
     }
 
-    reRender() {
-        // console.log(this.top + this.rowsN, this.data.length)
-        if (this.top + this.rowsN > this.data.length) {
-            this.top = this.data.length - this.rowsN
-        }
-
-        const scrollVal = (this.top / (this.data.length - this.rowsN) * 1000).toFixed(0)
-        this.scroller.value = scrollVal
-
+    resetRows() {
         this.deselect()
-    
+
         for (let i = 0; i < this.rows.length; i++) {
             const di = i + this.top
             const row = this.rows[i]
@@ -194,9 +177,9 @@ export default class BigTable extends HTMLElement {
             }
 
             const card = this.data[di]
+            console.log(di, card, row)
             row.card = card
             row.v = card.v
-            // this.fillRow(row.element, card)
             this.fillRow(row)
             if (card.num === this.selected.cardNum) this.select(card.num, i)
 
@@ -204,29 +187,45 @@ export default class BigTable extends HTMLElement {
         }
     }
 
-    addRow() {       
-        const element = this.rowsArea.firstElementChild.cloneNode(true) as HTMLDivElement
+    rearrange() {
+        if (this.top + this.rowsN > this.data.length) {
+            this.top = this.data.length - this.rowsN
+        }
+
+        const scrollVal = (
+            (this.top / (this.data.length - this.rowsN)) *
+            1000
+        ).toFixed(0)
+        this.scroller.value = scrollVal
+
+        this.resetRows()
+    }
+
+    addRow() {
+        const element = this.rowsArea.firstElementChild.cloneNode(
+            true
+        ) as HTMLDivElement
         element.dataset.i = (this.rowsN - 1).toString()
         element.classList.remove("selected")
         this.rowsArea.appendChild(element)
-        // this.rows.push({ element, v: 0, card: null })
         this.rows.push({ v: 0, card: null, element })
     }
 
     resize() {
         const prevN = this.rowsN
         this.calcRowsN()
-        if (prevN === this.rowsN) return;
+        if (prevN === this.rowsN) return
         console.log("resize!")
         console.log(prevN, this.rowsN)
 
         for (let i = this.rows.length; i < this.rowsN; i++) {
+            if (i >= this.data.length) break
             console.log(this.rows.length, this.rowsN)
             this.addRow()
         }
         // console.log(this.rows)
 
-        this.reRender()
+        this.rearrange()
     }
 
     deselect() {
@@ -253,7 +252,10 @@ export default class BigTable extends HTMLElement {
     navigate(delta: number) {
         this.top += delta
         // console.log(this.top)
-        const scrollVal = (this.top / (this.data.length - this.rowsN) * 1000).toFixed(0)
+        const scrollVal = (
+            (this.top / (this.data.length - this.rowsN)) *
+            1000
+        ).toFixed(0)
         this.scroller.value = scrollVal
         // console.log(scrollVal, this.scroller.value)
 
@@ -275,7 +277,8 @@ export default class BigTable extends HTMLElement {
         if (this.data.length < this.rowsN) return
         let newTop = this.top + delta
         if (newTop < 0) newTop = 0
-        if (newTop + this.rowsN > this.data.length) newTop = this.data.length - this.rowsN
+        if (newTop + this.rowsN > this.data.length)
+            newTop = this.data.length - this.rowsN
         if (this.top === newTop) return
 
         this.navigate(newTop - this.top)

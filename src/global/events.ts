@@ -35,7 +35,7 @@ type DeepValue<T> = T extends string
     : T extends object
       ? DeepValue<T[keyof T]>
       : never
-type EventName = DeepValue<typeof EVT>
+export type EventName = DeepValue<typeof EVT>
 // type EventName = (typeof EVT)[keyof typeof EVT]
 
 interface EventPayloads {
