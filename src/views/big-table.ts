@@ -166,7 +166,7 @@ export default class BigTable extends HTMLElement {
 
     resetRows() {
         this.deselect()
-
+        console.log(this.top)
         for (let i = 0; i < this.rows.length; i++) {
             const di = i + this.top
             const row = this.rows[i]
@@ -177,7 +177,7 @@ export default class BigTable extends HTMLElement {
             }
 
             const card = this.data[di]
-            console.log(di, card, row)
+            // console.log(di, card, row)
             row.card = card
             row.v = card.v
             this.fillRow(row)
@@ -188,7 +188,9 @@ export default class BigTable extends HTMLElement {
     }
 
     rearrange() {
-        if (this.top + this.rowsN > this.data.length) {
+        if (this.rowsN > this.data.length) {
+            this.top = 0
+        } else if (this.top + this.rowsN > this.data.length) {
             this.top = this.data.length - this.rowsN
         }
 
@@ -219,7 +221,6 @@ export default class BigTable extends HTMLElement {
         console.log(prevN, this.rowsN)
 
         for (let i = this.rows.length; i < this.rowsN; i++) {
-            if (i >= this.data.length) break
             console.log(this.rows.length, this.rowsN)
             this.addRow()
         }
@@ -249,6 +250,7 @@ export default class BigTable extends HTMLElement {
         this.select(cardNum, rowIdx)
     }
 
+    // audit!
     navigate(delta: number) {
         this.top += delta
         // console.log(this.top)

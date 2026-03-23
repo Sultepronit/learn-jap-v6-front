@@ -116,13 +116,13 @@ export async function loadBasicList() {
             num: i + 1,
             v: 0,
             get card() {
-                loadCard(this)
                 delete this.card
+                loadCard(this)
                 return null
             },
             get prog() {
-                loadCard(this)
                 delete this.prog
+                loadCard(this)
                 return null
             }
         }
@@ -152,6 +152,7 @@ async function loadCard(word: CombinedWord) {
     for (const block of ["card", "prog"]) {
         if (word[block]) continue
         const type = block === "card" ? "wordCards" : "wordProgs"
+
         const val = toSync[type].get(word.id) || (await getCard(type, word.id))
         defineProperty(word, block, val)
     }
@@ -232,17 +233,3 @@ export function addNew(word: CombinedWord) {
     addVoid()
     emit(EVT.WORDS_COUNT_CHANGED)
 }
-
-// export function deleteWord(id: number) {
-//     const index = wordsIndex.get(id).num - 1
-//     wordsIndex.delete(id)
-//     console.log(index)
-//     words.splice(index, 1)
-//     for (let i = index; i < words.length; i++) {
-//         // console.log(i, words[i])
-//         words[i].num = i + 1
-//     }
-//     emit(EVT.WORDS_COUNT_CHANGED) // for the view
-
-//     // deletedWords.add(id)
-// }
