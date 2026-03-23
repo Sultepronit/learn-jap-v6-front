@@ -48,8 +48,8 @@ function prepareSessionContent(candidates: WordProg[], sessionLenth: number) {
     }
 }
 
+const sessionLenth = 50
 export default async function prepareSession() {
-    const sessionLenth = 50
     const maxToRepeat = 8800
     // const maxToRepeat = 8000
 
@@ -74,6 +74,7 @@ export default async function prepareSession() {
         range,
         sessionLenth
     )
+
     console.log(learnNumber, repeatNumber, list)
 
     console.timeLog("t1", "session...")
@@ -94,28 +95,65 @@ function papareWord(word: CombinedWord) {
     if (!word.comp) word.comp = {}
     word.comp.dir = detectDirection(word.prog.data)
     // word.comp.actual = word.prog.data[word.comp.dir]
-    word.comp.stage = word.comp.actual.autorepeat
+    word.comp.stage = word.prog.data[word.comp.dir].autorepeat
         ? "autorepeat"
         : word.prog.data.status > 0
           ? "repeat"
           : "learn"
 }
 
-let session: CombinedWord[] = null
-let lastWord: CombinedWord
-export async function getNext(retry = false) {
-    if (!session) {
-        session = await prepareSession()
-    } else {
-        if (retry) {
-            session.unshift(session.pop())
-        } else {
-            session.pop()
+const session = {
+    content: null as CombinedWord[],
+    plan: {
+        total: sessionLenth,
+        learn: 10,
+        repeat: 40
+    },
+    stats: {
+        clicks: 0,
+        results: 0,
+        learn: {
+            good: 0,
+            pass: 0,
+            retry: 0,
+            bad: 0,
+            upgrade: 0
+        },
+        repeat: {
+            good: 0,
+            pass: 0,
+            retry: 0,
+            bad: 0,
+            upgrade: 0
+        },
+        autorepeat: {
+            good: 0,
+            upgrade: 0
         }
     }
-    if (session.length === 0) return null
+}
 
-    lastWord = session[session.length - 1]
+export type WordsSession = typeof session
+
+// let session0: CombinedWord[] = null
+let lastWord: CombinedWord
+export async function getNext(retry = false) {
+    if (!session.content) {
+        session.content = await prepareSession()
+    } else {
+        if (retry) {
+            session.content.unshift(session.content.pop())
+        } else {
+            session.content.pop()
+        }
+    }
+
+    localStorage.setItem("wordsSession", JSON.stringify(session))
+    emit(EVT.WS.STATS_UPDATED, session)
+
+    if (session.content.length === 0) return null
+
+    lastWord = session.content[session.content.length - 1]
     papareWord(lastWord)
 
     console.log(session)
@@ -126,6 +164,7 @@ export async function getNext(retry = false) {
 }
 
 on(EVT.WS.WORD_EVALUATED, mark => {
-    update(lastWord, mark)
+    update(lastWord, mark, session.stats)
     getNext(mark === "retry")
+    console.log(session.stats)
 })

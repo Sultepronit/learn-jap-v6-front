@@ -108,20 +108,19 @@ export default class WordCard extends BaseComponent<RefKeys> {
     updateCardView() {
         if (!this.word.card) return
         computeAll(this.word)
-        // if (!this.updateCardContent()) return
         // console.timeLog("t1", "card view!")
 
         const card = this.word.card.data
-        // const learn = this.word.comp.learn
-        // const common = this.word.comp.common
         const comp = this.word.comp
+
+        this.refs.writRare.hide()
+        this.refs.readMain.hide()
+        this.refs.readRare.hide()
+        this.refs.example.hide()
+
         switch (this.stage) {
             case "question":
                 // this.refs.readings.hide() // do we need readings in the end?
-                this.refs.writRare.hide()
-                this.refs.readMain.hide()
-                this.refs.readRare.hide()
-                this.refs.example.hide()
                 if (this.word.comp.dir === "f") {
                     // const variants = this.variable.writings.question
                     const variants = comp.learn.writQuest

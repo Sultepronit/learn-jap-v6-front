@@ -77,7 +77,7 @@ export default class WordButtons extends BaseComponent<Mark> {
                 emit(EVT.WS.ANSWER_REQUESTED)
                 this.expected = "evaluation"
 
-                let progress = this.word.comp.actual.progress
+                let progress = this.word.prog.data[this.word.comp.dir].progress
                 if (this.word.comp.stage === "learn") progress /= 2
                 let widthNum = 6 + progress
                 if (widthNum < 2) widthNum = 2

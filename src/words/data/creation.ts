@@ -28,7 +28,8 @@ export function createWord(num = 0, id = Infinity) {
             b: {
                 progress: 0,
                 record: 0
-            }
+            },
+            t: 0
         }
     }
 

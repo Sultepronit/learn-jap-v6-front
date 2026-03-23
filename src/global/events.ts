@@ -1,3 +1,4 @@
+import type { WordsSession } from "../words/learnSession/sessionData"
 import type { CombinedWord } from "../words/types"
 import type { Mark, SyncCard } from "./types"
 
@@ -24,7 +25,8 @@ export const EVT = {
         WORD_UPDATED: "ws:word-updated",
         HINT_REQUESTED: "ws:hint-requested",
         ANSWER_REQUESTED: "ws:answer-requested",
-        WORD_EVALUATED: "ws:word-evaluated"
+        WORD_EVALUATED: "ws:word-evaluated",
+        STATS_UPDATED: "ws:stats-updated"
     }
 } as const
 
@@ -52,6 +54,7 @@ interface EventPayloads {
     "ws:hint-requested": undefined
     "ws:answer-requested": undefined
     "ws:word-evaluated": Mark
+    "ws:stats-updated": WordsSession
 }
 
 export function emit<T extends EventName>(

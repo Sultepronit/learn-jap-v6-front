@@ -9,8 +9,11 @@ class SmartRef {
         this.el = el
     }
 
-    text(val: string) {
-        if (val !== this.el.textContent) this.el.textContent = val
+    text(val: string | number, isHtml = false) {
+        if (isHtml) return this.html(val as string)
+
+        const str = typeof val === "string" ? val : val.toString()
+        if (val !== this.el.textContent) this.el.textContent = str
         return this
     }
 

@@ -1,11 +1,25 @@
 words-session {
     height: 100%;
     display: grid;
-    grid-template-rows: 1fr auto;
+    grid-template-rows: auto 1fr auto;
     margin: 0.5rem 0.2rem 1.5rem;
 }
 
-words-session .stats {
+words-session-stats {
+    display: flex;
+    column-gap: 1em;
+    flex-wrap: wrap;
+}
+
+.learn-stats {
+    color: green;
+}
+
+.repeat-stats {
+    color: blue;
+}
+
+word-card .stats {
     width: fit-content;
     border-bottom: 3px solid;
 }

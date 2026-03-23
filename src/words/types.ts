@@ -67,7 +67,7 @@ type Computed = {
     }
     dir?: "f" | "b"
     stage?: "learn" | "repeat" | "autorepeat"
-    actual?: Progress
+    // actual?: Progress
 }
 
 export type CombinedWord = {

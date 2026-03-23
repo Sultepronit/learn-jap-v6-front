@@ -47,6 +47,7 @@ export function computeCommon(word: CombinedWord) {
 }
 
 function fakeToKata(hira: string) {
+    return hira
     return `[${hira}]`
 }
 

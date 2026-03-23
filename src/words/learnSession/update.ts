@@ -1,14 +1,21 @@
 import type { Mark } from "../../global/types"
 import type { CombinedWord, Progress } from "../types"
+import type { WordsSession } from "./sessionData"
 
 let nextRepeatStatus = 15000
-export default function update(word: CombinedWord, mark: Mark) {
+export default function update(
+    word: CombinedWord,
+    mark: Mark,
+    stats: WordsSession["stats"]
+) {
     const prog = word.prog.data
-    const actual = word.comp.actual
+    const actual = prog[word.comp.dir]
     const stage = word.comp.stage
-    console.log(word.comp.actual === word.prog.data[word.comp.dir])
-    // word.prog.data.t = Date.now()
+
     prog.t = Date.now()
+    stats.clicks++
+    stats[stage][mark]++
+    if (mark !== "retry" && stage !== "autorepeat") stats.results++
 
     switch (mark) {
         case "bad":
@@ -22,10 +29,7 @@ export default function update(word: CombinedWord, mark: Mark) {
             break
         case "good":
             actual.progress = 1
-            console.log(actual)
-            console.log(word.comp)
-            console.log(prog)
-            console.log(word)
+
             if (stage === "repeat") {
                 actual.record++
                 if (actual.record > 1) actual.autorepeat = true
@@ -34,6 +38,8 @@ export default function update(word: CombinedWord, mark: Mark) {
             }
 
             if (prog.f.progress > 0 && prog.b.progress > 0) {
+                stats[stage].upgrade++
+
                 prog.status = stage === "learn" ? 1 : nextRepeatStatus++
                 prog.f.progress = 0
                 prog.b.progress = 0
