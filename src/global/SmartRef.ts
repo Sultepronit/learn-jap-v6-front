@@ -7,11 +7,16 @@ export default class SmartRef {
         this.el = el
     }
 
-    text(val: string | number, isHtml = false) {
+    text(val: string | number | undefined, isHtml = false) {
         if (isHtml) return this.html(val as string)
 
-        const str = typeof val === "string" ? val : val.toString()
-        if (val !== this.el.textContent) this.el.textContent = str
+        const str =
+            typeof val === "string"
+                ? val
+                : val === undefined
+                  ? ""
+                  : val.toString()
+        if (str !== this.el.textContent) this.el.textContent = str
         return this
     }
 
