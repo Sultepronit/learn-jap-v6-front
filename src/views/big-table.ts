@@ -68,8 +68,7 @@ export default class BigTable extends HTMLElement {
     addListeners() {
         this.addEventListener("wheel", e => {
             if (e.ctrlKey) return
-
-            this.doScroll(e.deltaY)
+            this.navigateSafely(e.deltaY > 0 ? 3 : -3)
         })
 
         this.parentElement.addEventListener(
@@ -133,12 +132,10 @@ export default class BigTable extends HTMLElement {
             const row = this.rows[i]
             if (row.v === row.card.v) continue
 
-            row.v = row.card.v
             this.fillRow(row)
         }
     }
 
-    // updateCounter = 0
     // outer
     setParams(
         colums: string[],
@@ -166,10 +163,10 @@ export default class BigTable extends HTMLElement {
 
     resetRows() {
         this.deselect()
-        console.log(this.top)
+        // console.log(this.top)
         for (let i = 0; i < this.rows.length; i++) {
-            const di = i + this.top
             const row = this.rows[i]
+            const di = i + this.top
 
             if (di >= this.data.length || i >= this.rowsN) {
                 row.element.classList.add("hidden")
@@ -177,30 +174,12 @@ export default class BigTable extends HTMLElement {
             }
 
             const card = this.data[di]
-            // console.log(di, card, row)
             row.card = card
-            row.v = card.v
             this.fillRow(row)
             if (card.num === this.selected.cardNum) this.select(card.num, i)
 
             row.element.classList.remove("hidden")
         }
-    }
-
-    rearrange() {
-        if (this.rowsN > this.data.length) {
-            this.top = 0
-        } else if (this.top + this.rowsN > this.data.length) {
-            this.top = this.data.length - this.rowsN
-        }
-
-        const scrollVal = (
-            (this.top / (this.data.length - this.rowsN)) *
-            1000
-        ).toFixed(0)
-        this.scroller.value = scrollVal
-
-        this.resetRows()
     }
 
     addRow() {
@@ -211,6 +190,13 @@ export default class BigTable extends HTMLElement {
         element.classList.remove("selected")
         this.rowsArea.appendChild(element)
         this.rows.push({ v: 0, card: null, element })
+    }
+
+    recalcScroll() {
+        this.scroller.value = (
+            (this.top / (this.data.length - this.rowsN)) *
+            1000
+        ).toFixed(0)
     }
 
     resize() {
@@ -226,7 +212,28 @@ export default class BigTable extends HTMLElement {
         }
         // console.log(this.rows)
 
-        this.rearrange()
+        if (this.rowsN > this.data.length) {
+            this.top = 0
+        } else if (this.top + this.rowsN > this.data.length) {
+            this.top = this.data.length - this.rowsN
+        }
+
+        this.recalcScroll()
+        this.resetRows()
+    }
+
+    navigate(delta: number) {
+        this.top += delta
+        this.recalcScroll()
+
+        this.deselect()
+        for (let i = 0; i < this.rowsN; i++) {
+            const row = this.rows[i]
+            const card = this.data[i + this.top]
+            row.card = card
+            this.fillRow(row)
+            if (card.num === this.selected.cardNum) this.select(card.num, i)
+        }
     }
 
     deselect() {
@@ -250,43 +257,15 @@ export default class BigTable extends HTMLElement {
         this.select(cardNum, rowIdx)
     }
 
-    // audit!
-    navigate(delta: number) {
-        this.top += delta
-        // console.log(this.top)
-        const scrollVal = (
-            (this.top / (this.data.length - this.rowsN)) *
-            1000
-        ).toFixed(0)
-        this.scroller.value = scrollVal
-        // console.log(scrollVal, this.scroller.value)
-
-        this.deselect()
-
-        this.rows.forEach((row, i) => {
-            const card = this.data[i + this.top]
-
-            row.card = card
-            row.v = card.v
-            // this.fillRow(row.element, card)
-            this.fillRow(row)
-            if (card.num === this.selected.cardNum) this.select(card.num, i)
-        })
-    }
-
     navigateSafely(delta: number) {
-        // console.log(this.data.length)
         if (this.data.length < this.rowsN) return
         let newTop = this.top + delta
         if (newTop < 0) newTop = 0
-        if (newTop + this.rowsN > this.data.length)
+        if (newTop + this.rowsN > this.data.length) {
             newTop = this.data.length - this.rowsN
+        }
         if (this.top === newTop) return
 
         this.navigate(newTop - this.top)
-    }
-
-    doScroll(rawDelta: number) {
-        this.navigateSafely(rawDelta > 0 ? 3 : -3)
     }
 }

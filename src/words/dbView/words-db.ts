@@ -68,6 +68,8 @@ export default class WordsDb extends HTMLElement {
         const colums = [
             "num",
             "status",
+            "f-progress",
+            "b-progress",
             "writings",
             "readings",
             "translation",

@@ -1,11 +1,9 @@
 import template from "./words-session.html?raw"
 import "./words-session.css"
-import type { CombinedWord, StyledText } from "../types"
+import type { CombinedWord } from "../types"
 import { getNext } from "./sessionData"
 import { emit, EVT, on } from "../../global/events"
-import { computeAll } from "../parsers/readingsWritings"
 import BaseComponent from "../../global/BaseComponent"
-import { genRandomInt } from "../../helpers/random"
 
 type RefKeys = "card" | "buttons"
 export default class WordsSession extends BaseComponent<RefKeys> {
