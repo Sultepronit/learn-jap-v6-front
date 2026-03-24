@@ -1,10 +1,12 @@
 import { on, type EventName } from "../global/events"
+import type SmartRef from "../global/SmartRef"
 import "./big-table.css"
 export type BTRow = {
     v: number
     card: any
     element: HTMLDivElement
-    refs?: Record<string, HTMLElement>
+    // refs?: Record<string, HTMLElement>
+    refs?: Record<string, SmartRef>
 }
 
 type FillRow = (row: BTRow) => void
@@ -42,7 +44,9 @@ export default class BigTable extends HTMLElement {
             .map(c => `<div class="btd" data-column="${c}"></div>`)
             .join("")
 
-        const btds = columns.map(c => `<div class="btd ${c}"></div>`).join("")
+        const btds = columns
+            .map(c => `<div class="btd ${c}" data-ref="${c}"></div>`)
+            .join("")
 
         for (let i = 0; i < this.rowsN; i++) {
             rowsTemplate.push(`<div class="btr ${btrClassName}" data-i="${i}">

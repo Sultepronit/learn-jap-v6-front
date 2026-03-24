@@ -1,5 +1,3 @@
-import SmartRef from "../../global/SmartRef"
-import { toCamelCase } from "../../helpers/text"
 import type { BTRow } from "../../views/big-table"
 import { computeCommon } from "../parsers/readingsWritings"
 import type { CombinedWord } from "../types"
@@ -24,20 +22,8 @@ function getRowRefs(row: BTRow) {
     row.refs.rareRead = read.querySelector(".rare")
 }
 
-function collectRefs(row: BTRow) {
-    const refs = row.element.querySelectorAll<HTMLElement>("[data-ref]")
-    // const refs = this.querySelectorAll<HTMLElement>(":scope > [data-ref]")
-    row.refs = {}
-    refs.forEach(el => {
-        const kebab = el.dataset.ref
-        row.refs[toCamelCase(kebab)] = new SmartRef(el)
-    })
-    console.log(row.refs)
-}
-
 export default function fillRow(row: BTRow) {
-    // getRowRefs(row)
-    collectRefs(row)
+    getRowRefs(row)
     // console.log(row)
     const word = row.card as CombinedWord
     row.v = word.v
