@@ -29,6 +29,17 @@ export default class SmartRef {
         return this
     }
 
+    get value(): string {
+        return (this.el as HTMLInputElement).value
+    }
+
+    set value(val: string | number) {
+        const str = typeof val === "string" ? val : val.toString()
+        if (str !== (this.el as HTMLInputElement).value) {
+            ;(this.el as HTMLInputElement).value = str
+        }
+    }
+
     hide() {
         this.el.classList.add("hidden")
         return this
@@ -39,9 +50,8 @@ export default class SmartRef {
         return this
     }
 
-    replaceClasses(classes: string[]) {
-        this.el.className = classes.join(" ")
-        return this
+    on(eventName: string, action: () => void) {
+        this.el.addEventListener(eventName, action)
     }
 
     addClass(className: string) {
@@ -51,6 +61,16 @@ export default class SmartRef {
 
     removeClass(className: string) {
         this.el.classList.remove(className)
+        return this
+    }
+
+    toggleClass(className: string) {
+        this.el.classList.toggle(className)
+        return this
+    }
+
+    replaceClasses(classes: string[]) {
+        this.el.className = classes.join(" ")
         return this
     }
 }

@@ -1,20 +1,20 @@
 <div class="flex-space">
     <div>
-        <input type="number" name="status" title="status" class="word-status">
+        <input type="number" name="status" title="status" class="word-status" data-ref="status">
     </div>
-    <button class="delete-word">削除</button>
+    <button class="delete-word" data-ref="delete">削除</button>
 </div>
 <div class="writings-edit">
-    <input type="text" name="writings" placeholder="言葉" autocomplete="off">
-    <button name="toggle-alt" class="toggle-alt"></button>
-    <input type="text" name="rare-writings" placeholder="(言葉)" autocomplete="off">
+    <input type="text" name="main-writ" data-ref="main-writ" placeholder="言葉" autocomplete="off">
+    <button name="toggle-alt" class="toggle-alt" data-ref="toggle-alt"></button>
+    <input type="text" name="rare-writ" class="rare" data-ref="rare-writ" placeholder="(言葉)" autocomplete="off">
 </div>
 
 <div class="readings-edit">
-    <input type="text" name="readings" placeholder="ことば" autocomplete="off">
-    <input type="text" name="rare-readings" placeholder="(ことば)" autocomplete="off">
+    <input type="text" name="main-read" data-ref="main-read" placeholder="ことば" autocomplete="off">
+    <input type="text" name="rare-read" class="rare" data-ref="rare-read" placeholder="(ことば)" autocomplete="off">
 </div>
 
-<input type="text" name="translation" placeholder="слово" autocomplete="off">
+<input type="text" name="translation" data-ref="translation" placeholder="слово" autocomplete="off">
 
-<input type="text" name="example" placeholder="実例" autocomplete="off">
+<input type="text" name="example" data-ref="example" placeholder="実例" autocomplete="off">

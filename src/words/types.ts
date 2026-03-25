@@ -14,7 +14,7 @@ export type WordCard = {
             rare?: string[]
         }
         translation: string
-        example: string
+        example?: string
     }
 }
 

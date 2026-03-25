@@ -1,73 +1,47 @@
 import template from "./word-editor.html?raw"
 
-import { EVT, emit } from "../../global/events"
+import { EVT, emit, on } from "../../global/events"
 import { addNew } from "../data/data"
-import type { CombinedWord } from "../types"
+import type { CombinedWord, WordCard, WordProg } from "../types"
+import BaseComponent from "../../global/BaseComponent"
 
-export default class WordEditor extends HTMLElement {
+type RefKeys =
+    | "delete"
+    | "status"
+    | "mainWrit"
+    | "rareWrit"
+    | "toggleAlt"
+    | "mainRead"
+    | "rareRead"
+    | "translation"
+    | "example"
+export default class WordEditor extends BaseComponent<RefKeys> {
     data: CombinedWord[]
     word: CombinedWord
+    card: WordCard["data"]
+    prog: WordProg["data"]
     wordV = 0
-    delete: HTMLButtonElement
-    status: HTMLInputElement
-    writings: HTMLInputElement
-    altWrit: HTMLButtonElement
-    readings: HTMLInputElement
-    translation: HTMLInputElement
-
-    render() {
-        this.innerHTML = template
-        this.delete = this.querySelector('.delete-word')
-        this.status = this.querySelector('[name="status"]')
-        this.writings = this.querySelector('[name="writings"]')
-        this.altWrit = this.querySelector('[name="toggle-alt"]')
-        this.readings = this.querySelector('[name="readings"]')
-        this.translation = this.querySelector('[name="translation"]')
-    }
 
     connectedCallback() {
-        this.render()
+        this.innerHTML = template
 
-        this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
-            // console.log(e)
-            const { cardNum } = e.detail
-            // console.log(cardNum)
-            // console.log(this.data[cardNum - 1])
-            this.word = this.data[cardNum - 1];
-            console.log(this.word)
-            this.wordV = this.word.v
-            this.updateEditorContent()
-        })
+        this.collectRefs()
 
-        document.addEventListener("word-updated", () => {
-            if (this.wordV !== this.word.v) this.updateEditorContent()
-        })
+        this.setControls()
 
-        this.delete.addEventListener("click", () => {
-            console.log("remove ", this.word.id)
-            this.deleteWord(this.word.id)
-        })
-
-        this.status.addEventListener("change", () => {
-            console.log(this.status.value)
-            this.word.prog.data.status = Number(this.status.value)
-            this.implementMutation("prog")
-        })
-
-        this.altWrit.addEventListener("click", () => {
-            if (this.word.card.data.writings.alt) {
-                delete this.word.card.data.writings.alt
-            } else {
-                this.word.card.data.writings.alt = true
+        this.parentElement.addEventListener(
+            "card-selected",
+            (e: CustomEvent) => {
+                const { cardNum } = e.detail
+                this.word = this.data[cardNum - 1]
+                console.log(this.word)
+                this.wordV = this.word.v
+                this.updateEditorContent()
             }
-            this.altWrit.classList.toggle("is-alt")
-            this.writings.classList.toggle("blue")
-            this.implementMutation("card")
-        })
+        )
 
-        this.translation.addEventListener("change", () => {
-            this.word.card.data.translation = this.translation.value
-            this.implementMutation("card")
+        on(EVT.WORD_UPDATED, () => {
+            if (this.wordV !== this.word.v) this.updateEditorContent()
         })
     }
 
@@ -75,20 +49,78 @@ export default class WordEditor extends HTMLElement {
         this.data = data
     }
 
+    setControls() {
+        this.refs.delete.on("click", () => this.deleteWord(this.word.id))
+
+        this.refs.status.on("change", () => {
+            this.word.prog.data.status = Number(this.refs.status.value)
+            this.implementMutation("prog")
+        })
+
+        this.refs.mainWrit.on("change", () => {
+            this.card.writings.main = this.refs.mainWrit.value
+                .split(",")
+                .map(e => e.trim())
+            this.implementMutation("card")
+        })
+
+        this.refs.toggleAlt.on("click", () => {
+            if (this.word.card.data.writings.alt) {
+                delete this.word.card.data.writings.alt
+            } else {
+                this.word.card.data.writings.alt = true
+            }
+            this.refs.toggleAlt.toggleClass("is-alt")
+            this.refs.mainWrit.toggleClass("alt")
+            this.implementMutation("card")
+        })
+
+        this.refs.translation.on("change", () => {
+            this.word.card.data.translation = this.refs.translation.value
+            this.implementMutation("card")
+        })
+    }
+
     updateEditorContent() {
-        // console.log("editor update!")
-        const prog = this.word.prog?.data;
-        this.status.value = prog?.status.toString()
-        this.writings.value = this.word.card?.data.writings.main.join(", ")
+        this.card = this.word.card?.data
+        this.prog = this.word.prog?.data
+        // const prog = this.word.prog?.data
+        if (this.card || !this.prog) return
+
+        this.refs.status.value = this.prog?.status
+        this.refs.mainWrit.value = this.word.card?.data.writings.main.join(", ")
         if (this.word.card?.data.writings.alt) {
-            this.writings.classList.add("blue")
-            this.altWrit.classList.add("is-alt")
+            this.refs.mainWrit.addClass("alt")
+            this.refs.toggleAlt.addClass("is-alt")
         } else {
-            this.writings.classList.remove("blue")
-            this.altWrit.classList.remove("is-alt")
+            this.refs.mainWrit.addClass("alt")
+            this.refs.toggleAlt.removeClass("is-alt")
         }
-        this.readings.value = this.word.card?.data.readings.main.join(", ")
-        this.translation.value = this.word.card?.data.translation
+        this.refs.rareWrit.value = (
+            this.word.card?.data.writings.rare || []
+        ).join(", ")
+
+        this.refs.mainRead.value = this.word.card?.data.readings.main.join(", ")
+        this.refs.rareRead.value = (
+            this.word.card?.data.readings.rare || []
+        ).join(", ")
+
+        this.refs.translation.value = this.word.card?.data.translation
+
+        this.refs.example.value = this.word.card?.data.example
+    }
+
+    implementMutation(part: "card" | "prog") {
+        this.word.v++ // to update views of the word
+        this.wordV = this.word.v // to not update it here!
+
+        if (this.word.id === Infinity) return this.addNew()
+
+        emit(EVT.WORD_UPDATED)
+        emit(EVT.CARD_MUTATED, {
+            type: part === "card" ? "wordCards" : "wordProgs",
+            card: this.word[part]
+        })
     }
 
     addNew() {
@@ -99,25 +131,15 @@ export default class WordEditor extends HTMLElement {
 
         addNew(this.word)
 
-        emit(EVT.WORD_UPDATED) 
+        emit(EVT.WORD_UPDATED)
         emit(EVT.CARD_MUTATED, { type: "wordCards", card: this.word.card })
         emit(EVT.CARD_MUTATED, { type: "wordProgs", card: this.word.prog })
     }
 
-    implementMutation(part: "card" | "prog") {
-        this.word.v++ // to update views of the word
-        this.wordV = this.word.v // not to update it here!
-        
-        if (this.word.id === Infinity) return this.addNew()
-
-        emit(EVT.WORD_UPDATED) // for the views
-        emit(EVT.CARD_MUTATED, { // for the DBs
-            type: part === "card" ? "wordCards" : "wordProgs",
-            card: this.word[part]
-        })
-    }
-
     deleteWord(id: number) {
+        if (!confirm("Do delete?")) return
+
+        console.log("remove ", this.word.id)
         emit(EVT.WORD_DELETE_INIT, id)
         emit(EVT.WORDS_DELETED, [id])
     }
