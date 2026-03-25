@@ -20,7 +20,8 @@ export default class SmartRef {
         return this
     }
 
-    html(val: string) {
+    html(val: string | undefined) {
+        if (val === undefined) val = ""
         if (val !== this.#htmlCache) {
             this.#htmlCache = val
             this.el.innerHTML = val
@@ -40,6 +41,16 @@ export default class SmartRef {
 
     replaceClasses(classes: string[]) {
         this.el.className = classes.join(" ")
+        return this
+    }
+
+    addClass(className: string) {
+        this.el.classList.add(className)
+        return this
+    }
+
+    removeClass(className: string) {
+        this.el.classList.remove(className)
         return this
     }
 }

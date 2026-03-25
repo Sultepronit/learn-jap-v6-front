@@ -20,10 +20,20 @@ export async function sort(data: CombinedWord[], column: string, up: boolean) {
 
     lastSort.column = column
     lastSort.up = up
-    
+
     if (["writings", "readings"].includes(column)) {
         await loadAll("wordCards")
-    } else if (["status"].includes(column)) {
+    } else if (
+        [
+            "status",
+            "f-progress",
+            "b-progress",
+            "f-record",
+            "f-autorepeat",
+            "b-record",
+            "b-autorepeat"
+        ].includes(column)
+    ) {
         await loadAll("wordProgs")
     }
 
@@ -32,19 +42,57 @@ export async function sort(data: CombinedWord[], column: string, up: boolean) {
             data.sort((a, b) => a.num - b.num)
             break
         case "status":
-            data.sort((a, b) =>
-                a.prog?.data.status - b.prog?.data.status)
+            data.sort((a, b) => a.prog?.data.status - b.prog?.data.status)
+            break
+        case "f-progress":
+            data.sort(
+                (a, b) => a.prog?.data.f.progress - b.prog?.data.f.progress
+            )
+            break
+        case "b-progress":
+            data.sort(
+                (a, b) => a.prog?.data.b.progress - b.prog?.data.b.progress
+            )
+            break
+        case "f-record":
+            data.sort((a, b) => a.prog?.data.f.record - b.prog?.data.f.record)
+            break
+        case "b-record":
+            data.sort((a, b) => a.prog?.data.b.record - b.prog?.data.b.record)
+            break
+        case "f-autorepeat":
+            data.sort(
+                (a, b) =>
+                    Number(a.prog?.data.f.autorepeat ?? 0) -
+                    Number(b.prog?.data.f.autorepeat ?? 0)
+            )
+            break
+        case "b-autorepeat":
+            data.sort(
+                (a, b) =>
+                    Number(a.prog?.data.b.autorepeat ?? 0) -
+                    Number(b.prog?.data.b.autorepeat ?? 0)
+            )
             break
         case "writings":
             data.sort((a, b) =>
-                a.card?.data.writings.main[0].localeCompare(b.card?.data.writings.main[0]))
+                a.card?.data.writings.main[0].localeCompare(
+                    b.card?.data.writings.main[0]
+                )
+            )
             break
         case "readings":
             data.sort((a, b) =>
-                a.card?.data.readings.main[0].localeCompare(b.card?.data.readings.main[0]))
+                a.card?.data.readings.main[0].localeCompare(
+                    b.card?.data.readings.main[0]
+                )
+            )
             break
+        default:
+            lastSort.column = ""
+            return
     }
-    if (!up) data.reverse();
+    if (!up) data.reverse()
 }
 
 async function search(data: CombinedWord[], query: string) {
@@ -54,14 +102,16 @@ async function search(data: CombinedWord[], query: string) {
             ...w.card.data.writings.main,
             ...(w.card.data.writings.rare || []),
             ...w.card.data.readings.main,
-            ...(w.card.data.readings.rare || []),
-        ].join("").includes(query)
+            ...(w.card.data.readings.rare || [])
+        ]
+            .join("")
+            .includes(query)
     })
 }
 
 export async function searchSort(data: CombinedWord[], query: string) {
     let re: CombinedWord[]
-    
+
     if (query) {
         re = await search(data, query)
     } else {
