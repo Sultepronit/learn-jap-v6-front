@@ -3,10 +3,12 @@ import type { CombinedWord } from "../words/types"
 import type { Mark, SyncCard } from "./types"
 
 export const EVT = {
-    /** send data for sync */
+    /** send data for saving */
     CARD_MUTATED: "card-mutated",
 
+    /** init view update */
     WORD_UPDATED: "word-updated",
+
     WORD_UPDATES_RECEIVED: "word-updates-received",
     WORDS_COUNT_CHANGED: "words-count-changed",
 
