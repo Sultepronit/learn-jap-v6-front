@@ -85,7 +85,7 @@ export default class WordEditor extends BaseComponent<RefKeys> {
         this.card = this.word.card?.data
         this.prog = this.word.prog?.data
         // const prog = this.word.prog?.data
-        if (this.card || !this.prog) return
+        if (!this.card || !this.prog) return
 
         this.refs.status.value = this.prog?.status
         this.refs.mainWrit.value = this.word.card?.data.writings.main.join(", ")
