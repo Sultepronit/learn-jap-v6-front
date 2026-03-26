@@ -9,8 +9,7 @@ export function createWord(num = 0, id = Infinity) {
         data: {
             readings: { main: [""] },
             writings: { main: [""] },
-            translation: "",
-            example: ""
+            translation: ""
         }
     }
 

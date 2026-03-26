@@ -29,16 +29,13 @@ export default class WordEditor extends BaseComponent<RefKeys> {
 
         this.setControls()
 
-        this.parentElement.addEventListener(
-            "card-selected",
-            (e: CustomEvent) => {
-                const { cardNum } = e.detail
-                this.word = this.data[cardNum - 1]
-                console.log(this.word)
-                this.wordV = this.word.v
-                this.updateEditorContent()
-            }
-        )
+        this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
+            const { cardNum } = e.detail
+            this.word = this.data[cardNum - 1]
+            console.log(this.word)
+            this.wordV = this.word.v
+            this.updateEditorContent()
+        })
 
         on(EVT.WORD_UPDATED, () => {
             if (this.wordV !== this.word.v) this.updateEditorContent()
@@ -55,9 +52,9 @@ export default class WordEditor extends BaseComponent<RefKeys> {
         variant: "main" | "rare"
     ) {
         to[variant] = from.split(",").map(e => e.trim())
-        if (variant === "rare" && to.rare.length < 1) {
-            delete to.rare
-        }
+
+        if (variant === "rare" && to.rare.length < 1) delete to.rare
+
         this.implementMutation("card")
     }
 
@@ -69,29 +66,12 @@ export default class WordEditor extends BaseComponent<RefKeys> {
             this.implementMutation("prog")
         })
 
-        this.refs.mainWrit.on("change", () => {
-            this.card.writings.main = this.refs.mainWrit.value
-                .split(",")
-                .map(e => e.trim())
-            this.implementMutation("card")
-        })
-
-        // this.refs.rareWrit.on("change", () => {
-        //     this.card.writings.rare = this.refs.rareWrit.value
-        //         .split(",")
-        //         .map(e => e.trim())
-        //     if (this.card.writings.rare.length < 1) {
-        //         delete this.card.writings.rare
-        //     }
-        //     this.implementMutation("card")
-        // })
+        this.refs.mainWrit.on("change", () =>
+            this.updateArray(this.refs.mainWrit.value, this.card.writings, "main")
+        )
 
         this.refs.rareWrit.on("change", () =>
-            this.updateArray(
-                this.refs.rareWrit.value,
-                this.card.writings,
-                "rare"
-            )
+            this.updateArray(this.refs.rareWrit.value, this.card.writings, "rare")
         )
 
         this.refs.toggleAlt.on("click", () => {
@@ -105,22 +85,13 @@ export default class WordEditor extends BaseComponent<RefKeys> {
             this.implementMutation("card")
         })
 
-        this.refs.mainRead.on("change", () => {
-            this.card.readings.main = this.refs.mainRead.value
-                .split(",")
-                .map(e => e.trim())
-            this.implementMutation("card")
-        })
+        this.refs.mainRead.on("change", () =>
+            this.updateArray(this.refs.mainRead.value, this.card.readings, "main")
+        )
 
-        this.refs.rareRead.on("change", () => {
-            this.card.readings.rare = this.refs.rareRead.value
-                .split(",")
-                .map(e => e.trim())
-            if (this.card.readings.rare.length < 1) {
-                delete this.card.readings.rare
-            }
-            this.implementMutation("card")
-        })
+        this.refs.rareRead.on("change", () =>
+            this.updateArray(this.refs.rareRead.value, this.card.readings, "rare")
+        )
 
         this.refs.translation.on("change", () => {
             this.word.card.data.translation = this.refs.translation.value
@@ -129,9 +100,7 @@ export default class WordEditor extends BaseComponent<RefKeys> {
 
         this.refs.example.on("change", () => {
             this.word.card.data.example = this.refs.example.value
-            if (!this.word.card.data.example) {
-                delete this.word.card.data.example
-            }
+            if (!this.word.card.data.example) delete this.word.card.data.example
             this.implementMutation("card")
         })
     }
@@ -151,18 +120,14 @@ export default class WordEditor extends BaseComponent<RefKeys> {
             this.refs.mainWrit.removeClass("alt")
             this.refs.toggleAlt.removeClass("is-alt")
         }
-        this.refs.rareWrit.value = (
-            this.word.card?.data.writings.rare || []
-        ).join(", ")
+        this.refs.rareWrit.value = (this.word.card?.data.writings.rare || []).join(", ")
 
         this.refs.mainRead.value = this.word.card?.data.readings.main.join(", ")
-        this.refs.rareRead.value = (
-            this.word.card?.data.readings.rare || []
-        ).join(", ")
+        this.refs.rareRead.value = (this.word.card?.data.readings.rare || []).join(", ")
 
         this.refs.translation.value = this.word.card?.data.translation
 
-        this.refs.example.value = this.word.card?.data.example
+        this.refs.example.value = this.word.card?.data.example || ""
     }
 
     implementMutation(part: "card" | "prog") {
