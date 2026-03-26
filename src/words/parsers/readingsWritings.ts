@@ -52,9 +52,10 @@ function fakeToKata(hira: string) {
 }
 
 export function computeAll(word: CombinedWord) {
-    computeCommon(word)
     const input = word.card?.data
     if (!input) return
+    computeCommon(word)
+
     if (word.comp?.learn?.v === word.card.v) return
 
     const mainReadKata = input.readings.main.map(e => fakeToKata(e))

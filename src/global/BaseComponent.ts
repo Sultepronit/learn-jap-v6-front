@@ -11,6 +11,6 @@ export default class BaseComponent<TKeys extends string> extends HTMLElement {
             const kebab = el.dataset.ref
             this.refs[toCamelCase(kebab)] = new SmartRef(el)
         })
-        console.log(this.refs)
+        // console.log(this.refs)
     }
 }

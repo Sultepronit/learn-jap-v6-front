@@ -1,3 +1,5 @@
 Add to the server & the client forced update if the client update is too stale
 
-Add alt mode to the words session! Ignore bad reading if alt or several readings!
+Ignore bad reading if alt or several readings!
+
+forbid update after delete?

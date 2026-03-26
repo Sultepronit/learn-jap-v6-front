@@ -31,7 +31,8 @@ export default class WordCard extends BaseComponent<RefKeys> {
     }
 
     updateStats() {
-        const p = this.word.prog.data
+        const p = this.word.prog?.data
+        if (!p) return
         this.refs.stats
             .text(
                 `
@@ -46,8 +47,7 @@ export default class WordCard extends BaseComponent<RefKeys> {
     ask(word: CombinedWord) {
         console.log(word)
         this.word = word
-        this.stage =
-            this.word.comp.stage === "autorepeat" ? "answer" : "question"
+        this.stage = this.word.comp.stage === "autorepeat" ? "answer" : "question"
         this.updateStats()
         this.updateCardView()
     }
@@ -81,6 +81,7 @@ export default class WordCard extends BaseComponent<RefKeys> {
                     const variants = comp.learn.writQuest
                     const q = variants[genRandomInt(variants.length)]
                     // console.log(variants, q)
+                    this.refs.writMain.removeClass("alt")
                     this.refs.writMain.text(q).show()
                     this.refs.translation.hide()
                 } else {
@@ -89,37 +90,26 @@ export default class WordCard extends BaseComponent<RefKeys> {
                 }
                 break
             case "hint":
-                const variants = [
-                    ...card.readings.main,
-                    ...comp.learn.readKata.question
-                ]
+                const variants = [...card.readings.main, ...comp.learn.readKata.question]
                 const q = variants[genRandomInt(variants.length)]
                 // console.log(variants, q)
                 this.refs.readMain.text(q).show()
                 break
             case "answer":
                 const mw = comp.common.writings.main
+                if (card.writings.alt) {
+                    this.refs.writMain.addClass("alt")
+                } else {
+                    this.refs.writMain.removeClass("alt")
+                }
                 this.refs.writMain.text(mw.value, mw.isHtml).show()
-                // if (mw.isHtml) {
-                //     this.refs.writMain.html(mw.value).show()
-                // } else {
-                //     this.refs.writMain.text(mw.value).show()
-                // }
 
                 const rw = comp.common.writings.rare
                 if (rw) {
                     this.refs.writRare.text(rw.value, rw.isHtml).show()
-                    // if (rw.isHtml) {
-                    //     this.refs.writRare.html(rw.value).show()
-                    // } else {
-                    //     this.refs.writRare.text(rw.value).show()
-                    // }
                 }
 
-                const hiraKata = [
-                    comp.common.readings,
-                    comp.learn.readKata.answer
-                ]
+                const hiraKata = [comp.common.readings, comp.learn.readKata.answer]
                 const hki = genRandomInt(2)
                 const mr = hiraKata[hki].main
                 this.refs.readMain.text(mr).show()

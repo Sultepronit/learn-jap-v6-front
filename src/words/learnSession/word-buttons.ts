@@ -89,7 +89,13 @@ export default class WordButtons extends BaseComponent<Mark> {
                 }
 
                 const buttons: Mark[] = ["retry", "bad"]
-                if (mark !== "bad") buttons.push(this.goodOrPass)
+                if (
+                    mark !== "bad" ||
+                    this.word.card.data.writings.alt ||
+                    this.word.card.data.readings.main.length > 1
+                ) {
+                    buttons.push(this.goodOrPass)
+                }
                 this.setButtons(buttons)
                 break
             case "evaluation":
