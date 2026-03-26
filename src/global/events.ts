@@ -3,13 +3,15 @@ import type { CombinedWord } from "../words/types"
 import type { Mark, SyncCard } from "./types"
 
 export const EVT = {
-    /** send data for saving */
+    /** data for saving */
     CARD_MUTATED: "card-mutated",
 
-    /** init view update */
+    /** view update */
     WORD_UPDATED: "word-updated",
 
     WORD_UPDATES_RECEIVED: "word-updates-received",
+
+    /** view update */
     WORDS_COUNT_CHANGED: "words-count-changed",
 
     /** locally deleted word's id for sync */
@@ -21,6 +23,7 @@ export const EVT = {
     UPDATE_NOT_ENDED: "update-not-ended",
     SYNC_STATUS_CHANGED: "sync-status-changed",
     CONNECTION_STATUS_UPDATED: "connection-status-updated",
+
     /** words learning session */
     WS: {
         NEXT_CARD: "ws:next-card",
@@ -32,11 +35,7 @@ export const EVT = {
     }
 } as const
 
-type DeepValue<T> = T extends string
-    ? T
-    : T extends object
-      ? DeepValue<T[keyof T]>
-      : never
+type DeepValue<T> = T extends string ? T : T extends object ? DeepValue<T[keyof T]> : never
 export type EventName = DeepValue<typeof EVT>
 // type EventName = (typeof EVT)[keyof typeof EVT]
 
@@ -59,10 +58,7 @@ interface EventPayloads {
     "ws:stats-updated": WordsSession
 }
 
-export function emit<T extends EventName>(
-    eventName: T,
-    detail?: EventPayloads[T]
-) {
+export function emit<T extends EventName>(eventName: T, detail?: EventPayloads[T]) {
     document.dispatchEvent(new CustomEvent(eventName, { detail }))
 }
 
