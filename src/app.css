@@ -4,12 +4,23 @@
     box-sizing: border-box;
 }
 
-body {
+/* body {
     height: 100svh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     font-size: 1.5rem;
+} */
+
+body {
+    font-size: 1.5rem;
+}
+
+main-view {
+    height: 100svh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 input,

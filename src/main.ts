@@ -3,6 +3,7 @@ import setMutationsListener from "./sync/localMutations"
 import fetchInitData from "./temp-init/fetchInitData"
 import loadToServer from "./temp-init/loadToServer"
 import BigTable from "./views/big-table"
+import MainView from "./views/main-view"
 import StatusBar from "./views/status-bar"
 import { loadAll } from "./words/data/data"
 import WordEditor from "./words/dbView/word-editor"
@@ -18,6 +19,7 @@ console.time("t1")
 setMutationsListener()
 
 customElements.define("status-bar", StatusBar)
+customElements.define("main-view", MainView)
 
 customElements.define("big-table", BigTable)
 
