@@ -15,11 +15,11 @@ let session = {
     content: null as CombinedWord[],
     plan: {
         total: sessionLenth,
-        learn: 10,
-        repeat: 40
+        learn: 0,
+        repeat: 0
     },
     stats: {
-        clicks: 0,
+        tries: 0,
         results: 0,
         learn: {
             good: 0,
@@ -56,7 +56,7 @@ async function continueSession(): Promise<WordsSession> {
     if (restored.content.length < 1) return null
     if (
         new Date(restored.t).toDateString() !== new Date().toDateString() &&
-        restored.stats.clicks > 0
+        restored.stats.tries > 0
     ) {
         return null
     }
@@ -81,7 +81,10 @@ export async function initSession() {
     if (restored) {
         session = restored
     } else {
-        session.content = await prepareSession(sessionLenth)
+        const prep = await prepareSession(sessionLenth)
+        session.content = prep.content
+        session.plan.learn = prep.learnNumber
+        session.plan.repeat = prep.repeatNumber
         session.t = Date.now()
         session.v = globalVersions.get("wordProgs")
     }
@@ -96,8 +99,9 @@ export async function getNext() {
     if (session.content.length === 0) return
 
     word = session.content[session.content.length - 1]
-    papareWord(word)
+    await papareWord(word)
 
+    session.v = globalVersions.get("wordProgs")
     storeSession()
 
     console.log(session)

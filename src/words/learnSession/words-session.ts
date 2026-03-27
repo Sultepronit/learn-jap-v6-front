@@ -27,7 +27,7 @@ export default class WordsSession extends BaseComponent<RefKeys> {
         on(EVT.WORD_UPDATED, () => {
             // console.log(this.word)
             // console.log(this.word.v)
-            if (this.word.v === this.wordV) return
+            if (!this.word || this.word.v === this.wordV) return
             // emitLwe(LWE.WORD_UPDATED)
             emit(EVT.WS.WORD_UPDATED)
         })

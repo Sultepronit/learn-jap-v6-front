@@ -1,22 +1,22 @@
+import { emit, EVT } from "../../global/events"
 import type { Mark } from "../../global/types"
 import type { CombinedWord, Progress } from "../types"
 import type { WordsSession } from "./sessionData"
 
 let nextRepeatStatus = 15000
-export default function update(
-    word: CombinedWord,
-    mark: Mark,
-    stats: WordsSession["stats"]
-) {
+export default function update(word: CombinedWord, mark: Mark, stats: WordsSession["stats"]) {
     const prog = word.prog.data
     const actual = prog[word.comp.dir]
     const stage = word.comp.stage
 
     prog.t = Date.now()
-    stats.clicks++
-    stats[stage][mark]++
+    if (stage !== "autorepeat") stats.tries++
     if (mark !== "retry" && stage !== "autorepeat") stats.results++
 
+    stats[stage][mark]++
+
+    console.log("before update:")
+    console.table(prog)
     switch (mark) {
         case "bad":
             prog.status = stage === "learn" ? -2 : 0
@@ -50,5 +50,10 @@ export default function update(
             if (stage === "repeat") actual.record = -1
             break
     }
-    console.log("updated:", word)
+    console.log("updated:")
+    console.table(prog)
+
+    word.v++
+    emit(EVT.CARD_MUTATED, { type: "wordProgs", card: word.prog })
+    emit(EVT.WORD_UPDATED)
 }

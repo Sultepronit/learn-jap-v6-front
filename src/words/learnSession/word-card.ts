@@ -27,7 +27,10 @@ export default class WordCard extends BaseComponent<RefKeys> {
         on(EVT.WS.HINT_REQUESTED, () => this.hint())
         on(EVT.WS.ANSWER_REQUESTED, () => this.answer())
 
-        on(EVT.WS.WORD_UPDATED, () => this.updateCardView())
+        on(EVT.WS.WORD_UPDATED, () => {
+            this.updateCardView()
+            this.updateStats()
+        })
     }
 
     updateStats() {
@@ -45,7 +48,7 @@ export default class WordCard extends BaseComponent<RefKeys> {
     }
 
     ask(word: CombinedWord) {
-        console.log(word)
+        // console.log(word)
         this.word = word
         this.stage = this.word.comp.stage === "autorepeat" ? "answer" : "question"
         this.updateStats()

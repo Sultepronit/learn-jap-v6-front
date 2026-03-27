@@ -64,17 +64,9 @@ export function emit<T extends EventName>(eventName: T, detail?: EventPayloads[T
 
 export function on<T extends keyof EventPayloads>(
     eventName: T,
-    callback: (detail: EventPayloads[T]) => void
+    callback: (detail: EventPayloads[T]) => void,
+    once = false
 ) {
     const handler = (e: CustomEvent<EventPayloads[T]>) => callback(e.detail)
-    document.addEventListener(eventName, handler as EventListener)
+    document.addEventListener(eventName, handler as EventListener, { once })
 }
-
-// type eventCallback<T extends EventName> = (detail: EventPayloads[T]) => void
-// export function on<T extends EventName>(
-//     eventName: T,
-//     callback: eventCallback<T>
-// ) {
-//     const handler = (e: Event) => callback((e as CustomEvent).detail)
-//     document.addEventListener(eventName, handler)
-// }

@@ -39,7 +39,7 @@ function prepareMsg() {
         // console.log(updated)
         standard.push({
             type,
-            v: globalVersions.get(type),
+            v: globalVersions.get(type as "wordCards" | "wordProgs"),
             ...(updated && { updated })
         })
     }
@@ -117,4 +117,4 @@ setInterval(() => {
         window.addEventListener("click", syncWithControl, { once: true })
     }
     // console.log(time)
-}, 10_000)
+}, 2_000)

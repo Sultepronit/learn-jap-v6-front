@@ -135,6 +135,7 @@ async function loadCard(word: CombinedWord) {
     // console.log("loading!")
     if (queue.has(word.id)) return
     queue.add(word.id)
+    // console.log(queue)
 
     // console.time("get1")
     for (const block of ["card", "prog"]) {

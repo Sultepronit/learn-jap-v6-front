@@ -4,7 +4,7 @@ const globalVersions = {
         wordProgs: Number(localStorage.getItem("wordProgsV")) || -1
     },
 
-    get(type: "wordCards" | "wordProgs") {
+    get(type: "wordCards" | "wordProgs"): number {
         return this._mem[type]
     },
 

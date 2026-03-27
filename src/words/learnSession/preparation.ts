@@ -1,11 +1,8 @@
-import { emit, EVT, on } from "../../global/events"
 import { genRandomInt, randomize } from "../../helpers/random"
 import { getCardsStatusRange } from "../../indexedDB/dbUseCases"
-import globalVersions from "../../sync/globalVersions"
 import { getWordById, loadBasicList, setUpdates } from "../data/data"
 import type { CombinedWord, WordProg } from "../types"
-import { detectDirection, papareWord } from "./helpers"
-import update from "./update"
+import { detectDirection } from "./helpers"
 
 function prepareRepeatList(all: WordProg[], length: number) {
     const re: WordProg[] = []
@@ -24,7 +21,7 @@ function prepareRepeatList(all: WordProg[], length: number) {
     return re
 }
 
-function prepareSessionContent(candidates: WordProg[], sessionLenth: number) {
+function prepareSessionList(candidates: WordProg[], sessionLenth: number) {
     const splitInex = candidates.findIndex(e => e.data.status > 0)
     if (splitInex < 0) return
 
@@ -64,20 +61,24 @@ export default async function prepareSession(length: number) {
     setUpdates({ type: "wordProgs", updates: range })
     console.timeLog("t1", "updated!")
 
-    const { learnNumber, repeatNumber, list } = prepareSessionContent(range, length)
+    const { learnNumber, repeatNumber, list } = prepareSessionList(range, length)
 
-    console.log(learnNumber, repeatNumber, list)
+    // console.log(learnNumber, repeatNumber, list)
 
     console.timeLog("t1", "session...")
 
-    const re: CombinedWord[] = []
+    const content: CombinedWord[] = []
     for (const prog of list) {
         const word = getWordById(prog.id)
-        re.push(word)
+        content.push(word)
     }
 
-    console.log(re)
+    console.log(content)
 
     console.timeLog("t1", "session!")
-    return re
+    return {
+        content,
+        learnNumber,
+        repeatNumber
+    }
 }

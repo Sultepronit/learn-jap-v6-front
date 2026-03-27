@@ -15,9 +15,9 @@ export default class WordsSessionStats extends BaseComponent<RefKeys> {
     }
 
     update(s: WordsSession) {
-        console.log(s)
+        // console.log(s)
         this.refs.plan.text(s.plan.total)
-        this.refs.clicks.text(s.stats.clicks)
+        this.refs.clicks.text(s.stats.tries)
         this.refs.results.text(s.stats.results)
         this.refs.learnPlan.text(s.plan.learn)
         this.refs.repeatPlan.text(s.plan.repeat)
