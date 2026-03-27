@@ -115,6 +115,8 @@ export default class WordEditor extends BaseComponent<RefKeys> {
     }
 
     search(query: string) {
+        if (this.word.prog.data.status >= 0) return
+
         this.dispatchEvent(
             new CustomEvent("search", {
                 detail: { query, temp: true },
