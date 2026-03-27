@@ -22,10 +22,8 @@ export default class WordsDb extends HTMLElement {
 
     async connectedCallback() {
         this.allData = await loadBasicList()
-        // this.addEmpty()
-        // checkAndCreateEmpty()
-        // console.log(this.allData)
         this.render()
+
         this.querySelector<WordEditor>("word-editor").setData(this.allData)
         this.setSearchBar()
         this.setTable()
@@ -56,11 +54,9 @@ export default class WordsDb extends HTMLElement {
     setSearchBar() {
         this.searchBar = this.querySelector("words-search")
         this.searchBar.setData(this.allData)
-        this.searchBar.addEventListener("search", async (e: CustomEvent) => {
-            const query = e.detail.query
-            // this.displayData = await searchSort(this.allData, query)
-            // this.table.setData(this.displayData)
-            this.updateDisplayData(await searchSort(this.allData, query))
+        // this.searchBar.addEventListener("search", async (e: CustomEvent) => {
+        this.addEventListener("search", async (e: CustomEvent) => {
+            this.updateDisplayData(await searchSort(this.allData, e.detail.query))
         })
     }
 

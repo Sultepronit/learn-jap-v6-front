@@ -34,7 +34,7 @@ export default class WordsSearch extends HTMLElement {
         this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
             const newVal = e.detail.cardNum.toString()
             // console.log(this.wordNum.value, newVal)
-            if (this.wordNum.value === newVal) return;
+            if (this.wordNum.value === newVal) return
 
             this.wordNum.value = e.detail.cardNum
             // console.log(this.wordNum.value)
@@ -43,17 +43,22 @@ export default class WordsSearch extends HTMLElement {
 
         this.wordNum.addEventListener("input", () => {
             this.updateSelected()
-            this.parentElement.dispatchEvent(new CustomEvent(
-                "card-selected",
-                { detail: { cardNum: Number(this.wordNum.value), rowIdx: -1 } }
-            ))
+            // this.parentElement.dispatchEvent(
+            this.dispatchEvent(
+                new CustomEvent("card-selected", {
+                    detail: { cardNum: Number(this.wordNum.value), rowIdx: -1 },
+                    bubbles: true
+                })
+            )
         })
 
         this.searchQuery.addEventListener("input", () => {
-            this.dispatchEvent(new CustomEvent(
-                "search",
-                { detail: { query: this.searchQuery.value } }
-            ))
+            this.dispatchEvent(
+                new CustomEvent("search", {
+                    detail: { query: this.searchQuery.value },
+                    bubbles: true
+                })
+            )
         })
     }
 
@@ -75,6 +80,6 @@ export default class WordsSearch extends HTMLElement {
         const idx = this.displayData.findIndex(w => w.num === num)
         // console.log(idx)
         const val = idx < 0 ? "-" : (idx + 1).toString()
-        this.selectedWord.textContent = val;
+        this.selectedWord.textContent = val
     }
 }

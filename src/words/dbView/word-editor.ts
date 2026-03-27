@@ -103,6 +103,24 @@ export default class WordEditor extends BaseComponent<RefKeys> {
             if (!this.word.card.data.example) delete this.word.card.data.example
             this.implementMutation("card")
         })
+
+        this.checkDuplicates()
+    }
+
+    checkDuplicates() {
+        this.refs.mainWrit.on("input", () => this.search(this.refs.mainWrit.value))
+        this.refs.mainWrit.on("blur", () => this.search(""))
+        this.refs.mainRead.on("input", () => this.search(this.refs.mainRead.value))
+        this.refs.mainRead.on("blur", () => this.search(""))
+    }
+
+    search(query: string) {
+        this.dispatchEvent(
+            new CustomEvent("search", {
+                detail: { query, temp: true },
+                bubbles: true
+            })
+        )
     }
 
     updateEditorContent() {
