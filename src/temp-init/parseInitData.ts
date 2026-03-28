@@ -1,7 +1,7 @@
-import { putMany } from "../indexedDB/dbHandlers";
-import { tempClearStore, saveCards } from "../indexedDB/dbUseCases";
-import type { WordCard, WordProg } from "../words/types";
-import fetchInitData from "./fetchInitData";
+import { putMany } from "../indexedDB/dbHandlers"
+import { tempClearStore, saveCards } from "../indexedDB/dbUseCases"
+import type { WordCard, WordProg } from "../words/types"
+import fetchInitData from "./fetchInitData"
 
 export default async function parseInitData() {
     // const initData = JSON.parse(localStorage.getItem('initData')) as any[]
@@ -17,7 +17,6 @@ export default async function parseInitData() {
         // console.table(rawCard);
         const {
             id,
-            // cardNumber,
             writings,
             altWriting,
             rareWritings,
@@ -39,22 +38,17 @@ export default async function parseInitData() {
             v: 0,
             syncV: 0,
             data: {
-                // writings: writings.split(", "),
-                // altWriting: !!altWriting,
-                // rareWritings: rareWritings.split(", "),
-                // readings: readings.split(", "),
-                // rareReadings: rareReadings.split(", "),
                 writings: {
                     main: writings.split(", "),
                     ...(altWriting && { alt: true }),
-                    ...(rareWritings && { rare: rareWritings.split(", ") }),
+                    ...(rareWritings && { rare: rareWritings.split(", ") })
                 },
                 readings: {
                     main: readings.split(", "),
-                    ...(rareReadings && { rare: rareReadings.split(", ") }),
+                    ...(rareReadings && { rare: rareReadings.split(", ") })
                 },
                 translation: translation,
-                example
+                ...(example && { example })
             }
         }
         // console.table(wordCard)
@@ -65,7 +59,7 @@ export default async function parseInitData() {
             v: 0,
             syncV: 0,
             data: {
-                status: repeatStatus,
+                status: repeatStatus === -2 ? -0.5 : repeatStatus,
                 f: {
                     progress: fProgress,
                     record: fRecord,
@@ -83,8 +77,8 @@ export default async function parseInitData() {
         wordProgs.push(wordProg)
     }
     console.log(wordCards)
-    // clearStore("wordCards")
-    // clearStore("wordProgs")
+    tempClearStore("wordCards")
+    tempClearStore("wordProgs")
     saveCards("wordCards", wordCards)
     putMany("wordProgs", wordProgs)
 }

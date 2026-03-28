@@ -10,7 +10,7 @@ import type { Mark } from "../../global/types"
 export default class WordButtons extends BaseComponent<Mark> {
     word: CombinedWord
     expected: "hint" | "answer" | "evaluation"
-    goodOrPass: Mark = "good"
+    // goodOrPass: Mark = "good"
     retryWidth = "6"
 
     connectedCallback() {
@@ -94,7 +94,8 @@ export default class WordButtons extends BaseComponent<Mark> {
                     this.word.card.data.writings.alt ||
                     this.word.card.data.readings.main.length > 1
                 ) {
-                    buttons.push(this.goodOrPass)
+                    // buttons.push(this.goodOrPass)
+                    buttons.push(this.word.comp.retrying ? "pass" : "good")
                 }
                 this.setButtons(buttons)
                 break

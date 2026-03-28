@@ -3,23 +3,27 @@ import type { Mark } from "../../global/types"
 import type { CombinedWord, Progress } from "../types"
 import type { WordsSession } from "./sessionData"
 
-let nextRepeatStatus = 15000
+const genRepeatStatus = () => Math.floor(Date.now() / 8640000) - 192354
+console.log(genRepeatStatus())
+
 export default function update(word: CombinedWord, mark: Mark, stats: WordsSession["stats"]) {
     const prog = word.prog.data
     const actual = prog[word.comp.dir]
     const stage = word.comp.stage
 
-    prog.t = Date.now()
+    prog.t = Math.floor(Date.now() / 1000)
     if (stage !== "autorepeat") stats.tries++
     if (mark !== "retry" && stage !== "autorepeat") stats.results++
 
     stats[stage][mark]++
 
+    if (mark === "retry") word.comp.retrying = true
+
     console.log("before update:")
     console.table(prog)
     switch (mark) {
         case "bad":
-            prog.status = stage === "learn" ? -2 : 0
+            prog.status = stage === "learn" ? -0.5 : 0
             const empty: Progress = {
                 progress: 0,
                 record: 0
@@ -40,7 +44,7 @@ export default function update(word: CombinedWord, mark: Mark, stats: WordsSessi
             if (prog.f.progress > 0 && prog.b.progress > 0) {
                 stats[stage].upgrade++
 
-                prog.status = stage === "learn" ? 1 : nextRepeatStatus++
+                prog.status = stage === "learn" ? 1 : genRepeatStatus()
                 prog.f.progress = 0
                 prog.b.progress = 0
             }

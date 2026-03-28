@@ -44,7 +44,7 @@ function prepareSessionList(candidates: WordProg[], sessionLenth: number) {
 }
 
 export default async function prepareSession(length: number) {
-    const maxToRepeat = 8800
+    const maxToRepeat = 9000
     // const maxToRepeat = 8000
 
     console.timeLog("t1", "range init")
@@ -53,7 +53,7 @@ export default async function prepareSession(length: number) {
     const allWordsPromise = loadBasicList()
     const range = ((await rangePromise) || []) as WordProg[]
     // console.log(range)
-    console.log(range.length)
+    console.log("range length:", range.length)
     console.timeLog("t1", "range here")
     await allWordsPromise
     // const allWords = await loadData()

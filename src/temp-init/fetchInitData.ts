@@ -4,9 +4,9 @@ export default async function fetchInitData() {
         console.log(url)
         const resp = await fetch(url)
         const data = await resp.json()
-        localStorage.setItem('initData', JSON.stringify(data))
+        // localStorage.setItem('initData', JSON.stringify(data))
         console.log(data)
-        return data 
+        return data
     } catch (error) {
         console.warn(error)
     }
