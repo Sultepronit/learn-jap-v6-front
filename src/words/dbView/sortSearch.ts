@@ -45,14 +45,10 @@ export async function sort(data: CombinedWord[], column: string, up: boolean) {
             data.sort((a, b) => a.prog?.data.status - b.prog?.data.status)
             break
         case "f-progress":
-            data.sort(
-                (a, b) => a.prog?.data.f.progress - b.prog?.data.f.progress
-            )
+            data.sort((a, b) => a.prog?.data.f.progress - b.prog?.data.f.progress)
             break
         case "b-progress":
-            data.sort(
-                (a, b) => a.prog?.data.b.progress - b.prog?.data.b.progress
-            )
+            data.sort((a, b) => a.prog?.data.b.progress - b.prog?.data.b.progress)
             break
         case "f-record":
             data.sort((a, b) => a.prog?.data.f.record - b.prog?.data.f.record)
@@ -63,29 +59,23 @@ export async function sort(data: CombinedWord[], column: string, up: boolean) {
         case "f-autorepeat":
             data.sort(
                 (a, b) =>
-                    Number(a.prog?.data.f.autorepeat ?? 0) -
-                    Number(b.prog?.data.f.autorepeat ?? 0)
+                    Number(a.prog?.data.f.autorepeat ?? 0) - Number(b.prog?.data.f.autorepeat ?? 0)
             )
             break
         case "b-autorepeat":
             data.sort(
                 (a, b) =>
-                    Number(a.prog?.data.b.autorepeat ?? 0) -
-                    Number(b.prog?.data.b.autorepeat ?? 0)
+                    Number(a.prog?.data.b.autorepeat ?? 0) - Number(b.prog?.data.b.autorepeat ?? 0)
             )
             break
         case "writings":
             data.sort((a, b) =>
-                a.card?.data.writings.main[0].localeCompare(
-                    b.card?.data.writings.main[0]
-                )
+                a.card?.data.writings.main[0].localeCompare(b.card?.data.writings.main[0])
             )
             break
         case "readings":
             data.sort((a, b) =>
-                a.card?.data.readings.main[0].localeCompare(
-                    b.card?.data.readings.main[0]
-                )
+                a.card?.data.readings.main[0].localeCompare(b.card?.data.readings.main[0])
             )
             break
         default:
@@ -95,17 +85,25 @@ export async function sort(data: CombinedWord[], column: string, up: boolean) {
     if (!up) data.reverse()
 }
 
+const rgx = [/[\(\)[\]{}]/g, /\([^)]*\)|\{[^}]*\}|\[[^]]*\]/g]
 async function search(data: CombinedWord[], query: string) {
     await loadAll("wordCards")
+
     return data.filter(w => {
-        return [
+        const text = [
             ...w.card.data.writings.main,
             ...(w.card.data.writings.rare || []),
             ...w.card.data.readings.main,
             ...(w.card.data.readings.rare || [])
-        ]
-            .join("")
-            .includes(query)
+        ].join("")
+        if (text.includes(query)) return true
+
+        const hasBrackets = text.includes("(") || text.includes("{") || text.includes("[")
+        if (!hasBrackets) return false
+        if (text.replace(rgx[0], "").includes(query)) return true
+        if (text.replace(rgx[1], "").includes(query)) return true
+        return false
+        // .includes(query)
     })
 }
 

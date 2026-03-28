@@ -148,6 +148,7 @@ async function loadCard(word: CombinedWord) {
             recreateBlock(word, block)
         defineProperty(word, block, val)
     }
+    // console.timeLog("t1", "loaded!")
 
     word.v++
     queue.delete(word.id)
