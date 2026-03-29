@@ -11,6 +11,7 @@ export async function getAllCards(store: CardStore) {
     return await useDb(store, "readonly", s => s.getAll())
 }
 
+// remove!
 export async function getCardsStatusRange(store: CardStore, from: number, to: number) {
     return await getIndexed(store, "status", IDBKeyRange.bound(from, to))
 }

@@ -130,7 +130,7 @@ export async function getSessionCards(storeName: string, limit = 1000) {
         const store = tx.objectStore(storeName)
         const index = store.index("status")
 
-        const req = index.openCursor(IDBKeyRange.lowerBound(0))
+        const req = index.openCursor(IDBKeyRange.lowerBound(-0.5))
 
         const re = []
         req.onsuccess = () => {
