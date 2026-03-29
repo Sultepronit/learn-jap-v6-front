@@ -31,7 +31,8 @@ export async function sort(data: CombinedWord[], column: string, up: boolean) {
             "f-record",
             "f-autorepeat",
             "b-record",
-            "b-autorepeat"
+            "b-autorepeat",
+            "t"
         ].includes(column)
     ) {
         await loadAll("wordProgs")
@@ -67,6 +68,9 @@ export async function sort(data: CombinedWord[], column: string, up: boolean) {
                 (a, b) =>
                     Number(a.prog?.data.b.autorepeat ?? 0) - Number(b.prog?.data.b.autorepeat ?? 0)
             )
+            break
+        case "t":
+            data.sort((a, b) => a.prog?.data.t - b.prog?.data.t)
             break
         case "writings":
             data.sort((a, b) =>

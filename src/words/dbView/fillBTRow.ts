@@ -38,6 +38,9 @@ export default function fillRow(row: BTRow) {
     row.refs.bRecord.text(word.prog?.data.b.record)
     row.refs.fAutorepeat.text(word.prog?.data.f.autorepeat ? "✔️" : "")
     row.refs.bAutorepeat.text(word.prog?.data.b.autorepeat ? "✔️" : "")
+    const t = word.prog?.data.t
+    row.refs.t.text(t ? new Date(t * 1000).toISOString().slice(2, 10) : "")
+    // row.refs.t.text(t ? t : "")
 
     if (word.card?.data.writings.alt) {
         row.refs.mainWrit.addClass("alt")

@@ -70,6 +70,7 @@ export default class WordsDb extends HTMLElement {
             "b-progress",
             "b-record",
             "b-autorepeat",
+            "t",
             "writings",
             "readings",
             "translation",
