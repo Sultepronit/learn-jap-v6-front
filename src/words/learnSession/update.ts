@@ -3,7 +3,7 @@ import type { Mark } from "../../global/types"
 import type { CombinedWord, Progress } from "../types"
 import type { WordsSession } from "./sessionData"
 
-const genRepeatStatus = () => Math.floor(Date.now() / 8640000) - 192354
+const genRepeatStatus = () => Math.floor(Date.now() / 8640000) - 192350
 console.log(genRepeatStatus())
 
 export default function update(word: CombinedWord, mark: Mark, stats: WordsSession["stats"]) {

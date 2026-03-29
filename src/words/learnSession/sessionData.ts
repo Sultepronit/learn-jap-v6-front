@@ -1,17 +1,15 @@
 import { emit, EVT, on } from "../../global/events"
-import { genRandomInt, randomize } from "../../helpers/random"
-import { getCardsStatusRange } from "../../indexedDB/dbUseCases"
+import { areSameDay, getNow } from "../../helpers/time"
 import globalVersions from "../../sync/globalVersions"
-import { getWordById, loadBasicList, setUpdates } from "../data/data"
-import type { CombinedWord, WordProg } from "../types"
-import { detectDirection, papareWord } from "./helpers"
+import { getWordById, loadBasicList } from "../data/data"
+import type { CombinedWord } from "../types"
+import { papareWord } from "./helpers"
 import prepareSession from "./preparation"
 import update from "./update"
 
 const sessionLenth = 50
 let session = {
     t: 0,
-    v: 0,
     content: null as CombinedWord[],
     plan: {
         total: sessionLenth,
@@ -54,12 +52,7 @@ async function continueSession(): Promise<WordsSession> {
     console.log(restored)
     if (!restored) return null
     if (restored.content.length < 1) return null
-    if (
-        new Date(restored.t).toDateString() !== new Date().toDateString() &&
-        restored.stats.tries > 0
-    ) {
-        return null
-    }
+    if (!areSameDay(restored.t, getNow()) && restored.stats.tries > 0) return null
 
     await allWordsPromise
 
@@ -85,8 +78,7 @@ export async function initSession() {
         session.content = prep.content
         session.plan.learn = prep.learnNumber
         session.plan.repeat = prep.repeatNumber
-        session.t = Date.now()
-        session.v = globalVersions.get("wordProgs")
+        session.t = getNow()
     }
 
     getNext()
@@ -101,7 +93,6 @@ export async function getNext() {
     word = session.content[session.content.length - 1]
     await papareWord(word)
 
-    session.v = globalVersions.get("wordProgs")
     storeSession()
 
     console.log(session)

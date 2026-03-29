@@ -1,4 +1,6 @@
 import "./app.css"
+import { getSessionCards } from "./indexedDB/dbHandlers"
+import { getCardsStatusRange } from "./indexedDB/dbUseCases"
 import setMutationsListener from "./sync/localMutations"
 import fetchInitData from "./temp-init/fetchInitData"
 import loadToServer from "./temp-init/loadToServer"
@@ -32,8 +34,6 @@ customElements.define("words-session-stats", WordsSessionStats)
 customElements.define("word-card", WordCard)
 customElements.define("word-buttons", WordButtons)
 customElements.define("words-session", WordsSession)
-
-// loadAll("wordCards")
 
 // parseInitData()
 
