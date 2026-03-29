@@ -11,7 +11,7 @@ export async function papareWord(word: CombinedWord) {
     while (!word.prog) {
         await new Promise(res => on(EVT.WORD_UPDATED, res, true))
     }
-    console.log(word.prog)
+    // console.log(word.prog)
     word.comp.dir = detectDirection(word.prog)
     word.comp.stage = word.prog.data[word.comp.dir].autorepeat
         ? "autorepeat"

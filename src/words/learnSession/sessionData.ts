@@ -67,10 +67,10 @@ async function continueSession(): Promise<WordsSession> {
     for (const oldWord of restored.content) {
         const word = getWordById(oldWord.id)
         if (oldWord.comp) word.comp = oldWord.comp
-        console.log(word.comp)
+        // console.log(word.comp)
         newCont.push(word)
     }
-    console.log(newCont)
+    // console.log(newCont)
     restored.content = newCont
 
     return restored

@@ -12,6 +12,7 @@ export default function update(word: CombinedWord, mark: Mark, stats: WordsSessi
     const stage = word.comp.stage
 
     prog.t = Math.floor(Date.now() / 1000)
+
     if (stage !== "autorepeat") stats.tries++
     if (mark !== "retry" && stage !== "autorepeat") stats.results++
 
