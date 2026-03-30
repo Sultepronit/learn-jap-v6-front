@@ -1,3 +1,4 @@
+import { emit, EVT, on } from "../global/events"
 import template from "./main-view.html?raw"
 
 export default class MainView extends HTMLElement {
@@ -7,6 +8,7 @@ export default class MainView extends HTMLElement {
         "#words-session": null
     }
     activeView: HTMLElement
+    login: HTMLInputElement
 
     connectedCallback() {
         this.innerHTML = template
@@ -16,6 +18,8 @@ export default class MainView extends HTMLElement {
 
         this.navigate()
         window.addEventListener("hashchange", () => this.navigate())
+
+        this.checkLogin()
     }
 
     navigate() {
@@ -33,5 +37,36 @@ export default class MainView extends HTMLElement {
         this.activeView.classList.add("hidden")
         this.activeView = view
         this.activeView.classList.remove("hidden")
+    }
+
+    checkLogin() {
+        const api = localStorage.getItem("api")
+        if (api) return
+
+        this.activeView.classList.add("hidden")
+
+        this.login = this.querySelector<HTMLInputElement>("#login")
+        this.login.classList.remove("hidden")
+        this.login.addEventListener("change", () => {
+            emit(EVT.LOGIN, `https://${this.login.value}`)
+        })
+        this.checkInput()
+    }
+
+    checkInput() {
+        on(
+            EVT.SYNC_STATUS_CHANGED,
+            msg => {
+                if (msg === "fulfilled") {
+                    localStorage.setItem("api", `https://${this.login.value}`)
+                    this.login.remove()
+                    this.login = null
+                    this.activeView.classList.remove("hidden")
+                } else {
+                    this.checkInput()
+                }
+            },
+            true
+        )
     }
 }

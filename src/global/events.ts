@@ -3,6 +3,8 @@ import type { CombinedWord } from "../words/types"
 import type { Mark, SyncCard } from "./types"
 
 export const EVT = {
+    LOGIN: "login",
+
     /** data for saving */
     CARD_MUTATED: "card-mutated",
 
@@ -40,6 +42,7 @@ export type EventName = DeepValue<typeof EVT>
 // type EventName = (typeof EVT)[keyof typeof EVT]
 
 interface EventPayloads {
+    login: string
     "card-mutated": { type: string; card: SyncCard }
     "word-updated": undefined
     "word-updates-received": { type: string; updates: SyncCard[] }

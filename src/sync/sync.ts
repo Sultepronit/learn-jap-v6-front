@@ -64,7 +64,14 @@ async function sync() {
     implementUpdates(r?.standard, toSync)
 }
 
-const apiUrl = import.meta.env.VITE_API_URL
+// const apiUrl = import.meta.env.VITE_API_URL
+let apiUrl = localStorage.getItem("api")
+
+on(EVT.LOGIN, suggestion => {
+    apiUrl = suggestion
+    sync()
+})
+
 let disconnected = false
 async function communicate(msg) {
     try {
@@ -77,7 +84,7 @@ async function communicate(msg) {
 
         const r = await j.json()
 
-        emit(EVT.SYNC_STATUS_CHANGED, "")
+        emit(EVT.SYNC_STATUS_CHANGED, "fulfilled")
         disconnected = false
 
         return r
