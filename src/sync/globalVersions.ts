@@ -1,3 +1,5 @@
+// localStorage.clear()
+
 const globalVersions = {
     _mem: {
         wordCards: Number(localStorage.getItem("wordCardsV")) || -1,

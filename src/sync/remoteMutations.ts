@@ -39,7 +39,7 @@ export async function implementUpdates(
                 continue
             }
             const lc = toSync[m.type].get(rc.id) as SyncCard
-            console.log(rc, lc)
+            // console.log(rc, lc)
             if (lc) {
                 lc.syncV = rc.syncV
 

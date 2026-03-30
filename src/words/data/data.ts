@@ -19,7 +19,7 @@ function setNewWords(newWords: SyncCard[], block: "card" | "prog") {
             console.log("already exists!")
             continue
         }
-        console.log(nwb)
+        // console.log(nwb)
         const word = createWord(0, nwb.id)
         word[block] = nwb
         words.push(word)
@@ -30,7 +30,7 @@ function setNewWords(newWords: SyncCard[], block: "card" | "prog") {
     for (let i = words.length - 1; i >= 0; i--) {
         if (words[i].num === i + 1) break
         words[i].num = i + 1
-        console.log(words[i])
+        // console.log(words[i])
     }
     emit(EVT.WORDS_COUNT_CHANGED)
 }

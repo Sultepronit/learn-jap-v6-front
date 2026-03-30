@@ -1,4 +1,5 @@
 import { genRandomInt } from "../../helpers/random"
+import { kanagana } from "../../lib/kanagana"
 import type { CombinedWord } from "../types"
 
 const accents = {
@@ -46,9 +47,10 @@ export function computeCommon(word: CombinedWord) {
     }
 }
 
-function fakeToKata(hira: string) {
-    return hira
-    return `[${hira}]`
+function toKata(hira: string) {
+    return Array.from(hira)
+        .map(h => kanagana[h])
+        .join("")
 }
 
 export function computeAll(word: CombinedWord) {
@@ -58,8 +60,8 @@ export function computeAll(word: CombinedWord) {
 
     if (word.comp?.learn?.v === word.card.v) return
 
-    const mainReadKata = input.readings.main.map(e => fakeToKata(e))
-    const rareReadKata = input.readings.rare?.map(e => fakeToKata(e))
+    const mainReadKata = input.readings.main.map(e => toKata(e))
+    const rareReadKata = input.readings.rare?.map(e => toKata(e))
 
     word.comp.learn = {
         v: word.card.v,

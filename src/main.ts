@@ -1,6 +1,16 @@
 import "./app.css"
+
+// async function tempClear() {
+//     // use localStorage.clear() in the glovalVersions.ts!
+//     console.log("clear!")
+//     localStorage.clear()
+//     await tempClearStore("wordCards")
+//     tempClearStore("wordProgs")
+// }
+// await tempClear()
+
 import { getSessionCards } from "./indexedDB/dbHandlers"
-import { getCardsStatusRange } from "./indexedDB/dbUseCases"
+import { getCardsStatusRange, tempClearStore } from "./indexedDB/dbUseCases"
 import setMutationsListener from "./sync/localMutations"
 import fetchInitData from "./temp-init/fetchInitData"
 import loadToServer from "./temp-init/loadToServer"
