@@ -1,7 +1,6 @@
 import { genRandomInt, randomize } from "../../helpers/random"
 import { areSameDay, getNow } from "../../helpers/time"
 import { getSessionCards } from "../../indexedDB/dbHandlers"
-import { getCardsStatusRange } from "../../indexedDB/dbUseCases"
 import { getWordById, loadBasicList, setUpdates } from "../data/data"
 import type { CombinedWord, WordProg } from "../types"
 import { detectDirection } from "./helpers"

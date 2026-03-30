@@ -9,16 +9,10 @@ import "./app.css"
 // }
 // await tempClear()
 
-import { getSessionCards } from "./indexedDB/dbHandlers"
-import { getCardsStatusRange, tempClearStore } from "./indexedDB/dbUseCases"
 import setMutationsListener from "./sync/localMutations"
-import fetchInitData from "./temp-init/fetchInitData"
-import loadToServer from "./temp-init/loadToServer"
-import parseInitData from "./temp-init/parseInitData"
 import BigTable from "./views/big-table"
 import MainView from "./views/main-view"
 import StatusBar from "./views/status-bar"
-import { loadAll } from "./words/data/data"
 import WordEditor from "./words/dbView/word-editor"
 import WordsDb from "./words/dbView/words-db"
 import WordsSearch from "./words/dbView/words-search"

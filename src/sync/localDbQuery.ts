@@ -1,7 +1,7 @@
-import { putMany } from "../indexedDB/dbHandlers";
-import globalVersions from "./globalVersions";
+import { putMany } from "../indexedDB/dbHandlers"
+import globalVersions from "./globalVersions"
 
-type entry = { store: string, updates: any[], newV?: number }
+type entry = { store: string; updates: any[]; newV?: number }
 
 const query: entry[] = []
 let isBusy = false
@@ -15,10 +15,10 @@ export async function useSaveQuery(store: string, updates: any[], newV?: number)
     while (query.length > 0) {
         const task = query.shift()
         console.log(task)
-        const re = await putMany(task.store, task.updates) 
+        const re = await putMany(task.store, task.updates)
         console.log(re, task.newV)
         if (re === "success" && task.newV) {
-            globalVersions.set(task.store, task.newV)
+            globalVersions.set(task.store as "wordCards" | "wordProgs", task.newV)
         }
     }
     isBusy = false

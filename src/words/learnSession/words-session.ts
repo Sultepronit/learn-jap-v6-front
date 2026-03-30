@@ -1,7 +1,7 @@
 import template from "./words-session.html?raw"
 import "./words-session.css"
 import type { CombinedWord } from "../types"
-import { getNext, initSession } from "./sessionData"
+import { initSession } from "./sessionData"
 import { emit, EVT, on } from "../../global/events"
 import BaseComponent from "../../global/BaseComponent"
 

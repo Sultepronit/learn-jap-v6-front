@@ -1,6 +1,5 @@
 import { emit, EVT, on } from "../../global/events"
 import { areSameDay, getNow } from "../../helpers/time"
-import globalVersions from "../../sync/globalVersions"
 import { getWordById, loadBasicList } from "../data/data"
 import type { CombinedWord } from "../types"
 import { papareWord } from "./helpers"
