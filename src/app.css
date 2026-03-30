@@ -77,6 +77,11 @@ button {
     color: green;
 }
 
+words-session-stats,
+.stats {
+    font-size: 1.1rem;
+}
+
 .nav-buttons {
     display: flex;
     gap: 0.7em;

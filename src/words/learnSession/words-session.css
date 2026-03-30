@@ -2,18 +2,13 @@ words-session {
     height: 100%;
     display: grid;
     grid-template-rows: auto 1fr auto;
-    margin: 0.5rem 0.2rem 1.5rem;
+    margin: 0.4rem 0.4rem 1rem;
 }
 
 words-session-stats {
     display: flex;
     column-gap: 1em;
     flex-wrap: wrap;
-}
-
-words-session-stats,
-.stats {
-    font-size: 1rem;
 }
 
 .learn-stats {
