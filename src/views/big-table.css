@@ -1,22 +1,21 @@
 big-table {
     height: 100%;
-    overflow: hidden;
+    overflow-y: hidden;
+    overflow-x: auto;
     margin: 0.3rem;
-    display: grid;
+    /* display: grid;
     grid-template-columns: 1fr auto;
-    grid-auto-rows: min-content;
+    grid-auto-rows: min-content; */
     /* grid-template-columns: repeat(2, 1fr auto); */
 }
 
-/* .big-tbody { */
-big-table {
-    /* margin: 0.3rem; */
-    /* background-color: yellow; */
-    /* border-top: 1px solid black; */
-    /* border-left: 1px solid black; */
+.big-table {
+    min-width: 40em;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-auto-rows: min-content;
 }
 
-/* .big-tbody .sort-bar { */
 big-table .sort-bar {
     border-top: 1px solid black;
     border-bottom: 1px solid black;
@@ -30,7 +29,8 @@ big-table .sort-bar {
     padding: 0;
 }
 
-.btr, .sort-bar {
+.btr,
+.sort-bar {
     border-left: 1px solid black;
     border-bottom: 1px solid black;
     /* height: 1.6em; */

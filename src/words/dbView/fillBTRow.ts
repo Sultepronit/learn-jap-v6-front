@@ -36,8 +36,8 @@ export default function fillRow(row: BTRow) {
     row.refs.bProgress.text(word.prog?.data.b.progress)
     row.refs.fRecord.text(word.prog?.data.f.record)
     row.refs.bRecord.text(word.prog?.data.b.record)
-    row.refs.fAutorepeat.text(word.prog?.data.f.autorepeat ? "✔️" : "")
-    row.refs.bAutorepeat.text(word.prog?.data.b.autorepeat ? "✔️" : "")
+    row.refs.fAutorepeat.text(word.prog?.data.f.autorepeat ? "●" : "")
+    row.refs.bAutorepeat.text(word.prog?.data.b.autorepeat ? "●" : "")
     const t = word.prog?.data.t
     row.refs.t.text(t ? new Date(t * 1000).toISOString().slice(2, 10) : "")
     // row.refs.t.text(t ? t : "")

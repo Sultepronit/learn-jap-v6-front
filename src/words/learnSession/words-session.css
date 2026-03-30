@@ -11,6 +11,11 @@ words-session-stats {
     flex-wrap: wrap;
 }
 
+words-session-stats,
+.stats {
+    font-size: 1rem;
+}
+
 .learn-stats {
     color: green;
 }
@@ -37,7 +42,7 @@ word-card .content {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    font-size: 2rem;
+    font-size: 1.6rem;
 }
 
 word-card .writings {

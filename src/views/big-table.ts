@@ -40,13 +40,9 @@ export default class BigTable extends HTMLElement {
         this.calcRowsN()
 
         const rowsTemplate = []
-        const sortBar = columns
-            .map(c => `<div class="btd" data-column="${c}"></div>`)
-            .join("")
+        const sortBar = columns.map(c => `<div class="btd" data-column="${c}"></div>`).join("")
 
-        const btds = columns
-            .map(c => `<div class="btd ${c}" data-ref="${c}"></div>`)
-            .join("")
+        const btds = columns.map(c => `<div class="btd ${c}" data-ref="${c}"></div>`).join("")
 
         for (let i = 0; i < this.rowsN; i++) {
             rowsTemplate.push(`<div class="btr ${btrClassName}" data-i="${i}">
@@ -55,10 +51,12 @@ export default class BigTable extends HTMLElement {
         }
 
         this.innerHTML = `
+            <div class="big-table">
             <div class="sort-bar ${btrClassName}">${sortBar}</div>
             <div></div>
             <div class="rows-area">${rowsTemplate.join("")}</div>
             <input type="range" class="bt-scroller" min="0" max="1000" value="0">
+            </div>
         `
 
         const re = this.querySelectorAll<HTMLDivElement>(".btr")
@@ -75,18 +73,13 @@ export default class BigTable extends HTMLElement {
             this.navigateSafely(e.deltaY > 0 ? 3 : -3)
         })
 
-        this.parentElement.addEventListener(
-            "card-selected",
-            (e: CustomEvent) => {
-                const { cardNum, rowIdx } = e.detail
-                this.reselect(cardNum, rowIdx)
-            }
-        )
+        this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
+            const { cardNum, rowIdx } = e.detail
+            this.reselect(cardNum, rowIdx)
+        })
 
         this.rowsArea.addEventListener("click", e => {
-            const clicked = (e.target as HTMLDivElement).closest(
-                ".btr"
-            ) as HTMLDivElement
+            const clicked = (e.target as HTMLDivElement).closest(".btr") as HTMLDivElement
             if (clicked === this.selected.element) return
 
             const { cardNum, i } = clicked.dataset
@@ -99,9 +92,7 @@ export default class BigTable extends HTMLElement {
         })
 
         this.scroller.addEventListener("input", () => {
-            const newTop =
-                (Number(this.scroller.value) / 1000) *
-                (this.data.length - this.rowsN)
+            const newTop = (Number(this.scroller.value) / 1000) * (this.data.length - this.rowsN)
 
             this.navigate(Math.round(newTop - this.top))
         })
@@ -141,12 +132,7 @@ export default class BigTable extends HTMLElement {
     }
 
     // outer
-    setParams(
-        colums: string[],
-        btrClassName: string,
-        fillRow: FillRow,
-        updateEvent: EventName
-    ) {
+    setParams(colums: string[], btrClassName: string, fillRow: FillRow, updateEvent: EventName) {
         this.fillRow = fillRow
 
         this.render(colums, btrClassName)
@@ -187,9 +173,7 @@ export default class BigTable extends HTMLElement {
     }
 
     addRow() {
-        const element = this.rowsArea.firstElementChild.cloneNode(
-            true
-        ) as HTMLDivElement
+        const element = this.rowsArea.firstElementChild.cloneNode(true) as HTMLDivElement
         element.dataset.i = (this.rowsN - 1).toString()
         element.classList.remove("selected")
         this.rowsArea.appendChild(element)
@@ -197,10 +181,7 @@ export default class BigTable extends HTMLElement {
     }
 
     recalcScroll() {
-        this.scroller.value = (
-            (this.top / (this.data.length - this.rowsN)) *
-            1000
-        ).toFixed(0)
+        this.scroller.value = ((this.top / (this.data.length - this.rowsN)) * 1000).toFixed(0)
     }
 
     resize() {
