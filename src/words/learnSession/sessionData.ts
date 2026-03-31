@@ -51,7 +51,11 @@ async function continueSession(): Promise<WordsSession> {
     console.log(restored)
     if (!restored) return null
     if (restored.content.length < 1) return null
-    if (!areSameDay(restored.t, getNow()) && restored.stats.tries > 0) return null
+    // if (!areSameDay(restored.t, getNow()) && restored.stats.tries > 0) return null
+    if (!areSameDay(restored.t, getNow())) {
+        if (restored.stats.tries > 0) return null
+        restored.t = getNow()
+    }
 
     await allWordsPromise
 
