@@ -1,9 +1,13 @@
-import { loadAll } from "../data/data"
+// import { loadAll } from "../data/data"
 import type { CombinedWord } from "../types"
 
 const lastSort = {
     column: "num",
     up: false
+}
+
+const lastSearch = {
+    query: ""
 }
 
 export async function sort(data: CombinedWord[], column: string, up: boolean) {
@@ -21,22 +25,22 @@ export async function sort(data: CombinedWord[], column: string, up: boolean) {
     lastSort.column = column
     lastSort.up = up
 
-    if (["writings", "readings"].includes(column)) {
-        await loadAll("wordCards")
-    } else if (
-        [
-            "status",
-            "f-progress",
-            "b-progress",
-            "f-record",
-            "f-autorepeat",
-            "b-record",
-            "b-autorepeat",
-            "t"
-        ].includes(column)
-    ) {
-        await loadAll("wordProgs")
-    }
+    // if (["writings", "readings"].includes(column)) {
+    //     await loadAll("wordCards")
+    // } else if (
+    //     [
+    //         "status",
+    //         "f-progress",
+    //         "b-progress",
+    //         "f-record",
+    //         "f-autorepeat",
+    //         "b-record",
+    //         "b-autorepeat",
+    //         "t"
+    //     ].includes(column)
+    // ) {
+    //     await loadAll("wordProgs")
+    // }
 
     switch (column) {
         case "num":
@@ -91,7 +95,7 @@ export async function sort(data: CombinedWord[], column: string, up: boolean) {
 
 const rgx = [/[\(\)[\]{}]/g, /\([^)]*\)|\{[^}]*\}|\[[^]]*\]/g]
 async function search(data: CombinedWord[], query: string) {
-    await loadAll("wordCards")
+    // await loadAll("wordCards")
 
     return data.filter(w => {
         const text = [
@@ -111,15 +115,20 @@ async function search(data: CombinedWord[], query: string) {
     })
 }
 
-export async function searchSort(data: CombinedWord[], query: string) {
-    let re: CombinedWord[]
+export async function searchSort(data: CombinedWord[], query?: string) {
+    if (query !== undefined) {
+        lastSearch.query = query
+    } else {
+        query = lastSearch.query
+    }
+    console.log(query, lastSearch)
 
+    let re: CombinedWord[]
     if (query) {
         re = await search(data, query)
     } else {
         re = [...data]
     }
-    console.log(query)
 
     const { column, up } = lastSort
     lastSort.column = "num"

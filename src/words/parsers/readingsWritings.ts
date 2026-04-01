@@ -10,7 +10,7 @@ const accents = {
 
 function genAWrit(input: string[]) {
     const text = input.join("　")
-    console.log("gen!")
+    // console.log("gen!")
 
     let isHtml = false
     const value = text.replace(/[(\[{}\])]/g, match => {
@@ -22,7 +22,7 @@ function genAWrit(input: string[]) {
 
 const brackets = [/\([^)]*\)|[[\]{}]/g, /\([^)]*\)|\{[^}]*\}|[[\]]/g]
 function genQWrit(input: string[]) {
-    console.log("gen!")
+    // console.log("gen!")
     const ri = genRandomInt(2)
     return input.map(e => e.replace(brackets[ri], ""))
 }

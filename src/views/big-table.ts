@@ -30,8 +30,7 @@ export default class BigTable extends HTMLElement {
     fillRow: FillRow
 
     calcRowsN() {
-        console.log(this.offsetHeight)
-        const comp = Math.round(this.offsetHeight / 35 - 2.1)
+        const comp = Math.round(this.offsetHeight / 35 - 2.3)
         this.rowsN = comp > 3 ? comp : 3
     }
 
@@ -172,9 +171,9 @@ export default class BigTable extends HTMLElement {
         }
     }
 
-    addRow() {
+    addRow(idx: number) {
         const element = this.rowsArea.firstElementChild.cloneNode(true) as HTMLDivElement
-        element.dataset.i = (this.rowsN - 1).toString()
+        element.dataset.i = idx.toString()
         element.classList.remove("selected")
         this.rowsArea.appendChild(element)
         this.rows.push({ v: 0, card: null, element })
@@ -193,7 +192,7 @@ export default class BigTable extends HTMLElement {
 
         for (let i = this.rows.length; i < this.rowsN; i++) {
             console.log(this.rows.length, this.rowsN)
-            this.addRow()
+            this.addRow(i)
         }
         // console.log(this.rows)
 

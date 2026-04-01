@@ -1,4 +1,5 @@
 import "./app.css"
+// import { tempClearStore } from "./indexedDB/dbUseCases"
 
 // async function tempClear() {
 //     // use localStorage.clear() in the glovalVersions.ts!

@@ -6,7 +6,7 @@ import { papareWord } from "./helpers"
 import prepareSession from "./preparation"
 import update from "./update"
 
-const sessionLenth = 50
+const sessionLenth = 30
 let session = {
     t: 0,
     content: null as CombinedWord[],
@@ -53,8 +53,9 @@ async function continueSession(): Promise<WordsSession> {
     if (restored.content.length < 1) return null
     // if (!areSameDay(restored.t, getNow()) && restored.stats.tries > 0) return null
     if (!areSameDay(restored.t, getNow())) {
-        if (restored.stats.tries > 0) return null
-        restored.t = getNow()
+        // if (restored.stats.tries > 0) return null
+        // restored.t = getNow()
+        return null
     }
 
     await allWordsPromise
