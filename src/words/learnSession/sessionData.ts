@@ -7,39 +7,48 @@ import prepareSession from "./preparation"
 import update from "./update"
 
 const sessionLenth = 30
-let session = {
-    t: 0,
-    content: null as CombinedWord[],
-    plan: {
-        total: sessionLenth,
-        learn: 0,
-        repeat: 0
-    },
-    stats: {
-        tries: 0,
-        results: 0,
-        learn: {
-            good: 0,
-            pass: 0,
-            retry: 0,
-            bad: 0,
-            upgrade: 0
+async function createSession(sessionLenth: number) {
+    const prep = await prepareSession(sessionLenth)
+    // session.content = prep.content
+    // session.plan.learn = prep.learnNumber
+    // session.plan.repeat = prep.repeatNumber
+    // session.t = getNow()
+    return {
+        t: getNow(),
+        content: prep.content,
+        plan: {
+            total: sessionLenth,
+            learn: prep.learnNumber,
+            repeat: prep.repeatNumber
         },
-        repeat: {
-            good: 0,
-            pass: 0,
-            retry: 0,
-            bad: 0,
-            upgrade: 0
-        },
-        autorepeat: {
-            good: 0,
-            upgrade: 0
+        stats: {
+            tries: 0,
+            results: 0,
+            learn: {
+                good: 0,
+                pass: 0,
+                retry: 0,
+                bad: 0,
+                upgrade: 0
+            },
+            repeat: {
+                good: 0,
+                pass: 0,
+                retry: 0,
+                bad: 0,
+                upgrade: 0
+            },
+            autorepeat: {
+                good: 0,
+                upgrade: 0
+            }
         }
     }
 }
+// export type WordsSession = typeof session
+export type WordsSession = Awaited<ReturnType<typeof createSession>>
 
-export type WordsSession = typeof session
+let session: WordsSession
 
 const storeSession = () => localStorage.setItem("wordsSession", JSON.stringify(session))
 const restoreSession = () => JSON.parse(localStorage.getItem("wordsSession")) as WordsSession
@@ -74,22 +83,23 @@ async function continueSession(): Promise<WordsSession> {
 }
 
 // improve this shit!
-export async function initSession(reset = false) {
+export async function initSession() {
     const restored = await continueSession()
-    if (!reset && restored) {
+    if (restored) {
         session = restored
     } else {
-        const prep = await prepareSession(sessionLenth)
-        session.content = prep.content
-        session.plan.learn = prep.learnNumber
-        session.plan.repeat = prep.repeatNumber
-        session.t = getNow()
+        // const prep = await prepareSession(sessionLenth)
+        // session.content = prep.content
+        // session.plan.learn = prep.learnNumber
+        // session.plan.repeat = prep.repeatNumber
+        // session.t = getNow()
+        session = await createSession(sessionLenth)
     }
 
     getNext()
 }
 
-on(EVT.WS.RESET_REQUESTED, () => initSession(true))
+on(EVT.WS.RESET_REQUESTED, async () => (session = await createSession(sessionLenth)))
 
 let word: CombinedWord
 export async function getNext() {
