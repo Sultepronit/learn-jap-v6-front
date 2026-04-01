@@ -33,7 +33,9 @@ export const EVT = {
         HINT_REQUESTED: "ws:hint-requested",
         ANSWER_REQUESTED: "ws:answer-requested",
         WORD_EVALUATED: "ws:word-evaluated",
-        STATS_UPDATED: "ws:stats-updated"
+        STATS_UPDATED: "ws:stats-updated",
+        ENDED: "ws:ended",
+        RESET_REQUESTED: "ws:reset-requested"
     }
 } as const
 
@@ -59,6 +61,8 @@ interface EventPayloads {
     "ws:answer-requested": undefined
     "ws:word-evaluated": Mark
     "ws:stats-updated": WordsSession
+    "ws:ended": undefined
+    "ws:reset-requested": undefined
 }
 
 export function emit<T extends EventName>(eventName: T, detail?: EventPayloads[T]) {

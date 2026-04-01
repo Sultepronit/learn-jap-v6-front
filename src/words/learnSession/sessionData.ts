@@ -73,9 +73,10 @@ async function continueSession(): Promise<WordsSession> {
     return restored
 }
 
-export async function initSession() {
+// improve this shit!
+export async function initSession(reset = false) {
     const restored = await continueSession()
-    if (restored) {
+    if (!reset && restored) {
         session = restored
     } else {
         const prep = await prepareSession(sessionLenth)
@@ -88,16 +89,22 @@ export async function initSession() {
     getNext()
 }
 
+on(EVT.WS.RESET_REQUESTED, () => initSession(true))
+
 let word: CombinedWord
 export async function getNext() {
     emit(EVT.WS.STATS_UPDATED, session)
+    storeSession()
 
-    if (session.content.length === 0) return
+    // if (session.content.length === 0) return
+    if (session.content.length === 0) {
+        // emit(EVT.WS.NEXT_CARD, null)
+        emit(EVT.WS.ENDED)
+        return
+    }
 
     word = session.content[session.content.length - 1]
     await papareWord(word)
-
-    storeSession()
 
     console.log(session)
     console.log(word)

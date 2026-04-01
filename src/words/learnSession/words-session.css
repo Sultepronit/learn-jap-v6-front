@@ -1,7 +1,7 @@
 words-session {
     height: 100%;
     display: grid;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto 1fr;
     margin: 0.4rem 0.4rem 1rem;
 }
 
@@ -19,9 +19,15 @@ words-session-stats {
     color: blue;
 }
 
+words-session .main-view {
+    display: grid;
+    grid-template-rows: 1fr auto;
+}
+
 word-card .stats {
     width: fit-content;
     border-bottom: 3px solid;
+    padding-top: 0.2rem;
 }
 
 .stats.learn {
