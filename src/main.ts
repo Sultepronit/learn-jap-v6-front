@@ -47,6 +47,7 @@ customElements.define("words-session", WordsSession)
 
 // loadToServer()
 
-window.onerror = (message, source, lineno, colno, error) => {
+// window.onerror = (message, source, lineno, colno, error) => {
+window.onerror = message => {
     alert(message)
 }
