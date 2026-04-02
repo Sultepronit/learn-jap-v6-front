@@ -1,10 +1,13 @@
 <div class="controls hidden" data-ref="controls">
-    <div>
+    <div class="global-controls">
         <button class="emo-button" name="sync">🔄</button>
+        <input type="range" name="ws-length" min="5" max="60" step="5" value="10" />
+        <div>10</div>
+        <input type="checkbox" name="" id="" checked />
     </div>
-    <hr class="spacer">
+    <hr class="spacer" />
     <div data-ref="words-session" class="words-session-controls">
-        <input type="range" name="ws-length" min="10" max="100" step="10" value="30">
+        <input type="range" name="ws-length" min="10" max="100" step="5" value="30" />
         <div>30</div>
         <button class="emo-button" name="ws-reset">🔁</button>
     </div>

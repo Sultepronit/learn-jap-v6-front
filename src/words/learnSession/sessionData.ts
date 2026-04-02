@@ -86,18 +86,16 @@ export async function initSession() {
     if (restored) {
         session = restored
     } else {
-        // const prep = await prepareSession(sessionLenth)
-        // session.content = prep.content
-        // session.plan.learn = prep.learnNumber
-        // session.plan.repeat = prep.repeatNumber
-        // session.t = getNow()
         session = await createSession(sessionLenth)
     }
 
     getNext()
 }
 
-on(EVT.WS.RESET_REQUESTED, async () => (session = await createSession(sessionLenth)))
+on(EVT.WS.RESET_REQUESTED, async () => {
+    session = await createSession(sessionLenth)
+    getNext()
+})
 
 let word: CombinedWord
 export async function getNext() {

@@ -4,7 +4,8 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     overscroll-behavior: none;
 }
 
@@ -30,6 +31,11 @@ main-view {
 input,
 button {
     font: inherit;
+}
+
+input[type="checkbox"] {
+    height: 1.5rem;
+    width: 1.5rem;
 }
 
 .hidden {
