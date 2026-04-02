@@ -10,83 +10,6 @@ import { createWord, createWordProg } from "./creation"
 let words: CombinedWord[] = null
 let wordsIndex = new Map<number, CombinedWord>()
 
-function setNewWords(newWords: SyncCard[], block: "card" | "prog") {
-    console.log(newWords)
-    for (const nwb of newWords) {
-        const test = wordsIndex.get(nwb.id)
-        if (test) {
-            // ALREADY EXISTS!
-            console.log("already exists!")
-            continue
-        }
-        // console.log(nwb)
-        const word = createWord(0, nwb.id)
-        word[block] = nwb
-        words.push(word)
-        wordsIndex.set(word.id, word)
-    }
-    words.sort((a, b) => a.id - b.id)
-
-    for (let i = words.length - 1; i >= 0; i--) {
-        if (words[i].num === i + 1) break
-        words[i].num = i + 1
-        // console.log(words[i])
-    }
-    emit(EVT.WORDS_COUNT_CHANGED)
-}
-
-function setDeleted(ids: number[]) {
-    const indexes = []
-    for (const id of ids) {
-        const word = wordsIndex.get(id)
-        if (!word) continue
-
-        const index = word.num - 1
-        indexes.push(index)
-        wordsIndex.delete(id)
-        words.splice(index, 1)
-    }
-
-    if (indexes.length < 1) return
-
-    for (let i = Math.min(...indexes); i < words.length; i++) {
-        console.log(i, words[i])
-        words[i].num = i + 1
-    }
-    emit(EVT.WORDS_COUNT_CHANGED) // for the view
-}
-
-type Update = {
-    type: "wordCards" | "wordProgs"
-    updates: SyncCard[]
-}
-export function setUpdates({ type, updates }: Update) {
-    console.log(type, updates)
-    const block = type === "wordCards" ? "card" : "prog"
-
-    const newWords = []
-
-    for (const u of updates) {
-        // console.log(u)
-        const word = wordsIndex.get(u.id)
-
-        if (!word) {
-            newWords.push(u)
-            continue
-        }
-
-        if (!isGetter(word, block) && word[block] === u) continue
-
-        defineProperty(word, block, u)
-        word.v++
-    }
-    if (newWords.length > 0) {
-        setNewWords(newWords, block)
-    }
-
-    emit(EVT.WORD_UPDATED)
-}
-
 export async function loadBasicList() {
     if (words) return words
 
@@ -194,6 +117,83 @@ export async function loadAll(type: "wordCards" | "wordProgs") {
 
     loaded[type] = true
     console.timeLog("t1", "end")
+    emit(EVT.WORD_UPDATED)
+}
+
+function setNewWords(newWords: SyncCard[], block: "card" | "prog") {
+    console.log(newWords)
+    for (const nwb of newWords) {
+        const test = wordsIndex.get(nwb.id)
+        if (test) {
+            // ALREADY EXISTS!
+            console.log("already exists!")
+            continue
+        }
+        // console.log(nwb)
+        const word = createWord(0, nwb.id)
+        word[block] = nwb
+        words.push(word)
+        wordsIndex.set(word.id, word)
+    }
+    words.sort((a, b) => a.id - b.id)
+
+    for (let i = words.length - 1; i >= 0; i--) {
+        if (words[i].num === i + 1) break
+        words[i].num = i + 1
+        // console.log(words[i])
+    }
+    emit(EVT.WORDS_COUNT_CHANGED)
+}
+
+function setDeleted(ids: number[]) {
+    const indexes = []
+    for (const id of ids) {
+        const word = wordsIndex.get(id)
+        if (!word) continue
+
+        const index = word.num - 1
+        indexes.push(index)
+        wordsIndex.delete(id)
+        words.splice(index, 1)
+    }
+
+    if (indexes.length < 1) return
+
+    for (let i = Math.min(...indexes); i < words.length; i++) {
+        console.log(i, words[i])
+        words[i].num = i + 1
+    }
+    emit(EVT.WORDS_COUNT_CHANGED) // for the view
+}
+
+type Update = {
+    type: "wordCards" | "wordProgs"
+    updates: SyncCard[]
+}
+export function setUpdates({ type, updates }: Update) {
+    console.log(type, updates)
+    const block = type === "wordCards" ? "card" : "prog"
+
+    const newWords = []
+
+    for (const u of updates) {
+        // console.log(u)
+        const word = wordsIndex.get(u.id)
+
+        if (!word) {
+            newWords.push(u)
+            continue
+        }
+
+        if (!isGetter(word, block) && word[block] === u) continue
+
+        defineProperty(word, block, u)
+        word.v++
+    }
+    if (newWords.length > 0) {
+        setNewWords(newWords, block)
+    }
+
     emit(EVT.WORD_UPDATED)
 }
 

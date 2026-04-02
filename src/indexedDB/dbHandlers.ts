@@ -17,7 +17,10 @@ const stores = [
     {
         name: "kanjiCards",
         key: "id",
-        indexes: [["toSync", "toSync", { unique: false }]] as indexDesc[]
+        indexes: [
+            ["toSync", "toSync", { unique: false }],
+            ["order", "data.order", { unique: false }]
+        ] as indexDesc[]
     },
     {
         name: "kanjiProgs",
@@ -32,7 +35,7 @@ const stores = [
 function openDB(): Promise<IDBDatabase> {
     return new Promise((res, rej) => {
         // rej("testing reject")
-        const req = indexedDB.open("learnJap", 8)
+        const req = indexedDB.open("learnJap", 9)
 
         req.onupgradeneeded = (e: IDBVersionChangeEvent) => {
             console.log("upgrade me!")
@@ -76,7 +79,6 @@ function dbErrorAlert(e: Error) {
 }
 
 type DbAction = (store: IDBObjectStore) => IDBRequest
-// export async function useDb<T>(storeName: string, mode: IDBTransactionMode, action: DbAction): Promise<T> {
 export async function useDb(storeName: string, mode: IDBTransactionMode, action: DbAction) {
     const db = await dbPromise
     if (!db) return null

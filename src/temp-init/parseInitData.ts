@@ -110,11 +110,11 @@ export async function parseInitKanjiData() {
         } = rawCard
 
         const kanjiCard: KanjiCard = {
-            id,
+            id: kanji,
             v: 0,
             syncV: 0,
             data: {
-                kanji,
+                order: id,
                 readings,
                 links: {
                     main: JSON.parse(links),
@@ -126,7 +126,7 @@ export async function parseInitKanjiData() {
         kanjiCards.push(kanjiCard)
 
         const kanjiProg: KanjiProg = {
-            id,
+            id: kanji,
             v: 0,
             syncV: 0,
             data: {

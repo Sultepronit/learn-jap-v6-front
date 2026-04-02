@@ -1,10 +1,12 @@
 export type KanjiCard = {
-    id: number
+    // id: number
+    id: string
     v: number
     syncV: number
     toSync?: 1
     data: {
-        kanji: string
+        // kanji: string
+        order: number
         readings: string
         links: {
             main: number[]
@@ -15,7 +17,8 @@ export type KanjiCard = {
 }
 
 export type KanjiProg = {
-    id: number
+    // id: number
+    id: string
     v: number
     syncV: number
     toSync?: 1
@@ -33,8 +36,8 @@ type Computed = {
     retrying?: true
 }
 
-export type CombinedWord = {
-    id: number
+export type CombinedKanji = {
+    id: string
     num: number
     v: number
     card: KanjiCard
