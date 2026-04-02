@@ -33,6 +33,7 @@ function prepareLearnList(range: WordProg[], learnIdx: number, repeatIdx: number
     const now = getNow()
 
     const returnList = range.slice(0, learnIdx)
+    console.log(returnList)
 
     // const learnList = candidates.slice(0, splitInex).filter(c => !areSameDay(c.data.t, now))
     const learnList = range.slice(learnIdx, repeatIdx).filter(c => {
@@ -40,6 +41,7 @@ function prepareLearnList(range: WordProg[], learnIdx: number, repeatIdx: number
         if (re) console.log(new Date(c.data.t * 1000))
         return !re
     })
+    console.log(learnList)
 
     const tLimit = now - d10
     for (let i = 0; i < returnList.length / 20; i++) {

@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+html, body {
+    overscroll-behavior: none;
+}
+
 /* body {
     height: 100svh;
     overflow: hidden;

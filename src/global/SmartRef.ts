@@ -48,8 +48,8 @@ export default class SmartRef {
         return this
     }
 
-    on(eventName: string, action: () => void) {
-        this.el.addEventListener(eventName, action)
+    on(eventName: string, action: (e?: Event) => void, options?: AddEventListenerOptions) {
+        this.el.addEventListener(eventName, action, options)
     }
 
     addClass(className: string) {

@@ -1,7 +1,7 @@
-implement return from temp no notaml search
-
-Ignore bad reading if alt or several readings?..
+Implement return from temp no normal search
 
 Add to the server & the client forced update if the client update is too stale
 
-forbid update after delete?
+Forbid update after delete?
+
+Check if hidden big views are enough quiet?

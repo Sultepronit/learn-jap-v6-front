@@ -89,6 +89,7 @@ async function communicate(msg) {
 
         return r
     } catch (error) {
+        // alert(error.message)
         emit(EVT.SYNC_STATUS_CHANGED, "disconnected")
         disconnected = true
     } finally {

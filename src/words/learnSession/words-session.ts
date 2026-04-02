@@ -36,7 +36,7 @@ export default class WordsSession extends BaseComponent<RefKeys> {
             this.word = w
             this.wordV = w.v
         })
-
+        // alert("here we go!")
         await initSession()
         on(EVT.WORD_UPDATED, () => {
             // do we need all this things?

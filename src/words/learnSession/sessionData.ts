@@ -55,7 +55,6 @@ const restoreSession = () => JSON.parse(localStorage.getItem("wordsSession")) as
 
 async function continueSession(): Promise<WordsSession> {
     const allWordsPromise = loadBasicList()
-
     const restored = restoreSession()
     console.log(restored)
     if (!restored) return null
@@ -82,7 +81,6 @@ async function continueSession(): Promise<WordsSession> {
     return restored
 }
 
-// improve this shit!
 export async function initSession() {
     const restored = await continueSession()
     if (restored) {

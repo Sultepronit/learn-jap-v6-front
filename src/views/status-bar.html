@@ -1,15 +1,10 @@
 <style>
 status-bar {
-    display: block;
-    /* height: 3px; */
-}
-.status-bar {
     height: 3px;
-    /* background-color: yellow; */
     display: grid;
-    /* flex-grow: 1; */
     grid-template-columns: 1fr 3fr;
 }
+
 
 #sync-status {
     /* width: 25%; */
@@ -33,8 +28,5 @@ status-bar {
 }
 </style>
 
-<div class="status-bar">
-    <!-- <div class="sync-status"></div> -->
-    <div id="sync-status"></div>
-    <div id="connection-status"></div>
-</div>
+<div id="sync-status" class="stale"></div>
+<div id="connection-status"></div>

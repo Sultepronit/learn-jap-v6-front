@@ -39,7 +39,8 @@ export default defineConfig({
                 ],
                 start_url: "/",
                 display: "standalone",
-                background_color: "#bc002d",
+                // background_color: "#bc002d",
+                background_color: "#fff",
                 theme_color: "#bc002d",
                 description: "My app for learning Japanese vocabulary"
             },
