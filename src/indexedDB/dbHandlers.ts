@@ -13,13 +13,26 @@ const stores = [
             ["toSync", "toSync", { unique: false }],
             ["status", "data.status", { unique: false }]
         ] as indexDesc[]
+    },
+    {
+        name: "kanjiCards",
+        key: "id",
+        indexes: [["toSync", "toSync", { unique: false }]] as indexDesc[]
+    },
+    {
+        name: "kanjiProgs",
+        key: "id",
+        indexes: [
+            ["toSync", "toSync", { unique: false }],
+            ["status", "data.status", { unique: false }]
+        ] as indexDesc[]
     }
 ]
 
 function openDB(): Promise<IDBDatabase> {
     return new Promise((res, rej) => {
         // rej("testing reject")
-        const req = indexedDB.open("learnJap", 7)
+        const req = indexedDB.open("learnJap", 8)
 
         req.onupgradeneeded = (e: IDBVersionChangeEvent) => {
             console.log("upgrade me!")
@@ -37,9 +50,6 @@ function openDB(): Promise<IDBDatabase> {
                     if (!store.indexNames.contains(i[0])) {
                         store.createIndex(...i)
                     }
-                    // if (store.indexNames.contains("tempV")) {
-                    //     store.deleteIndex("tempV")
-                    // }
                 }
                 console.log(store)
             }

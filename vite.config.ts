@@ -41,7 +41,8 @@ export default defineConfig({
                 display: "standalone",
                 // background_color: "#bc002d",
                 background_color: "#fff",
-                theme_color: "#bc002d",
+                // theme_color: "#bc002d",
+                theme_color: "#fff",
                 description: "My app for learning Japanese vocabulary"
             },
             workbox: {

@@ -1,7 +1,7 @@
 import type { WordCard } from "../words/types"
 import { getIndexed, putMany, useDb } from "./dbHandlers"
 
-type CardStore = "wordCards" | "wordProgs"
+type CardStore = "wordCards" | "wordProgs" | "kanjiCards" | "kanjiProgs"
 
 export async function getCard(store: CardStore, id: number) {
     return await useDb(store, "readonly", s => s.get(id))

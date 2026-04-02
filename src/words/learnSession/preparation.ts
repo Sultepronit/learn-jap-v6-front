@@ -15,7 +15,12 @@ function prepareRepeatList(all: WordProg[], length: number) {
         const ri = genRandomInt(all.length)
         const wProg = all[ri]
         if (!wProg) continue
-        console.log(wProg.data.t)
+        // console.log(wProg.data.t)
+        if (wProg.data.t > tLimit) {
+            console.log(wProg.data)
+        } else {
+            // console.log(wProg.data.t)
+        }
         if (wProg.data.t > tLimit) continue
 
         re.push(wProg)

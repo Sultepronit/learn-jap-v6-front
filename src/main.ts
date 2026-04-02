@@ -23,6 +23,8 @@ import WordButtons from "./words/learnSession/word-buttons"
 import WordCard from "./words/learnSession/word-card"
 import WordsSession from "./words/learnSession/words-session"
 import WordsSessionStats from "./words/learnSession/words-session-stats"
+import fetchInitData from "./temp-init/fetchInitData"
+import { parseInitKanjiData } from "./temp-init/parseInitData"
 
 console.time("t1")
 
@@ -43,6 +45,8 @@ customElements.define("word-card", WordCard)
 customElements.define("word-buttons", WordButtons)
 customElements.define("words-session", WordsSession)
 
+// fetchInitData()
+// parseInitKanjiData()
 // parseInitData()
 
 // loadToServer()
