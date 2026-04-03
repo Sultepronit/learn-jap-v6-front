@@ -23,9 +23,6 @@ import WordButtons from "./words/learnSession/word-buttons"
 import WordCard from "./words/learnSession/word-card"
 import WordsSession from "./words/learnSession/words-session"
 import WordsSessionStats from "./words/learnSession/words-session-stats"
-import fetchInitData from "./temp-init/fetchInitData"
-import { parseInitKanjiData } from "./temp-init/parseInitData"
-import { loadBasicList } from "./kanji/data/data"
 import KanjiDb from "./kanji/dbView/kanji-db"
 
 console.time("t1")
@@ -49,6 +46,9 @@ customElements.define("words-session", WordsSession)
 
 customElements.define("kanji-db", KanjiDb)
 
+// import fetchInitData from "./temp-init/fetchInitData"
+// import { parseInitKanjiData } from "./temp-init/parseInitData"
+// import { loadBasicList } from "./kanji/data/data"
 // fetchInitData()
 // parseInitKanjiData()
 // parseInitData()
