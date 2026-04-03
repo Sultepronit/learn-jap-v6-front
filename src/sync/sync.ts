@@ -67,7 +67,8 @@ async function sync() {
 }
 
 // const apiUrl = import.meta.env.VITE_API_URL
-let apiUrl = localStorage.getItem("api")
+// let apiUrl = localStorage.getItem("api")
+let apiUrl = import.meta.env.VITE_API_URL || localStorage.getItem("api")
 
 on(EVT.LOGIN, suggestion => {
     apiUrl = suggestion
@@ -127,4 +128,4 @@ setInterval(() => {
         window.addEventListener("click", syncWithControl, { once: true })
     }
     // console.log(time)
-}, 100_000)
+}, 10_000)

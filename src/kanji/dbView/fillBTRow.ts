@@ -17,7 +17,7 @@ function collectRefs(row: BTRow) {
 
 export default function fillRow(row: BTRow) {
     collectRefs(row)
-    console.log(row)
+    // console.log(row)
     const k = row.card as CombinedKanji
     row.v = k.v
 

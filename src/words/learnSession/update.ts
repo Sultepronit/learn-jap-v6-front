@@ -20,6 +20,8 @@ export default function update(word: CombinedWord, mark: Mark, stats: WordsSessi
 
     if (mark === "retry") word.comp.retrying = true
 
+    if (prog.status === -0.5) prog.status = 0
+
     console.log("before update:")
     console.table(prog)
     switch (mark) {
