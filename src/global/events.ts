@@ -22,6 +22,9 @@ export const EVT = {
     /** list of deleted words' ids for the view update */
     WORDS_DELETED: "words-deleted",
 
+    /** view update */
+    KANJI_UPDATED: "kanji-updated",
+
     UPDATE_NOT_ENDED: "update-not-ended",
     SYNC_STATUS_CHANGED: "sync-status-changed",
     CONNECTION_STATUS_UPDATED: "connection-status-updated",
@@ -51,6 +54,9 @@ interface EventPayloads {
     "words-count-changed": undefined
     "word-delete-init": number
     "words-deleted": number[]
+
+    "kanji-updated": undefined
+
     "update-not-ended": undefined
     "sync-status-changed": string
     "connection-status-updated": string

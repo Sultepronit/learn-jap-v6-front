@@ -1,4 +1,8 @@
+import { emit, EVT } from "../../global/events"
+import { defineProperty } from "../../helpers/object"
 import { getIndexed } from "../../indexedDB/dbHandlers"
+import { getCard } from "../../indexedDB/dbUseCases"
+import { toSync } from "../../sync/sync"
 import type { CombinedKanji, KanjiCard } from "../types"
 
 let kanji: CombinedKanji[]
@@ -21,7 +25,7 @@ export async function loadBasicList() {
             card,
             get prog() {
                 delete this.prog
-                // loadCard(this)
+                loadCard(this)
                 return null
             }
         }
@@ -33,4 +37,39 @@ export async function loadBasicList() {
     // console.log(wordsIndex)
     console.log(kanji)
     return kanji
+}
+
+let queue = new Set()
+let timeout = 0
+let isPlanned = false
+async function loadCard(k: CombinedKanji) {
+    console.log(queue.has(k.id))
+    console.log("loading!")
+    if (queue.has(k.id)) return
+    queue.add(k.id)
+    console.log(queue)
+    const val = toSync.kanjiProgs.get(k.id) || (await getCard("kanjiProgs", k.id)) // || recreateBlock(k, block)
+    defineProperty(k, "prog", val)
+
+    k.v++
+    queue.delete(k.id)
+
+    if (timeout) {
+        isPlanned = true
+        return
+    }
+
+    // for this result:
+    emit(EVT.KANJI_UPDATED)
+
+    // for next results:
+    timeout = setTimeout(() => {
+        if (isPlanned) {
+            isPlanned = false
+            emit(EVT.KANJI_UPDATED)
+        }
+
+        clearTimeout(timeout)
+        timeout = 0
+    }, 50)
 }

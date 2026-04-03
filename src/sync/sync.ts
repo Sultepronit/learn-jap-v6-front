@@ -7,7 +7,9 @@ import { implementUpdates } from "./remoteMutations"
 
 export const toSync = {
     wordCards: new Map(),
-    wordProgs: new Map()
+    wordProgs: new Map(),
+    kanjiCards: new Map(),
+    kanjiProgs: new Map()
 }
 
 async function checkUnsaved() {
@@ -125,4 +127,4 @@ setInterval(() => {
         window.addEventListener("click", syncWithControl, { once: true })
     }
     // console.log(time)
-}, 10_000)
+}, 100_000)

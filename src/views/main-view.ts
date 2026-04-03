@@ -5,7 +5,8 @@ export default class MainView extends HTMLElement {
     views: Record<string, HTMLElement> = {
         menu: null,
         "#words-db": null,
-        "#words-session": null
+        "#words-session": null,
+        "#kanji-db": null
     }
     activeView: HTMLElement
     login: HTMLInputElement

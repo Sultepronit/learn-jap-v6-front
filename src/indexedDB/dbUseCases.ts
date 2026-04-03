@@ -3,7 +3,8 @@ import { getIndexed, putMany, useDb } from "./dbHandlers"
 
 type CardStore = "wordCards" | "wordProgs" | "kanjiCards" | "kanjiProgs"
 
-export async function getCard(store: CardStore, id: number) {
+// export async function getCard(store: CardStore, id: number) {
+export async function getCard(store: CardStore, id: number | string) {
     return await useDb(store, "readonly", s => s.get(id))
 }
 

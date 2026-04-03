@@ -1,0 +1,16 @@
+kanji-db {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.kanji-btr {
+    display: grid;
+    grid-template-columns: 3em 1.5em 3.5em 1.3em 1.3em 1.1em 4em 1fr 1fr 1fr;
+    height: 1.5em;
+}
+
+.autorepeat {
+    padding-top: 0.1em;
+    color: green;
+}
