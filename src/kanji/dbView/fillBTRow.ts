@@ -12,7 +12,7 @@ function collectRefs(row: BTRow) {
         const kebab = el.dataset.ref
         row.refs[toCamelCase(kebab)] = new SmartRef(el)
     })
-    console.log(row.refs)
+    // console.log(row.refs)
 }
 
 export default function fillRow(row: BTRow) {

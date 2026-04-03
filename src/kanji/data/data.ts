@@ -43,11 +43,11 @@ let queue = new Set()
 let timeout = 0
 let isPlanned = false
 async function loadCard(k: CombinedKanji) {
-    console.log(queue.has(k.id))
-    console.log("loading!")
+    // console.log(queue.has(k.id))
+    // console.log("loading!")
     if (queue.has(k.id)) return
     queue.add(k.id)
-    console.log(queue)
+    // console.log(queue)
     const val = toSync.kanjiProgs.get(k.id) || (await getCard("kanjiProgs", k.id)) // || recreateBlock(k, block)
     defineProperty(k, "prog", val)
 
