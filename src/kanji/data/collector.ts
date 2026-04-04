@@ -1,5 +1,6 @@
 import { areArraysEqual } from "../../helpers/array"
 import { getUniqueKanji } from "../../helpers/text"
+import { jooyoo } from "../../temp-init/jooyoo"
 import { loadAll as loadAllWords, loadBasicList as loadBasicWordsList } from "../../words/data/data"
 import { loadBasicList } from "./data"
 
@@ -46,6 +47,9 @@ export default async function collectKanji() {
         }
     }
     console.log(mainLinks)
+
+    const lastJooyoo = jooyoo.filter(e => !mainLinks.has(e[0]))
+    console.log("jooyoo:", lastJooyoo)
 
     const kanji = await kanjiPromise
     console.log(kanji)

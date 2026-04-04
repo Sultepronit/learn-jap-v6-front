@@ -24,7 +24,7 @@ import WordCard from "./words/learnSession/word-card"
 import WordsSession from "./words/learnSession/words-session"
 import WordsSessionStats from "./words/learnSession/words-session-stats"
 import KanjiDb from "./kanji/dbView/kanji-db"
-// import collectKanji from "./kanji/data/collector"
+import collectKanji from "./kanji/data/collector"
 
 console.time("t1")
 
