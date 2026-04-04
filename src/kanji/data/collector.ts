@@ -10,7 +10,7 @@ export default async function collectKanji() {
     // await loadAllWords("wordProgs")
     await Promise.all([loadAllWords("wordCards"), loadAllWords("wordProgs")])
     console.log(words)
-    const testBlock = words.slice(0, 100)
+    // const testBlock = words.slice(0, 100)
 
     const mainLinks = new Map<String, number[]>()
     // for (const w of testBlock) {

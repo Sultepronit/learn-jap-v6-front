@@ -24,15 +24,18 @@ export default function update(word: CombinedWord, mark: Mark, stats: WordsSessi
 
     console.log("before update:")
     console.table(prog)
+
+    const emptyProgress = () => ({ progress: 0, record: 0 }) as Progress
+
+    // there was this stupid mistake of f & b as single reference
+    // remove this thing as some point
+    if (prog.b === prog.f) prog.b = emptyProgress()
+
     switch (mark) {
         case "bad":
             prog.status = stage === "learn" ? -0.5 : 0
-            const empty: Progress = {
-                progress: 0,
-                record: 0
-            }
-            prog.f = empty
-            prog.b = empty
+            prog.f = emptyProgress()
+            prog.b = emptyProgress()
             break
         case "good":
             actual.progress = 1
