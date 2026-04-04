@@ -8,7 +8,7 @@ import type { CombinedWord } from "../types"
 import { createWord, createWordProg } from "./creation"
 
 let words: CombinedWord[] = null
-let wordsIndex = new Map<number, CombinedWord>()
+export const wordsIndex = new Map<number, CombinedWord>()
 
 export async function loadBasicList() {
     if (words) return words
@@ -46,9 +46,9 @@ export async function loadBasicList() {
     return words
 }
 
-export function getWordById(id: number) {
-    return wordsIndex.get(id)
-}
+// export function getWordById(id: number) {
+//     return wordsIndex.get(id)
+// }
 
 let queue = new Set()
 let timeout = 0

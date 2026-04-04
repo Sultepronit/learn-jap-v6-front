@@ -1,6 +1,6 @@
 import { emit, EVT, on } from "../../global/events"
 import { areSameDay, getNow } from "../../helpers/time"
-import { getWordById, loadBasicList } from "../data/data"
+import { loadBasicList, wordsIndex } from "../data/data"
 import type { CombinedWord } from "../types"
 import { papareWord } from "./helpers"
 import prepareSession from "./preparation"
@@ -70,7 +70,8 @@ async function continueSession(): Promise<WordsSession> {
 
     const newCont: CombinedWord[] = []
     for (const oldWord of restored.content) {
-        const word = getWordById(oldWord.id)
+        // const word = getWordById(oldWord.id)
+        const word = wordsIndex.get(oldWord.id)
         if (oldWord.comp) word.comp = oldWord.comp
         // console.log(word.comp)
         newCont.push(word)

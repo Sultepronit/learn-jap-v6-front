@@ -1,7 +1,7 @@
 import { genRandomInt, randomize } from "../../helpers/random"
 import { areSameDay, getNow } from "../../helpers/time"
 import { getSessionCards } from "../../indexedDB/dbHandlers"
-import { getWordById, loadBasicList, setUpdates } from "../data/data"
+import { loadBasicList, setUpdates, wordsIndex } from "../data/data"
 import type { CombinedWord, WordProg } from "../types"
 import { detectDirection } from "./helpers"
 
@@ -133,7 +133,8 @@ export default async function prepareSession(length: number) {
 
     const content: CombinedWord[] = []
     for (const prog of list) {
-        const word = getWordById(prog.id)
+        // const word = getWordById(prog.id)
+        const word = wordsIndex.get(prog.id)
         content.push(word)
     }
 
