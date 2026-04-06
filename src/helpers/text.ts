@@ -3,8 +3,6 @@ export function toCamelCase(kebab: string) {
 }
 
 export function getUniqueKanji(text: string) {
-    const matches = text.match(/\p{Script=Han}/gu) || []
+    const matches = text.match(/(?!々)\p{Script=Han}/gu) || []
     return [...new Set(matches)]
 }
-
-// console.log(getUniqueKanji("日本語を勉強しています。日本は美しいです。"))

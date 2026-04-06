@@ -1,16 +1,4 @@
 import "./app.css"
-// import { tempClearStore } from "./indexedDB/dbUseCases"
-
-// async function tempClear() {
-//     // use localStorage.clear() in the glovalVersions.ts!
-//     console.log("clear!")
-//     localStorage.clear()
-//     // await tempClearStore("wordCards")
-//     // tempClearStore("wordProgs")
-// }
-// await tempClear()
-
-import setMutationsListener from "./sync/localMutations"
 
 import MainView from "./views/main-view"
 import StatusBar from "./views/status-bar"
@@ -24,6 +12,8 @@ import WordCard from "./words/learnSession/word-card"
 import WordsSession from "./words/learnSession/words-session"
 import WordsSessionStats from "./words/learnSession/words-session-stats"
 import KanjiDb from "./kanji/dbView/kanji-db"
+
+import setMutationsListener from "./sync/localMutations"
 import collectKanji from "./kanji/data/collector"
 
 console.time("t1")
@@ -56,6 +46,16 @@ import { parseInitKanjiData } from "./temp-init/parseInitData"
 // parseInitKanjiData()
 
 // loadToServer()
+
+// import { tempClearStore } from "./indexedDB/dbUseCases"
+// async function tempClear() {
+//     // use localStorage.clear() in the glovalVersions.ts!
+//     console.log("clear!")
+//     localStorage.clear()
+//     // await tempClearStore("wordCards")
+//     // tempClearStore("wordProgs")
+// }
+// await tempClear()
 
 // window.onerror = (message, source, lineno, colno, error) => {
 window.onerror = message => {

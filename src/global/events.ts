@@ -7,6 +7,7 @@ export const EVT = {
 
     /** data for saving */
     CARD_MUTATED: "card-mutated",
+    CARDS_MUTATED: "cards-mutated",
 
     /** view update */
     WORD_UPDATED: "word-updated",
@@ -49,6 +50,7 @@ export type EventName = DeepValue<typeof EVT>
 interface EventPayloads {
     login: string
     "card-mutated": { type: string; card: SyncCard }
+    "cards-mutated": { type: string; cards: SyncCard[] }
     "word-updated": undefined
     "word-updates-received": { type: string; updates: SyncCard[] }
     "words-count-changed": undefined
