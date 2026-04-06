@@ -160,8 +160,8 @@ export async function parseInitKanjiData() {
 
     // console.log(kanjiCards)
     // console.log(kanjiProgs)
-    // tempClearStore("kanjiCards")
-    // tempClearStore("kanjiProgs")
+    tempClearStore("kanjiCards")
+    tempClearStore("kanjiProgs")
     saveCards("kanjiCards", kanjiCards)
     saveCards("kanjiProgs", kanjiProgs)
 }

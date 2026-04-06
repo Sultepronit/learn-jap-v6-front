@@ -39,6 +39,7 @@ customElements.define("kanji-db", KanjiDb)
 
 import fetchInitData from "./temp-init/fetchInitData"
 import { parseInitKanjiData } from "./temp-init/parseInitData"
+import loadToServer from "./temp-init/loadToServer"
 // import { loadBasicList } from "./kanji/data/data"
 // fetchInitData()
 

@@ -14,7 +14,7 @@ function handleMutations({ cards, type }: { cards: SyncCard[]; type: string }) {
     for (const card of cards) {
         card.v++
         card.toSync = 1
-        // toSync[type].set(card.id, card)
+        toSync[type].set(card.id, card)
     }
     useSaveQuery(type, cards)
 }
