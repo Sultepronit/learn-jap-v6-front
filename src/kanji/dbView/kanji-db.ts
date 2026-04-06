@@ -4,6 +4,7 @@ import type { CombinedKanji } from "../types"
 import { loadBasicList } from "../data/data"
 import fillRow from "./fillBTRow"
 import { EVT } from "../../global/events"
+import { rearrangeData, sort } from "./sortSearch"
 
 export default class KanjiDb extends HTMLElement {
     allData: CombinedKanji[]
@@ -82,8 +83,8 @@ export default class KanjiDb extends HTMLElement {
         // console.log(this.table)
         console.timeLog("t1", "table!")
         this.table.setParams(colums, "kanji-btr", fillRow, EVT.KANJI_UPDATED)
-        // this.updateDisplayData(await searchSort(this.allData))
-        this.updateDisplayData(this.allData)
+        this.updateDisplayData(await rearrangeData(this.allData))
+        // this.updateDisplayData(this.allData)
 
         this.dispatchEvent(
             new CustomEvent("card-selected", {
@@ -91,34 +92,34 @@ export default class KanjiDb extends HTMLElement {
             })
         )
 
-        // this.table.addEventListener("sort", async (e: CustomEvent) => {
-        //     const { column, up } = e.detail
-        //     console.log(column, up)
+        this.table.addEventListener("sort", async (e: CustomEvent) => {
+            const { column, up } = e.detail
+            console.log(column, up)
 
-        //     if (["writings", "readings"].includes(column)) {
-        //         await loadAll("wordCards")
-        //         this.sortType = "wordCards"
-        //     } else if (
-        //         [
-        //             "status",
-        //             "f-progress",
-        //             "b-progress",
-        //             "f-record",
-        //             "f-autorepeat",
-        //             "b-record",
-        //             "b-autorepeat",
-        //             "t"
-        //         ].includes(column)
-        //     ) {
-        //         await loadAll("wordProgs")
-        //         this.sortType = "wordProgs"
-        //     } else {
-        //         this.sortType = ""
-        //     }
-        //     console.log(this.sortType)
+            // if (["writings", "readings"].includes(column)) {
+            //     await loadAll("wordCards")
+            //     this.sortType = "wordCards"
+            // } else if (
+            //     [
+            //         "status",
+            //         "f-progress",
+            //         "b-progress",
+            //         "f-record",
+            //         "f-autorepeat",
+            //         "b-record",
+            //         "b-autorepeat",
+            //         "t"
+            //     ].includes(column)
+            // ) {
+            //     await loadAll("wordProgs")
+            //     this.sortType = "wordProgs"
+            // } else {
+            //     this.sortType = ""
+            // }
+            // console.log(this.sortType)
 
-        //     await sort(this.displayData, column, up)
-        //     this.updateDisplayData(this.displayData)
-        // })
+            await sort(this.displayData, column, up)
+            this.updateDisplayData(this.displayData)
+        })
     }
 }

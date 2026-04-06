@@ -71,6 +71,10 @@ words-search {
     gap: 1.2em;
 } */
 
+words-db .big-table {
+    min-width: 40em;
+}
+
 .word-btr {
     display: grid;
     grid-template-columns: 3em 4em 1.3em 1.3em 1.1em 1.3em 1.3em 1.1em 4.1em 5fr 5fr 10fr 5fr;

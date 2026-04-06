@@ -115,7 +115,7 @@ async function search(data: CombinedWord[], query: string) {
     })
 }
 
-export async function searchSort(data: CombinedWord[], query?: string) {
+export async function rearrangeData(data: CombinedWord[], query?: string) {
     if (query !== undefined) {
         lastSearch.query = query
     } else {

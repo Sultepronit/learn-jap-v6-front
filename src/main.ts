@@ -47,10 +47,11 @@ customElements.define("words-session", WordsSession)
 
 customElements.define("kanji-db", KanjiDb)
 
-// import fetchInitData from "./temp-init/fetchInitData"
-// import { parseInitKanjiData } from "./temp-init/parseInitData"
+import fetchInitData from "./temp-init/fetchInitData"
+import { parseInitKanjiData } from "./temp-init/parseInitData"
 // import { loadBasicList } from "./kanji/data/data"
 // fetchInitData()
+
 // parseInitKanjiData()
 // parseInitData()
 

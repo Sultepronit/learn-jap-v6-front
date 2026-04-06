@@ -4,7 +4,7 @@ import { loadAll, loadBasicList } from "../data/data"
 import type { CombinedWord } from "../types"
 import type WordEditor from "./word-editor"
 import type WordsSearch from "./words-search"
-import { searchSort, sort } from "./sortSearch"
+import { rearrangeData, sort } from "./sortSearch"
 import { EVT, on } from "../../global/events"
 import fillRow from "./fillBTRow"
 
@@ -28,7 +28,7 @@ export default class WordsDb extends HTMLElement {
 
         on(EVT.WORDS_COUNT_CHANGED, async () => {
             // this.updateDisplayData(await searchSort(this.allData, ""))
-            this.updateDisplayData(await searchSort(this.allData))
+            this.updateDisplayData(await rearrangeData(this.allData))
             this.dispatchEvent(
                 new CustomEvent("card-selected", {
                     detail: { cardNum: this.allData.length, rowIdx: 0 }
@@ -39,10 +39,10 @@ export default class WordsDb extends HTMLElement {
         on(EVT.WORD_UPDATES_RECEIVED, async ({ type }) => {
             console.log(type)
             if (type === this.sortType) {
-                this.updateDisplayData(await searchSort(this.allData))
+                this.updateDisplayData(await rearrangeData(this.allData))
             } else if (this.searching && type === "wordCards") {
                 console.log("here we go!")
-                this.updateDisplayData(await searchSort(this.allData))
+                this.updateDisplayData(await rearrangeData(this.allData))
             }
             console.log(this.searching, type === "wordCards")
         })
@@ -68,7 +68,7 @@ export default class WordsDb extends HTMLElement {
         this.addEventListener("search", async (e: CustomEvent) => {
             this.searching = !!e.detail.query
             await loadAll("wordCards")
-            this.updateDisplayData(await searchSort(this.allData, e.detail.query))
+            this.updateDisplayData(await rearrangeData(this.allData, e.detail.query))
         })
     }
 
@@ -93,7 +93,7 @@ export default class WordsDb extends HTMLElement {
         console.timeLog("t1", "table!")
         this.table.setParams(colums, "word-btr", fillRow, EVT.WORD_UPDATED)
         // this.updateDisplayData(await searchSort(this.allData, ""))
-        this.updateDisplayData(await searchSort(this.allData))
+        this.updateDisplayData(await rearrangeData(this.allData))
 
         this.dispatchEvent(
             new CustomEvent("card-selected", {

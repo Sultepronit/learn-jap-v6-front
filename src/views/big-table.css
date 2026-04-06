@@ -10,7 +10,7 @@ big-table {
 }
 
 .big-table {
-    min-width: 40em;
+    /* min-width: 40em; */
     display: grid;
     grid-template-columns: 1fr auto;
     grid-auto-rows: min-content;
