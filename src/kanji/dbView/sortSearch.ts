@@ -52,6 +52,11 @@ export async function sort(data: CombinedKanji[], column: string, up: boolean) {
         case "readings":
             data.sort((a, b) => a.card?.data.readings.localeCompare(b.card?.data.readings))
             break
+        case "main-links":
+            data.sort(
+                (a, b) => (a.card?.data.links.main[0] || 0) - (b.card?.data.links.main[0] || 0)
+            )
+            break
         default:
             lastSort.column = ""
             return

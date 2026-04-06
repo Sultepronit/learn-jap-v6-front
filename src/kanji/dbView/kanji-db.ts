@@ -1,7 +1,7 @@
 import "./kanji-db.css"
 import type BigTable from "../../views/big-table"
 import type { CombinedKanji } from "../types"
-import { loadBasicList } from "../data/data"
+import { loadAllProgs, loadBasicList } from "../data/data"
 import fillRow from "./fillBTRow"
 import { EVT } from "../../global/events"
 import { rearrangeData, sort } from "./sortSearch"
@@ -96,27 +96,15 @@ export default class KanjiDb extends HTMLElement {
             const { column, up } = e.detail
             console.log(column, up)
 
-            // if (["writings", "readings"].includes(column)) {
-            //     await loadAll("wordCards")
-            //     this.sortType = "wordCards"
-            // } else if (
-            //     [
-            //         "status",
-            //         "f-progress",
-            //         "b-progress",
-            //         "f-record",
-            //         "f-autorepeat",
-            //         "b-record",
-            //         "b-autorepeat",
-            //         "t"
-            //     ].includes(column)
-            // ) {
-            //     await loadAll("wordProgs")
-            //     this.sortType = "wordProgs"
-            // } else {
-            //     this.sortType = ""
-            // }
-            // console.log(this.sortType)
+            if (["readings", "main-links"].includes(column)) {
+                this.sortType = "kanjiCards"
+            } else if (["status", "progress", "record", "autorepeat", "t"].includes(column)) {
+                await loadAllProgs()
+                this.sortType = "kanjiProgs"
+            } else {
+                this.sortType = ""
+            }
+            console.log(this.sortType)
 
             await sort(this.displayData, column, up)
             this.updateDisplayData(this.displayData)

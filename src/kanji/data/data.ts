@@ -1,11 +1,12 @@
 import { emit, EVT } from "../../global/events"
-import { defineProperty } from "../../helpers/object"
+import { defineProperty, isGetter } from "../../helpers/object"
 import { getIndexed } from "../../indexedDB/dbHandlers"
-import { getCard } from "../../indexedDB/dbUseCases"
+import { getAllCards, getCard } from "../../indexedDB/dbUseCases"
 import { toSync } from "../../sync/sync"
-import type { CombinedKanji, KanjiCard } from "../types"
+import type { CombinedKanji, KanjiCard, KanjiProg } from "../types"
 
 let kanji: CombinedKanji[]
+const kanjiIndex = new Map<string, CombinedKanji>()
 
 export async function loadBasicList() {
     if (kanji) return kanji
@@ -29,13 +30,13 @@ export async function loadBasicList() {
                 return null
             }
         }
-        // wordsIndex.set(id, k)
+        kanjiIndex.set(card.id, k)
         return k
     })
 
     console.timeLog("t1", "cards parsed")
-    // console.log(wordsIndex)
-    console.log(kanji)
+    // console.log(kanjiIndex)
+    // console.log(kanji)
     return kanji
 }
 
@@ -72,4 +73,27 @@ async function loadCard(k: CombinedKanji) {
         clearTimeout(timeout)
         timeout = 0
     }, 50)
+}
+
+let loaded = false
+export async function loadAllProgs() {
+    if (loaded) return
+
+    console.timeLog("t1", "start")
+    const entries = ((await getAllCards("kanjiProgs")) || []) as KanjiProg[]
+    // console.log(entries)
+    console.timeLog("t1", "parsing")
+
+    for (const e of entries) {
+        const k = kanjiIndex.get(e.id as string)
+
+        if (!isGetter(k, "prog") && k.prog) continue
+        k.v++
+
+        defineProperty(k, "prog", e)
+    }
+
+    loaded = true
+    console.timeLog("t1", "end")
+    emit(EVT.KANJI_UPDATED)
 }

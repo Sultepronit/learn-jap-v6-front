@@ -52,8 +52,8 @@ import { parseInitKanjiData } from "./temp-init/parseInitData"
 // import { loadBasicList } from "./kanji/data/data"
 // fetchInitData()
 
-// parseInitKanjiData()
 // parseInitData()
+// parseInitKanjiData()
 
 // loadToServer()
 

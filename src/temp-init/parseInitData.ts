@@ -3,6 +3,7 @@ import { tempClearStore, saveCards } from "../indexedDB/dbUseCases"
 import type { KanjiCard, KanjiProg } from "../kanji/types"
 import type { WordCard, WordProg } from "../words/types"
 import fetchInitData from "./fetchInitData"
+import { jooyoo } from "./jooyoo"
 
 export async function parseInitData() {
     // const initData = JSON.parse(localStorage.getItem('initData')) as any[]
@@ -89,13 +90,15 @@ export async function parseInitKanjiData() {
     // const initData = await fetchInitData()
     console.log(initData)
 
-    const part = initData.slice(0, 100)
+    // const part = initData.slice(0, 100)
 
     const kanjiCards: KanjiCard[] = []
     const kanjiProgs: KanjiProg[] = []
 
-    // for (const rawCard of initData) {
-    for (const rawCard of part) {
+    const presentKanji = new Set<string>()
+
+    for (const rawCard of initData) {
+        // for (const rawCard of part) {
         // console.table(rawCard)
         const {
             id,
@@ -109,6 +112,10 @@ export async function parseInitKanjiData() {
             autorepeat
         } = rawCard
 
+        presentKanji.add(kanji)
+
+        const parsedLinks = JSON.parse(links)
+
         const kanjiCard: KanjiCard = {
             id: kanji,
             v: 0,
@@ -117,7 +124,7 @@ export async function parseInitKanjiData() {
                 order: id,
                 readings,
                 links: {
-                    main: JSON.parse(links),
+                    main: parsedLinks,
                     ...(otherLinks !== "[]" && { other: JSON.parse(otherLinks) })
                 }
             }
@@ -130,6 +137,7 @@ export async function parseInitKanjiData() {
             v: 0,
             syncV: 0,
             data: {
+                // status: parsedLinks.length > 0 ? repeatStatus : -2,
                 status: repeatStatus,
                 progress,
                 record,
@@ -140,10 +148,47 @@ export async function parseInitKanjiData() {
         // console.table(wordProg)
         kanjiProgs.push(kanjiProg)
     }
-    console.log(kanjiCards)
-    console.log(kanjiProgs)
-    // tempClearStore("wordCards")
-    // tempClearStore("wordProgs")
+
+    const lastJooyoo = jooyoo.filter(e => !presentKanji.has(e[0]))
+    console.log("jooyoo:", lastJooyoo)
+    let num = kanjiCards.length
+    for (const jk of lastJooyoo) {
+        const { card, prog } = createKanji(++num, jk[0], jk[3])
+        kanjiCards.push(card)
+        kanjiProgs.push(prog)
+    }
+
+    // console.log(kanjiCards)
+    // console.log(kanjiProgs)
+    // tempClearStore("kanjiCards")
+    // tempClearStore("kanjiProgs")
     saveCards("kanjiCards", kanjiCards)
     saveCards("kanjiProgs", kanjiProgs)
+}
+
+export function createKanji(num: number, kanji: string, readings: string) {
+    const card: KanjiCard = {
+        id: kanji,
+        v: 0,
+        syncV: 0,
+        data: {
+            order: num,
+            readings,
+            links: { main: [] }
+        }
+    }
+
+    const prog: KanjiProg = {
+        id: kanji,
+        v: 0,
+        syncV: 0,
+        data: {
+            status: -1,
+            progress: 0,
+            record: 0,
+            t: 0
+        }
+    }
+
+    return { card, prog }
 }

@@ -1,5 +1,5 @@
 import { emit, EVT, on } from "../../global/events"
-import type { SyncCard } from "../../global/types"
+import type { SyncWord } from "../../global/types"
 import { defineProperty, isGetter } from "../../helpers/object"
 import { useDb } from "../../indexedDB/dbHandlers"
 import { getAllCards, getCard } from "../../indexedDB/dbUseCases"
@@ -101,7 +101,7 @@ export async function loadAll(type: "wordCards" | "wordProgs") {
     if (loaded[type]) return
 
     console.timeLog("t1", "start")
-    const entries = ((await getAllCards(type)) || []) as SyncCard[]
+    const entries = ((await getAllCards(type)) || []) as SyncWord[]
     // console.log(re)
     console.timeLog("t1", "parsing")
     const block = type === "wordCards" ? "card" : "prog"
@@ -120,7 +120,7 @@ export async function loadAll(type: "wordCards" | "wordProgs") {
     emit(EVT.WORD_UPDATED)
 }
 
-function setNewWords(newWords: SyncCard[], block: "card" | "prog") {
+function setNewWords(newWords: SyncWord[], block: "card" | "prog") {
     console.log(newWords)
     for (const nwb of newWords) {
         const test = wordsIndex.get(nwb.id)
@@ -168,7 +168,7 @@ function setDeleted(ids: number[]) {
 
 type Update = {
     type: "wordCards" | "wordProgs"
-    updates: SyncCard[]
+    updates: SyncWord[]
 }
 export function setUpdates({ type, updates }: Update) {
     console.log(type, updates)
