@@ -5,12 +5,13 @@ import { loadAllProgs, loadBasicList } from "../data/data"
 import fillRow from "./fillBTRow"
 import { EVT } from "../../global/events"
 import { rearrangeData, sort } from "./sortSearch"
+import type KanjiSearch from "./kanji-search"
 
 export default class KanjiDb extends HTMLElement {
     allData: CombinedKanji[]
     displayData: CombinedKanji[]
 
-    // searchBar: WordsSearch
+    searchBar: KanjiSearch
     table: BigTable
 
     sortType = ""
@@ -20,7 +21,7 @@ export default class KanjiDb extends HTMLElement {
         this.allData = await loadBasicList()
         this.render()
 
-        // this.setSearchBar()
+        this.setSearchBar()
         this.setTable()
 
         // on(EVT.WORDS_COUNT_CHANGED, async () => {
@@ -46,25 +47,26 @@ export default class KanjiDb extends HTMLElement {
 
     render() {
         this.innerHTML = `
+            <kanji-search></kanji-search>
             <big-table></big-table>`
     }
 
     updateDisplayData(value: CombinedKanji[]) {
         this.displayData = value
         this.table.setData(this.displayData)
-        // this.searchBar.update(this.displayData)
+        this.searchBar.update(this.displayData)
     }
 
-    // setSearchBar() {
-    //     this.searchBar = this.querySelector("words-search")
-    //     this.searchBar.setData(this.allData)
-    //     // this.searchBar.addEventListener("search", async (e: CustomEvent) => {
-    //     this.addEventListener("search", async (e: CustomEvent) => {
-    //         this.searching = !!e.detail.query
-    //         await loadAll("wordCards")
-    //         this.updateDisplayData(await searchSort(this.allData, e.detail.query))
-    //     })
-    // }
+    setSearchBar() {
+        this.searchBar = this.querySelector("kanji-search")
+        this.searchBar.setData(this.allData)
+        // this.searchBar.addEventListener("search", async (e: CustomEvent) => {
+        // this.addEventListener("search", async (e: CustomEvent) => {
+        //     this.searching = !!e.detail.query
+        //     // await loadAll("wordCards")
+        //     this.updateDisplayData(await searchSort(this.allData, e.detail.query))
+        // })
+    }
 
     async setTable() {
         const colums = [
@@ -84,7 +86,6 @@ export default class KanjiDb extends HTMLElement {
         console.timeLog("t1", "table!")
         this.table.setParams(colums, "kanji-btr", fillRow, EVT.KANJI_UPDATED)
         this.updateDisplayData(await rearrangeData(this.allData))
-        // this.updateDisplayData(this.allData)
 
         this.dispatchEvent(
             new CustomEvent("card-selected", {

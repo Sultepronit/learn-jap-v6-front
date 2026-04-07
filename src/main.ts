@@ -11,6 +11,7 @@ import WordButtons from "./words/learnSession/word-buttons"
 import WordCard from "./words/learnSession/word-card"
 import WordsSession from "./words/learnSession/words-session"
 import WordsSessionStats from "./words/learnSession/words-session-stats"
+import KanjiSearch from "./kanji/dbView/kanji-search"
 import KanjiDb from "./kanji/dbView/kanji-db"
 
 import setMutationsListener from "./sync/localMutations"
@@ -35,11 +36,13 @@ customElements.define("word-card", WordCard)
 customElements.define("word-buttons", WordButtons)
 customElements.define("words-session", WordsSession)
 
+customElements.define("kanji-search", KanjiSearch)
 customElements.define("kanji-db", KanjiDb)
 
 import fetchInitData from "./temp-init/fetchInitData"
 import { parseInitKanjiData } from "./temp-init/parseInitData"
 import loadToServer from "./temp-init/loadToServer"
+
 // import { loadBasicList } from "./kanji/data/data"
 // fetchInitData()
 

@@ -7,6 +7,10 @@ export default class SmartRef {
         this.el = el
     }
 
+    get elAsInput() {
+        return this.el as HTMLInputElement
+    }
+
     text(val: string | number | undefined, isHtml = false) {
         if (isHtml) return this.html(val as string)
 
