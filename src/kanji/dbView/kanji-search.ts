@@ -12,7 +12,7 @@ export default class KanjiSearch extends BaseComponent<TKeys> {
     connectedCallback() {
         this.render()
         this.collectRefs()
-        console.log(this.refs)
+        // console.log(this.refs)
         this.attachListeners()
     }
 
@@ -27,7 +27,7 @@ export default class KanjiSearch extends BaseComponent<TKeys> {
 
         this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
             const newVal = e.detail.cardNum.toString()
-            console.log(this.refs.kanjiNum.value, newVal)
+            // console.log(this.refs.kanjiNum.value, newVal)
             if (this.refs.kanjiNum.value === newVal) return
 
             this.refs.kanjiNum.value = e.detail.cardNum
@@ -40,7 +40,11 @@ export default class KanjiSearch extends BaseComponent<TKeys> {
 
             this.dispatchEvent(
                 new CustomEvent("card-selected", {
-                    detail: { cardNum: Number(this.refs.kanjiNum.value), rowIdx: -1 },
+                    detail: {
+                        cardNum: Number(this.refs.kanjiNum.value),
+                        rowIdx: -1,
+                        navigate: true
+                    },
                     bubbles: true
                 })
             )
@@ -71,10 +75,11 @@ export default class KanjiSearch extends BaseComponent<TKeys> {
 
     updateSelected() {
         const num = Number(this.refs.kanjiNum.value)
-        console.log(this.displayData)
+        // console.log(this.displayData)
         const idx = this.displayData.findIndex(w => w.num === num)
         // console.log(idx)
         const val = idx < 0 ? "-" : idx + 1
         this.refs.selectedKanji.text(val)
+        console.log(this.displayData[idx])
     }
 }

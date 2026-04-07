@@ -53,6 +53,7 @@ export default class KanjiDb extends HTMLElement {
 
     updateDisplayData(value: CombinedKanji[]) {
         this.displayData = value
+        // console.log(this.displayData)
         this.table.setData(this.displayData)
         this.searchBar.update(this.displayData)
     }
@@ -60,12 +61,12 @@ export default class KanjiDb extends HTMLElement {
     setSearchBar() {
         this.searchBar = this.querySelector("kanji-search")
         this.searchBar.setData(this.allData)
-        // this.searchBar.addEventListener("search", async (e: CustomEvent) => {
-        // this.addEventListener("search", async (e: CustomEvent) => {
-        //     this.searching = !!e.detail.query
-        //     // await loadAll("wordCards")
-        //     this.updateDisplayData(await searchSort(this.allData, e.detail.query))
-        // })
+
+        this.addEventListener("search", async (e: CustomEvent) => {
+            this.searching = !!e.detail.query
+            // await loadAll("wordCards")
+            this.updateDisplayData(await rearrangeData(this.allData, e.detail.query))
+        })
     }
 
     async setTable() {

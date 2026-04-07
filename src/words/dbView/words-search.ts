@@ -46,7 +46,7 @@ export default class WordsSearch extends HTMLElement {
             // this.parentElement.dispatchEvent(
             this.dispatchEvent(
                 new CustomEvent("card-selected", {
-                    detail: { cardNum: Number(this.wordNum.value), rowIdx: -1 },
+                    detail: { cardNum: Number(this.wordNum.value), rowIdx: -1, navigate: true },
                     bubbles: true
                 })
             )

@@ -73,8 +73,9 @@ export default class BigTable extends HTMLElement {
         })
 
         this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
-            const { cardNum, rowIdx } = e.detail
+            const { cardNum, rowIdx, navigate } = e.detail
             this.reselect(cardNum, rowIdx)
+            if (navigate) this.goTo(cardNum)
         })
 
         this.rowsArea.addEventListener("click", e => {
@@ -252,5 +253,10 @@ export default class BigTable extends HTMLElement {
         if (this.top === newTop) return
 
         this.navigate(newTop - this.top)
+    }
+
+    goTo(cardNum: number) {
+        const idx = this.data.findIndex(w => w.num === cardNum)
+        if (idx >= 0) this.navigateSafely(idx - this.top)
     }
 }

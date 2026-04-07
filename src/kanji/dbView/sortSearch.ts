@@ -64,26 +64,9 @@ export async function sort(data: CombinedKanji[], column: string, up: boolean) {
     if (!up) data.reverse()
 }
 
-// async function search(data: CombinedWord[], query: string) {
-//     // await loadAll("wordCards")
-
-//     return data.filter(w => {
-//         const text = [
-//             ...w.card.data.writings.main,
-//             ...(w.card.data.writings.rare || []),
-//             ...w.card.data.readings.main,
-//             ...(w.card.data.readings.rare || [])
-//         ].join("")
-//         if (text.includes(query)) return true
-
-//         const hasBrackets = text.includes("(") || text.includes("{") || text.includes("[")
-//         if (!hasBrackets) return false
-//         if (text.replace(rgx[0], "").includes(query)) return true
-//         if (text.replace(rgx[1], "").includes(query)) return true
-//         return false
-//         // .includes(query)
-//     })
-// }
+function search(data: CombinedKanji[], query: string) {
+    return [data.find(k => k.id === query)]
+}
 
 export async function rearrangeData(data: CombinedKanji[], query?: string) {
     if (query !== undefined) {
@@ -94,11 +77,11 @@ export async function rearrangeData(data: CombinedKanji[], query?: string) {
     console.log(query, lastSearch)
 
     let re: CombinedKanji[]
-    // if (query) {
-    //     re = await search(data, query)
-    // } else {
-    //     re = [...data]
-    // }
+    if (query) {
+        return search(data, query)
+    } else {
+        re = [...data]
+    }
     re = [...data]
 
     const { column, up } = lastSort
