@@ -122,7 +122,7 @@ export default class BigTable extends HTMLElement {
     }
 
     updateContent() {
-        console.log("update big table")
+        // console.log("update big table")
         for (let i = 0; i < this.rowsN; i++) {
             const row = this.rows[i]
             if (row.v === row.card.v) continue

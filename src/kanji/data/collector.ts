@@ -2,28 +2,35 @@ import { emit, EVT } from "../../global/events"
 import { areArraysEqual } from "../../helpers/array"
 import { getUniqueKanji } from "../../helpers/text"
 import { loadAll as loadAllWords, loadBasicList as loadBasicWordsList } from "../../words/data/data"
-import type { KanjiProg } from "../types"
+import type { KanjiCard, KanjiProg } from "../types"
 import { loadAllProgs, loadBasicList } from "./data"
+
+function addLinks(nextPart: string[], map: Map<String, number[]>, wordId: number) {
+    for (const k of nextPart) {
+        const list = map.get(k)
+        if (list) {
+            list.push(wordId)
+        } else {
+            map.set(k, [wordId])
+        }
+    }
+}
 
 export default async function collectKanji() {
     const words = await loadBasicWordsList()
     const kanjiPromise = loadBasicList()
-    // await loadAllWords("wordCards")
-    // await loadAllWords("wordProgs")
     await Promise.all([loadAllWords("wordCards"), loadAllWords("wordProgs")])
     console.log(words)
-    // const testBlock = words.slice(0, 100)
 
     const mainLinks = new Map<String, number[]>()
     const otherLinks = new Map<String, number[]>()
-    // for (const w of testBlock) {
+
     for (const w of words) {
-        // if (w.prog.data.status === -0.5) continue
         if (w.prog.data.status === -1) break
         // console.log(w.id)
         // console.log(w.card.data.writings)
         const writ = w.card.data.writings
-        // const main = writ.alt ? "" : writ.main.join("")
+
         let mainBulk = ""
         let otherBulk = ""
         if (!writ.alt) {
@@ -40,74 +47,99 @@ export default async function collectKanji() {
         addLinks(main, mainLinks, w.id)
         addLinks(other, otherLinks, w.id)
     }
-    console.log(mainLinks)
-    console.log(otherLinks)
+    // console.log(mainLinks)
+    // console.log(otherLinks)
 
     const kanji = await kanjiPromise
     await loadAllProgs()
 
+    const changes = {
+        updated: [],
+        degraded: [],
+        upgraded: []
+    }
+    const mutatedCards: KanjiCard[] = []
     const mutatedProgs: KanjiProg[] = []
-    console.log(kanji)
+
     for (const k of kanji) {
         const kl = k.card.data.links
 
         const ml = mainLinks.get(k.id)
         if (!ml) {
+            // no main links now
             if (kl.main.length > 0) {
+                // but they do existed
                 k.v++
                 kl.main = []
+                mutatedCards.push(k.card)
+
                 if (k.card.data.readings) {
-                    console.log("updated(-):", k)
+                    changes.updated.push(k.id)
                 } else {
                     k.prog.data.status = -2
                     mutatedProgs.push(k.prog)
-                    console.log("degraded:", k)
+
+                    changes.degraded.push(k.id)
                 }
             }
         } else {
+            // there are main links
             if (!areArraysEqual(kl.main, ml)) {
+                // and they differs
                 k.v++
                 kl.main = ml
+                mutatedCards.push(k.card)
+
                 if (k.prog.data.status === -1 || k.prog.data.status === -2) {
                     k.prog.data.status = 0
                     mutatedProgs.push(k.prog)
-                    console.log("upgraded:", k)
+
+                    changes.upgraded.push(k.id)
                 } else {
-                    // console.log("updated:", k)
+                    changes.updated.push(k.id)
                 }
             }
+
+            // we'll get new ones this way
             mainLinks.delete(k.id)
         }
 
         const ol = otherLinks.get(k.id)
         if (!ol) {
+            // no other links now
             if (kl.other) {
+                // but they do existed
                 k.v++
-                // console.log("updated(-):", k)
                 delete kl.other
+                mutatedCards.push(k.card)
+
+                changes.updated.push(k.id)
             }
         } else {
-            if (!areArraysEqual(kl.main, ol)) {
+            // there are other links
+            if (!areArraysEqual(kl.other, ol)) {
+                // and they differs
+                console.log(kl.other, ol)
                 k.v++
                 kl.other = ol
-                // console.log("updated:", k)
+                mutatedCards.push(k.card)
+
+                changes.updated.push(k.id)
             }
         }
     }
-    console.log("new:", mainLinks)
-    emit(EVT.KANJI_UPDATED)
-    if (mutatedProgs.length > 0) {
-        emit(EVT.CARDS_MUTATED, { type: "kanjiProgs", cards: mutatedProgs })
-    }
-}
 
-function addLinks(nextPart: string[], map: Map<String, number[]>, wordId: number) {
-    for (const k of nextPart) {
-        const list = map.get(k)
-        if (list) {
-            list.push(wordId)
-        } else {
-            map.set(k, [wordId])
-        }
-    }
+    // implement adding new ones!
+    console.log("new:", mainLinks)
+
+    console.log(changes)
+    emit(EVT.KANJI_UPDATED)
+
+    // if (mutatedCards.length > 0) {
+    //     emit(EVT.CARDS_MUTATED, { type: "kanjiCards", cards: mutatedCards })
+    // }
+
+    // if (mutatedProgs.length > 0) {
+    //     emit(EVT.CARDS_MUTATED, { type: "kanjiProgs", cards: mutatedProgs })
+    // }
 }
