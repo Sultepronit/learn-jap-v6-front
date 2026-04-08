@@ -1,7 +1,6 @@
 import { emit, EVT, on } from "../../global/events"
 import type { SyncKanji } from "../../global/types"
 import { defineProperty, isGetter } from "../../helpers/object"
-import { getIndexed } from "../../indexedDB/dbHandlers"
 import { getAllCards, getCard } from "../../indexedDB/dbUseCases"
 import { toSync } from "../../sync/sync"
 import type { CombinedKanji, KanjiCard, KanjiProg } from "../types"
@@ -16,14 +15,17 @@ export async function loadBasicList() {
     on(EVT.KANJI_UPDATES_RECEIVED, setUpdates)
 
     console.timeLog("t1", "cards init")
-    const cards = (await getIndexed("kanjiCards", "order")) as KanjiCard[]
-    console.timeLog("t1", "cards keys")
+    // const cards = (await getIndexed("kanjiCards", "order")) as KanjiCard[]
+    const cards = (await getAllCards("kanjiCards")) as KanjiCard[]
+    console.timeLog("t1", "cards")
     console.log(cards)
 
     kanji = cards.map((card, i) => {
+        // console.log(card.id.codePointAt(0))
         const k = {
             id: card.id,
-            num: i + 1,
+            num: card.id.codePointAt(0),
+            // num: i + 1,
             v: 0,
             card,
             get prog() {
@@ -109,17 +111,13 @@ function setNewKanji(newKanji: SyncKanji[], block: "card" | "prog") {
             continue
         }
 
-        const k = createKanji(kanji.length + 1, nkb.id)
+        const k = createKanji(nkb.id, 0)
         k[block] = nkb
         kanji.push(k)
         kanjiIndex.set(k.id, k)
     }
-    kanji.sort((a, b) => a.card.data.order - b.card.data.order)
+    kanji.sort((a, b) => a.id.localeCompare(b.id))
 
-    for (let i = kanji.length - 1; i >= 0; i--) {
-        if (kanji[i].num === i + 1) break
-        kanji[i].num = i + 1
-    }
     emit(EVT.KANJI_COUNT_CHANGED)
 }
 

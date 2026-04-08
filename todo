@@ -1,7 +1,9 @@
-Implement return from temp no normal search
+Implement return from temp to normal search
 
 Add to the server & the client forced update if the client update is too stale
 
 Forbid update after delete?
 
 Check if hidden big views are enough quiet?
+
+change num to id in big-table etc? Especially to remove it out from kanji

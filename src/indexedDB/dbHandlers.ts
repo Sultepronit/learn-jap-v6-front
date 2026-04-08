@@ -18,8 +18,8 @@ const stores = [
         name: "kanjiCards",
         key: "id",
         indexes: [
-            ["toSync", "toSync", { unique: false }],
-            ["order", "data.order", { unique: false }]
+            ["toSync", "toSync", { unique: false }]
+            // ["order", "data.order", { unique: false }]
         ] as indexDesc[]
     },
     {

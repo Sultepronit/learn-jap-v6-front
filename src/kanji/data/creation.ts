@@ -17,14 +17,14 @@ export function createKanjiProg(id: string) {
     return prog
 }
 
-export function createKanji(order: number, id: string) {
+export function createKanji(id: string, created: number) {
     const card: KanjiCard = {
         id,
         v: 0,
         syncV: -1,
         toSync: 1,
         data: {
-            order,
+            created,
             readings: "",
             links: { main: [] }
         }
@@ -32,7 +32,7 @@ export function createKanji(order: number, id: string) {
 
     const word = {
         id,
-        num: 0,
+        num: id.codePointAt(0),
         v: 0,
         card,
         prog: createKanjiProg(id)

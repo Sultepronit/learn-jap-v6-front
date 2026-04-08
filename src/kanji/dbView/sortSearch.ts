@@ -31,6 +31,9 @@ export async function sort(data: CombinedKanji[], column: string, up: boolean) {
         case "kanji":
             data.sort((a, b) => a.id.localeCompare(b.id))
             break
+        case "created":
+            data.sort((a, b) => a.card.data.created - b.card.data.created)
+            break
         case "status":
             data.sort((a, b) => a.prog?.data.status - b.prog?.data.status)
             break

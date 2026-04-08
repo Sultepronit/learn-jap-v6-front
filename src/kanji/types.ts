@@ -1,23 +1,22 @@
 export type KanjiCard = {
-    // id: number
     id: string
     v: number
     syncV: number
     toSync?: 1
     data: {
-        // kanji: string
-        order: number
+        created: number
         readings: string
         links: {
             main: number[]
             other?: number[]
         }
-        similar?: string
+        details?: {
+            obsolete?: string
+        }
     }
 }
 
 export type KanjiProg = {
-    // id: number
     id: string
     v: number
     syncV: number

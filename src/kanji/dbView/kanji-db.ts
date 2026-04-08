@@ -79,8 +79,9 @@ export default class KanjiDb extends HTMLElement {
 
     async setTable() {
         const colums = [
-            "num",
+            // "num",
             "kanji",
+            "created",
             "status",
             "progress",
             "record",

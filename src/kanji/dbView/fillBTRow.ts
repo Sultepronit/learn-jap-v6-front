@@ -23,10 +23,14 @@ export default function fillRow(row: BTRow) {
 
     const strNum = k.num.toString()
     row.element.dataset.cardNum = strNum
-    row.refs.num.text(strNum)
+    // row.refs.num.text(strNum)
 
-    row.refs.kanji.text(k.id)
+    const obsolete = k.card.data.details?.obsolete
+    row.refs.kanji.text(k.id + (obsolete ? " " + obsolete : ""))
 
+    const created = k.card.data.created
+    const display = created < 2000 ? created : new Date(created * 1000).toISOString().slice(2, 7)
+    row.refs.created.text(display)
     row.refs.status.text(k.prog?.data.status)
     row.refs.progress.text(k.prog?.data.progress)
     row.refs.record.text(k.prog?.data.record)

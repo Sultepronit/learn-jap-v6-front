@@ -83,10 +83,12 @@ export default class BigTable extends HTMLElement {
             if (clicked === this.selected.element) return
 
             const { cardNum, i } = clicked.dataset
-
-            this.parentNode.dispatchEvent(
+            // console.log(cardNum, i)
+            // this.parentNode.dispatchEvent(
+            this.dispatchEvent(
                 new CustomEvent("card-selected", {
-                    detail: { cardNum: Number(cardNum), rowIdx: Number(i) }
+                    detail: { cardNum: Number(cardNum), rowIdx: Number(i) },
+                    bubbles: true
                 })
             )
         })

@@ -24,7 +24,10 @@ export default class KanjiSearch extends BaseComponent<TKeys> {
         //     this.wordNum.max = this.allData.length.toString()
         // })
 
-        this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
+        console.log(this.parentElement)
+        console.log(this.closest("kanji-db"))
+        // this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
+        this.closest("kanji-db").addEventListener("card-selected", (e: CustomEvent) => {
             const newVal = e.detail.cardNum.toString()
             // console.log(this.refs.kanjiNum.value, newVal)
             if (this.refs.kanjiNum.value === newVal) return
