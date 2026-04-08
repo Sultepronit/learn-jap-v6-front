@@ -34,14 +34,7 @@ function prepareRepeatList(all: KanjiProg[], length: number) {
     return re
 }
 
-async function tempAddNewLearning() {
-    const k = (await getSessionCards("kanjiProgs", -1, 1)) as KanjiProg[]
-    console.log(k[0])
-    if (k[0]?.data.status === -1) return k[0]
-    return null
-}
-
-async function prepareLearnList(range: KanjiProg[], learnIdx: number, repeatIdx: number) {
+function prepareLearnList(range: KanjiProg[], learnIdx: number, repeatIdx: number) {
     if (repeatIdx === 0) return []
 
     const now = getNow()
@@ -69,13 +62,10 @@ async function prepareLearnList(range: KanjiProg[], learnIdx: number, repeatIdx:
         returnList[ri] = null
     }
 
-    const newK = await tempAddNewLearning()
-    if (newK) learnList.push(newK)
-
     return learnList
 }
 
-async function prepareSessionList(candidates: KanjiProg[], sessionLenth: number) {
+function prepareSessionList(candidates: KanjiProg[], sessionLenth: number, tempNewK: KanjiProg) {
     let learnIdx = -1,
         repeatIdx = -1
     for (let i = 0; i < candidates.length; i++) {
@@ -87,9 +77,11 @@ async function prepareSessionList(candidates: KanjiProg[], sessionLenth: number)
     }
     console.log(learnIdx, repeatIdx)
 
-    const learnList = await prepareLearnList(candidates, learnIdx, repeatIdx)
+    const learnList = prepareLearnList(candidates, learnIdx, repeatIdx)
+    if (tempNewK) learnList.push(tempNewK)
+
     const allToRepeat = candidates.slice(repeatIdx)
-    console.log(learnList, allToRepeat)
+    // console.log(learnList, allToRepeat)
 
     const repeatNumber = sessionLenth - learnList.length
     const repeatList = prepareRepeatList(allToRepeat, repeatNumber)
@@ -105,6 +97,13 @@ async function prepareSessionList(candidates: KanjiProg[], sessionLenth: number)
     }
 }
 
+async function tempAddNewLearning() {
+    const k = (await getSessionCards("kanjiProgs", -1, 1)) as KanjiProg[]
+    console.log(k[0])
+    if (k[0]?.data.status === -1) return k[0]
+    return null
+}
+
 export default async function prepareSession(length: number) {
     console.timeLog("t1", "range init")
     const rangePromise = getSessionCards("kanjiProgs", -0.5, 700)
@@ -114,11 +113,16 @@ export default async function prepareSession(length: number) {
     console.timeLog("t1", "range here")
     await allKanjiPromise
 
+    const newK = await tempAddNewLearning()
+    if (newK) {
+        range.push(newK)
+    }
+
     console.timeLog("t1", "updating")
     setUpdates({ type: "kanjiProgs", updates: range })
     console.timeLog("t1", "updated!")
 
-    const { learnNumber, repeatNumber, list } = await prepareSessionList(range, length)
+    const { learnNumber, repeatNumber, list } = prepareSessionList(range, length, newK)
 
     // console.log(learnNumber, repeatNumber, list)
 
@@ -126,7 +130,6 @@ export default async function prepareSession(length: number) {
 
     const content: CombinedKanji[] = []
     for (const prog of list) {
-        // const word = getWordById(prog.id)
         const k = kanjiIndex.get(prog.id)
         content.push(k)
     }
@@ -137,8 +140,7 @@ export default async function prepareSession(length: number) {
     return {
         content,
         learnNumber,
-        repeatNumber
+        repeatNumber,
+        autorepeated: 0
     }
 }
-
-// prepareSession(50)

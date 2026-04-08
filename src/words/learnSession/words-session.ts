@@ -9,10 +9,6 @@ type RefKeys = "mainView" | "endView" | "reset"
 export default class WordsSession extends BaseComponent<RefKeys> {
     word: CombinedWord
     wordV = 0
-    // views = {
-    //     main: null,
-    //     end: null
-    // }
 
     async connectedCallback() {
         this.innerHTML = template
@@ -20,14 +16,8 @@ export default class WordsSession extends BaseComponent<RefKeys> {
         this.collectRefs(["words-session-stats", "word-card", "word-buttons"])
         console.log(this.refs)
         this.refs.reset.on("click", () => emit(EVT.WS.RESET_REQUESTED))
-        // this.views.main = this.querySelector(".main-view")
-        // this.views.end = this.querySelector(".end-view")
-        // console.log(this.views)
 
         on(EVT.WS.ENDED, () => {
-            // this.views.main.classList.add("hidden")
-            // this.views.end.classList.remove("hidden")
-            // console.log(this.views)
             this.refs.mainView.hide()
             this.refs.endView.show()
         })
@@ -36,7 +26,7 @@ export default class WordsSession extends BaseComponent<RefKeys> {
             this.word = w
             this.wordV = w.v
         })
-        // alert("here we go!")
+
         await initSession()
         on(EVT.WORD_UPDATED, () => {
             // do we need all this things?

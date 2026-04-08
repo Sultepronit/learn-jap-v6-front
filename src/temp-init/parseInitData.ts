@@ -166,7 +166,7 @@ export async function parseInitKanjiData() {
     // tempClearStore("kanjiCards")
     // tempClearStore("kanjiProgs")
     saveCards("kanjiCards", kanjiCards)
-    saveCards("kanjiProgs", kanjiProgs)
+    // saveCards("kanjiProgs", kanjiProgs)
 }
 
 export function createKanji(kanji: string, readings: string, obsolete: string) {
@@ -175,7 +175,8 @@ export function createKanji(kanji: string, readings: string, obsolete: string) {
         v: 0,
         syncV: 0,
         data: {
-            created: getNow(),
+            // created: getNow(),
+            created: 0,
             readings,
             links: { main: [] },
             ...(obsolete && { details: { obsolete } })

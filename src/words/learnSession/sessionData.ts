@@ -9,10 +9,6 @@ import update from "./update"
 const sessionLenth = 30
 async function createSession(sessionLenth: number) {
     const prep = await prepareSession(sessionLenth)
-    // session.content = prep.content
-    // session.plan.learn = prep.learnNumber
-    // session.plan.repeat = prep.repeatNumber
-    // session.t = getNow()
     return {
         t: getNow(),
         content: prep.content,
@@ -45,7 +41,7 @@ async function createSession(sessionLenth: number) {
         }
     }
 }
-// export type WordsSession = typeof session
+
 export type WordsSession = Awaited<ReturnType<typeof createSession>>
 
 let session: WordsSession
