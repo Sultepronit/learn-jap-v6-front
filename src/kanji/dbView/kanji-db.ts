@@ -6,6 +6,7 @@ import fillRow from "./fillBTRow"
 import { EVT } from "../../global/events"
 import { rearrangeData, sort } from "./sortSearch"
 import type KanjiSearch from "./kanji-search"
+import collectKanji from "../data/collector"
 
 export default class KanjiDb extends HTMLElement {
     allData: CombinedKanji[]
@@ -23,6 +24,10 @@ export default class KanjiDb extends HTMLElement {
 
         this.setSearchBar()
         this.setTable()
+
+        this.querySelector("#collect-kanji").addEventListener("click", async () => {
+            collectKanji()
+        })
 
         // on(EVT.WORDS_COUNT_CHANGED, async () => {
         //     this.updateDisplayData(await searchSort(this.allData))
@@ -47,7 +52,10 @@ export default class KanjiDb extends HTMLElement {
 
     render() {
         this.innerHTML = `
-            <kanji-search></kanji-search>
+            <div class="kdb-controls-pannel">
+                <kanji-search></kanji-search>
+                <button class="emo-button" id="collect-kanji">⬇️</button>
+            </div>
             <big-table></big-table>`
     }
 

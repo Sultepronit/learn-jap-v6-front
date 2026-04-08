@@ -1,11 +1,12 @@
 import { emit, EVT } from "../global/events"
-import type { SyncBlock, SyncCard } from "../global/types"
+import type { SyncBlock, SyncCard, SyncKanji, SyncWord } from "../global/types"
 import { deleteRemotely } from "./deleteWords"
 import { useSaveQuery } from "./localDbQuery"
 
 export async function implementUpdates(
     blocks: SyncBlock[],
-    toSync: Record<string, Map<number, any>>
+    // toSync: Record<string, Map<number, any>>
+    toSync: Record<string, Map<number | string, SyncCard>>
 ) {
     for (const m of blocks ?? []) {
         console.log(m)
@@ -14,7 +15,7 @@ export async function implementUpdates(
         const deleted: number[] = []
 
         for (const rc of m.accepted ?? []) {
-            const lc = toSync[m.type].get(rc.id) as SyncCard
+            const lc = toSync[m.type].get(rc.id)
             console.log(rc, lc)
             // if (!lc) console.warn("What the heck?")
             if (!lc) continue // already updated!
@@ -35,10 +36,10 @@ export async function implementUpdates(
 
         for (const rc of m.updated ?? []) {
             if (rc.v === -100) {
-                deleted.push(rc.id)
+                deleted.push(rc.id as number)
                 continue
             }
-            const lc = toSync[m.type].get(rc.id) as SyncCard
+            const lc = toSync[m.type].get(rc.id)
             // console.log(rc, lc)
             if (lc) {
                 lc.syncV = rc.syncV
@@ -75,7 +76,15 @@ export async function implementUpdates(
         if (fullyUpdated.length > 0) {
             // console.log("update data!")
             if (m.type === "wordCards" || m.type === "wordProgs") {
-                emit(EVT.WORD_UPDATES_RECEIVED, { type: m.type, updates: fullyUpdated })
+                emit(EVT.WORD_UPDATES_RECEIVED, {
+                    type: m.type,
+                    updates: fullyUpdated as SyncWord[]
+                })
+            } else {
+                emit(EVT.KANJI_UPDATES_RECEIVED, {
+                    type: m.type,
+                    updates: fullyUpdated as SyncKanji[]
+                })
             }
         }
     }

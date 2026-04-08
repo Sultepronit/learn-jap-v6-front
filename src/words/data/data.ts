@@ -145,27 +145,6 @@ function setNewWords(newWords: SyncWord[], block: "card" | "prog") {
     emit(EVT.WORDS_COUNT_CHANGED)
 }
 
-function setDeleted(ids: number[]) {
-    const indexes = []
-    for (const id of ids) {
-        const word = wordsIndex.get(id)
-        if (!word) continue
-
-        const index = word.num - 1
-        indexes.push(index)
-        wordsIndex.delete(id)
-        words.splice(index, 1)
-    }
-
-    if (indexes.length < 1) return
-
-    for (let i = Math.min(...indexes); i < words.length; i++) {
-        console.log(i, words[i])
-        words[i].num = i + 1
-    }
-    emit(EVT.WORDS_COUNT_CHANGED) // for the view
-}
-
 type Update = {
     type: "wordCards" | "wordProgs"
     updates: SyncWord[]
@@ -195,6 +174,27 @@ export function setUpdates({ type, updates }: Update) {
     }
 
     emit(EVT.WORD_UPDATED)
+}
+
+function setDeleted(ids: number[]) {
+    const indexes = []
+    for (const id of ids) {
+        const word = wordsIndex.get(id)
+        if (!word) continue
+
+        const index = word.num - 1
+        indexes.push(index)
+        wordsIndex.delete(id)
+        words.splice(index, 1)
+    }
+
+    if (indexes.length < 1) return
+
+    for (let i = Math.min(...indexes); i < words.length; i++) {
+        console.log(i, words[i])
+        words[i].num = i + 1
+    }
+    emit(EVT.WORDS_COUNT_CHANGED) // for the view
 }
 
 function addVoid() {

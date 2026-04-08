@@ -1,6 +1,6 @@
 import type { WordsSession } from "../words/learnSession/sessionData"
 import type { CombinedWord } from "../words/types"
-import type { Mark, SyncCard } from "./types"
+import type { Mark, SyncCard, SyncKanji, SyncWord } from "./types"
 
 export const EVT = {
     LOGIN: "login",
@@ -25,6 +25,11 @@ export const EVT = {
 
     /** view update */
     KANJI_UPDATED: "kanji-updated",
+
+    KANJI_UPDATES_RECEIVED: "kanji-updates-received",
+
+    /** view update */
+    KANJI_COUNT_CHANGED: "kanji-count-changed",
 
     UPDATE_NOT_ENDED: "update-not-ended",
     SYNC_STATUS_CHANGED: "sync-status-changed",
@@ -51,13 +56,16 @@ interface EventPayloads {
     login: string
     "card-mutated": { type: string; card: SyncCard }
     "cards-mutated": { type: string; cards: SyncCard[] }
+
     "word-updated": undefined
-    "word-updates-received": { type: string; updates: SyncCard[] }
+    "word-updates-received": { type: string; updates: SyncWord[] }
     "words-count-changed": undefined
     "word-delete-init": number
     "words-deleted": number[]
 
     "kanji-updated": undefined
+    "kanji-updates-received": { type: string; updates: SyncKanji[] }
+    "kanji-count-changed": undefined
 
     "update-not-ended": undefined
     "sync-status-changed": string

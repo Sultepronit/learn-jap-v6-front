@@ -1,6 +1,5 @@
 import template from "./kanji-search.html?raw"
 
-import { EVT, on } from "../../global/events"
 import BaseComponent from "../../global/BaseComponent"
 import type { CombinedKanji } from "../types"
 

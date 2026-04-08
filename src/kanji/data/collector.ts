@@ -135,11 +135,11 @@ export default async function collectKanji() {
     console.log(changes)
     emit(EVT.KANJI_UPDATED)
 
-    // if (mutatedCards.length > 0) {
-    //     emit(EVT.CARDS_MUTATED, { type: "kanjiCards", cards: mutatedCards })
-    // }
+    if (mutatedCards.length > 0) {
+        emit(EVT.CARDS_MUTATED, { type: "kanjiCards", cards: mutatedCards })
+    }
 
-    // if (mutatedProgs.length > 0) {
-    //     emit(EVT.CARDS_MUTATED, { type: "kanjiProgs", cards: mutatedProgs })
-    // }
+    if (mutatedProgs.length > 0) {
+        emit(EVT.CARDS_MUTATED, { type: "kanjiProgs", cards: mutatedProgs })
+    }
 }

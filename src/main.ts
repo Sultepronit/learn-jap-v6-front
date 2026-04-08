@@ -15,7 +15,6 @@ import KanjiSearch from "./kanji/dbView/kanji-search"
 import KanjiDb from "./kanji/dbView/kanji-db"
 
 import setMutationsListener from "./sync/localMutations"
-import collectKanji from "./kanji/data/collector"
 
 console.time("t1")
 
@@ -39,11 +38,10 @@ customElements.define("words-session", WordsSession)
 customElements.define("kanji-search", KanjiSearch)
 customElements.define("kanji-db", KanjiDb)
 
-import fetchInitData from "./temp-init/fetchInitData"
-import { parseInitKanjiData } from "./temp-init/parseInitData"
-import loadToServer from "./temp-init/loadToServer"
+// import fetchInitData from "./temp-init/fetchInitData"
+// import { parseInitKanjiData } from "./temp-init/parseInitData"
+// import loadToServer from "./temp-init/loadToServer"
 
-// import { loadBasicList } from "./kanji/data/data"
 // fetchInitData()
 
 // parseInitData()
@@ -67,5 +65,3 @@ window.onerror = message => {
 }
 
 //test
-// loadBasicList()
-// collectKanji()

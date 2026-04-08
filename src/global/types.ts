@@ -16,6 +16,7 @@ export interface AnySync<T> {
 
 export type SyncCard = AnySync<number | string>
 export type SyncWord = AnySync<number>
+export type SyncKanji = AnySync<string>
 
 export type SyncBlock = {
     type: string
