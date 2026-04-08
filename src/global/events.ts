@@ -1,3 +1,4 @@
+import type { CombinedKanji } from "../kanji/types"
 import type { WordsSession } from "../words/learnSession/sessionData"
 import type { CombinedWord } from "../words/types"
 import type { Mark, SyncCard, SyncKanji, SyncWord } from "./types"
@@ -41,10 +42,17 @@ export const EVT = {
         WORD_UPDATED: "ws:word-updated",
         HINT_REQUESTED: "ws:hint-requested",
         ANSWER_REQUESTED: "ws:answer-requested",
-        WORD_EVALUATED: "ws:word-evaluated",
+        EVALUATED: "ws:word-evaluated",
         STATS_UPDATED: "ws:stats-updated",
         ENDED: "ws:ended",
         RESET_REQUESTED: "ws:reset-requested"
+    },
+
+    /** kanji learning session */
+    KS: {
+        NEXT_CARD: "ks:next-card",
+        ANSWER_REQUESTED: "ks:answer-requested",
+        EVALUATED: "ks:evaluated"
     }
 } as const
 
@@ -79,6 +87,10 @@ interface EventPayloads {
     "ws:stats-updated": WordsSession
     "ws:ended": undefined
     "ws:reset-requested": undefined
+
+    "ks:next-card": CombinedKanji
+    "ks:answer-requested": undefined
+    "ks:evaluated": Mark
 }
 
 export function emit<T extends EventName>(eventName: T, detail?: EventPayloads[T]) {

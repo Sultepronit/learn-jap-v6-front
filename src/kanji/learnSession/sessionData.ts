@@ -2,6 +2,7 @@ import { emit, EVT, on } from "../../global/events"
 import { areSameDay, getNow } from "../../helpers/time"
 import { loadBasicList } from "../data/data"
 import type { CombinedKanji } from "../types"
+import { papareKanji } from "./helpers"
 import prepareSession from "./preparation"
 
 const sessionLenth = 30
@@ -101,22 +102,22 @@ export async function getNext() {
     }
 
     k = session.content[session.content.length - 1]
-    // await papareWord(k)
+    await papareKanji(k)
 
     console.log(session)
     console.log(k)
 
-    // emit(EVT.WS.NEXT_CARD, k)
+    emit(EVT.KS.NEXT_CARD, k)
 }
 
-// on(EVT.WS.WORD_EVALUATED, mark => {
-//     update(k, mark, session.stats)
+on(EVT.KS.EVALUATED, mark => {
+    // update(k, mark, session.stats)
 
-//     if (mark === "retry") {
-//         session.content.unshift(session.content.pop())
-//     } else {
-//         session.content.pop()
-//     }
+    if (mark === "retry") {
+        session.content.unshift(session.content.pop())
+    } else {
+        session.content.pop()
+    }
 
-//     getNext()
-// })
+    getNext()
+})

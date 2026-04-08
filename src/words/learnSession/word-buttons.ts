@@ -5,12 +5,9 @@ import type { CombinedWord } from "../types"
 import { emit, EVT, on } from "../../global/events"
 import type { Mark } from "../../global/types"
 
-// type Mark = "good" | "pass" | "retry" | "bad"
-
 export default class WordButtons extends BaseComponent<Mark> {
     word: CombinedWord
     expected: "hint" | "answer" | "evaluation"
-    // goodOrPass: Mark = "good"
     retryWidth = "6"
 
     connectedCallback() {
@@ -18,7 +15,6 @@ export default class WordButtons extends BaseComponent<Mark> {
 
         this.collectRefs()
 
-        // onLwe(LWE.NEXT_WORD, this.setNext)
         on(EVT.WS.NEXT_CARD, w => this.setNext(w))
 
         this.addEventListener("click", e => {
@@ -57,10 +53,8 @@ export default class WordButtons extends BaseComponent<Mark> {
 
     handleClick(mark: Mark) {
         console.log(mark, this.expected)
-        // emitLwe(this.event, button)
         switch (this.expected) {
             case "hint":
-                // emitLwe(LWE.HINT_REQUESTED)
                 emit(EVT.WS.HINT_REQUESTED)
                 this.expected = "answer"
 
@@ -73,7 +67,6 @@ export default class WordButtons extends BaseComponent<Mark> {
                 this.setButtons(["good", "bad"])
                 break
             case "answer":
-                // emitLwe(LWE.ANSWER_REQUESTED)
                 emit(EVT.WS.ANSWER_REQUESTED)
                 this.expected = "evaluation"
 
@@ -94,14 +87,12 @@ export default class WordButtons extends BaseComponent<Mark> {
                     this.word.card.data.writings.alt ||
                     this.word.card.data.readings.main.length > 1
                 ) {
-                    // buttons.push(this.goodOrPass)
                     buttons.push(this.word.comp.retrying ? "pass" : "good")
                 }
                 this.setButtons(buttons)
                 break
             case "evaluation":
-                // emitLwe(LWE.WORD_EVALUATED, mark)
-                emit(EVT.WS.WORD_EVALUATED, mark)
+                emit(EVT.WS.EVALUATED, mark)
                 break
         }
     }

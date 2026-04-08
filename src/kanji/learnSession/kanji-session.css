@@ -1,11 +1,11 @@
-words-session {
+kanji-session {
     height: 100%;
     display: grid;
     grid-template-rows: auto 1fr;
     margin: 0.4rem 0.4rem 1rem;
 }
 
-words-session-stats {
+kanji-session-stats {
     display: flex;
     column-gap: 1em;
     flex-wrap: wrap;
@@ -19,12 +19,12 @@ words-session-stats {
     color: blue;
 }
 
-words-session .main-view {
+kanji-session .main-view {
     display: grid;
     grid-template-rows: 1fr auto;
 }
 
-word-card .stats {
+kanji-card .stats {
     width: fit-content;
     border-bottom: 3px solid;
     padding-top: 0.2rem;
@@ -38,7 +38,7 @@ word-card .stats {
     border-color: blue;
 }
 
-word-card .content {
+kanji-card .content {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -46,16 +46,6 @@ word-card .content {
     font-size: 1.6rem;
 }
 
-word-card .writings {
-    font-size: 3rem;
-}
-
-/* word-buttons {
-    display: block;
-    height: 3em;
-} */
-
-word-card .writings,
-word-card .readings {
-    justify-content: center; /* maybe not all the cases */
+kanji-card .kanji {
+    font-size: 3.5rem;
 }

@@ -6,7 +6,8 @@ export default class MainView extends HTMLElement {
         menu: null,
         "#words-db": null,
         "#words-session": null,
-        "#kanji-db": null
+        "#kanji-db": null,
+        "#kanji-session": null
     }
     activeView: HTMLElement
     login: HTMLInputElement

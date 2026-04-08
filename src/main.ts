@@ -13,6 +13,9 @@ import WordsSession from "./words/learnSession/words-session"
 import WordsSessionStats from "./words/learnSession/words-session-stats"
 import KanjiSearch from "./kanji/dbView/kanji-search"
 import KanjiDb from "./kanji/dbView/kanji-db"
+import KanjiCard from "./kanji/learnSession/kanji-card"
+import KanjiButtons from "./kanji/learnSession/kanji-buttons"
+import KanjiSession from "./kanji/learnSession/kanji-session"
 
 import setMutationsListener from "./sync/localMutations"
 
@@ -38,10 +41,15 @@ customElements.define("words-session", WordsSession)
 customElements.define("kanji-search", KanjiSearch)
 customElements.define("kanji-db", KanjiDb)
 
+customElements.define("kanji-card", KanjiCard)
+customElements.define("kanji-buttons", KanjiButtons)
+customElements.define("kanji-session", KanjiSession)
+
 // import fetchInitData from "./temp-init/fetchInitData"
 import { parseInitKanjiData } from "./temp-init/parseInitData"
 import prepareSession from "./kanji/learnSession/preparation"
 import { initSession } from "./kanji/learnSession/sessionData"
+
 // import loadToServer from "./temp-init/loadToServer"
 
 // fetchInitData()
@@ -68,4 +76,4 @@ window.onerror = message => {
 
 //test
 // prepareSession(50)
-initSession()
+// initSession()

@@ -115,7 +115,7 @@ export async function getNext() {
     emit(EVT.WS.NEXT_CARD, word)
 }
 
-on(EVT.WS.WORD_EVALUATED, mark => {
+on(EVT.WS.EVALUATED, mark => {
     update(word, mark, session.stats)
 
     if (mark === "retry") {

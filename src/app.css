@@ -95,6 +95,7 @@ words-session-stats,
 .nav-buttons {
     display: flex;
     gap: 0.7em;
+    height: 3em;
     /* margin-bottom: 1em; */
 }
 
