@@ -133,7 +133,7 @@ export async function getIndexed(storeName: string, indexName: string, range?: I
     }).catch(dbErrorAlert)
 }
 
-export async function getSessionCards(storeName: string, limit = 1000) {
+export async function getSessionCards(storeName: string, min = -0.5, limit = 1000) {
     const db = await dbPromise
     if (!db) return null
 
@@ -142,7 +142,7 @@ export async function getSessionCards(storeName: string, limit = 1000) {
         const store = tx.objectStore(storeName)
         const index = store.index("status")
 
-        const req = index.openCursor(IDBKeyRange.lowerBound(-0.5))
+        const req = index.openCursor(IDBKeyRange.lowerBound(min))
 
         const re = []
         req.onsuccess = () => {

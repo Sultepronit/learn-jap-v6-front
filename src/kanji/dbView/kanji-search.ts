@@ -20,12 +20,10 @@ export default class KanjiSearch extends BaseComponent<TKeys> {
     }
 
     attachListeners() {
-        // on(EVT.WORDS_COUNT_CHANGED, async () => {
+        // on(EVT.KANJI_COUNT_CHANGED, async () => {
         //     this.wordNum.max = this.allData.length.toString()
         // })
 
-        console.log(this.parentElement)
-        console.log(this.closest("kanji-db"))
         // this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
         this.closest("kanji-db").addEventListener("card-selected", (e: CustomEvent) => {
             const newVal = e.detail.cardNum.toString()

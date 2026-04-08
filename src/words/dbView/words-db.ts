@@ -41,10 +41,8 @@ export default class WordsDb extends HTMLElement {
             if (type === this.sortType) {
                 this.updateDisplayData(await rearrangeData(this.allData))
             } else if (this.searching && type === "wordCards") {
-                console.log("here we go!")
                 this.updateDisplayData(await rearrangeData(this.allData))
             }
-            console.log(this.searching, type === "wordCards")
         })
     }
 

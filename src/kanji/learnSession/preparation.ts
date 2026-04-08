@@ -1,38 +1,47 @@
 import { genRandomInt, randomize } from "../../helpers/random"
 import { areSameDay, getNow } from "../../helpers/time"
 import { getSessionCards } from "../../indexedDB/dbHandlers"
-import { loadBasicList, setUpdates, wordsIndex } from "../data/data"
-import type { CombinedWord, WordProg } from "../types"
-import { detectDirection } from "./helpers"
+import { kanjiIndex, loadBasicList, setUpdates } from "../data/data"
+import type { CombinedKanji, KanjiProg } from "../types"
 
 const d10 = 10 * 24 * 60 * 60
-function prepareRepeatList(all: WordProg[], length: number) {
+function prepareRepeatList(all: KanjiProg[], length: number) {
     const tLimit = getNow() - d10
     // console.log(new Date(tLimit * 1000))
-    const re: WordProg[] = []
-    let normal = 0
+    const re: KanjiProg[] = []
     for (let i = 0; i < 1000; i++) {
         const ri = genRandomInt(all.length)
-        const wProg = all[ri]
-        if (!wProg) continue
+        const kProg = all[ri]
+        if (!kProg) continue
         // console.log(wProg.data.t)
-        if (wProg.data.t > tLimit) {
-            console.log(wProg.data)
+        if (kProg.data.t > tLimit) {
+            console.log(kProg.data)
         } else {
             // console.log(wProg.data.t)
         }
-        if (wProg.data.t > tLimit) continue
+        if (kProg.data.t > tLimit) continue
 
-        re.push(wProg)
+        if (kProg.data.autorepeat) {
+            // implement autorepeat!
+            continue
+        }
+
+        re.push(kProg)
         all[ri] = null
-        const d = detectDirection(wProg)
-        if (!wProg.data[d].autorepeat) normal++
-        if (normal >= length) break
+
+        if (re.length >= length) break
     }
     return re
 }
 
-function prepareLearnList(range: WordProg[], learnIdx: number, repeatIdx: number) {
+async function tempAddNewLearning() {
+    const k = (await getSessionCards("kanjiProgs", -1, 1)) as KanjiProg[]
+    console.log(k[0])
+    if (k[0]?.data.status === -1) return k[0]
+    return null
+}
+
+async function prepareLearnList(range: KanjiProg[], learnIdx: number, repeatIdx: number) {
     if (repeatIdx === 0) return []
 
     const now = getNow()
@@ -48,22 +57,25 @@ function prepareLearnList(range: WordProg[], learnIdx: number, repeatIdx: number
     })
     console.log(learnList)
 
-    const tLimit = now - d10
-    for (let i = 0; i < returnList.length / 10; i++) {
+    // const tLimit = now - d10
+    for (let i = 0; i < returnList.length / 2; i++) {
         const ri = genRandomInt(returnList.length)
         const wProg = returnList[ri]
         if (!wProg) continue
-        if (wProg.data.t > tLimit) continue
+        // if (wProg.data.t > tLimit) continue
         console.log("returned:", wProg)
-        wProg.data.status = 0
+        // wProg.data.status = 0
         learnList.push(wProg)
         returnList[ri] = null
     }
 
+    const newK = await tempAddNewLearning()
+    if (newK) learnList.push(newK)
+
     return learnList
 }
 
-function prepareSessionList(candidates: WordProg[], sessionLenth: number) {
+async function prepareSessionList(candidates: KanjiProg[], sessionLenth: number) {
     let learnIdx = -1,
         repeatIdx = -1
     for (let i = 0; i < candidates.length; i++) {
@@ -75,7 +87,7 @@ function prepareSessionList(candidates: WordProg[], sessionLenth: number) {
     }
     console.log(learnIdx, repeatIdx)
 
-    const learnList = prepareLearnList(candidates, learnIdx, repeatIdx)
+    const learnList = await prepareLearnList(candidates, learnIdx, repeatIdx)
     const allToRepeat = candidates.slice(repeatIdx)
     console.log(learnList, allToRepeat)
 
@@ -95,29 +107,28 @@ function prepareSessionList(candidates: WordProg[], sessionLenth: number) {
 
 export default async function prepareSession(length: number) {
     console.timeLog("t1", "range init")
-    const rangePromise = getSessionCards("wordProgs")
-    const allWordsPromise = loadBasicList()
-    const range = ((await rangePromise) || []) as WordProg[]
-    // console.log(range)
-    // console.log("range length:", range.length)
+    const rangePromise = getSessionCards("kanjiProgs", -0.5, 700)
+    const allKanjiPromise = loadBasicList()
+    const range = ((await rangePromise) || []) as KanjiProg[]
+    console.log(range)
     console.timeLog("t1", "range here")
-    await allWordsPromise
-    // const allWords = await loadData()
+    await allKanjiPromise
+
     console.timeLog("t1", "updating")
-    setUpdates({ type: "wordProgs", updates: range })
+    setUpdates({ type: "kanjiProgs", updates: range })
     console.timeLog("t1", "updated!")
 
-    const { learnNumber, repeatNumber, list } = prepareSessionList(range, length)
+    const { learnNumber, repeatNumber, list } = await prepareSessionList(range, length)
 
     // console.log(learnNumber, repeatNumber, list)
 
     console.timeLog("t1", "session...")
 
-    const content: CombinedWord[] = []
+    const content: CombinedKanji[] = []
     for (const prog of list) {
         // const word = getWordById(prog.id)
-        const word = wordsIndex.get(prog.id)
-        content.push(word)
+        const k = kanjiIndex.get(prog.id)
+        content.push(k)
     }
 
     console.log(content)

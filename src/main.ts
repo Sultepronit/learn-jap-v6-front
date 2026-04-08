@@ -40,6 +40,7 @@ customElements.define("kanji-db", KanjiDb)
 
 // import fetchInitData from "./temp-init/fetchInitData"
 import { parseInitKanjiData } from "./temp-init/parseInitData"
+import prepareSession from "./kanji/learnSession/preparation"
 // import loadToServer from "./temp-init/loadToServer"
 
 // fetchInitData()
@@ -65,3 +66,4 @@ window.onerror = message => {
 }
 
 //test
+prepareSession(50)

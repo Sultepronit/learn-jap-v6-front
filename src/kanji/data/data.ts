@@ -7,7 +7,7 @@ import type { CombinedKanji, KanjiCard, KanjiProg } from "../types"
 import { createKanji } from "./creation"
 
 let kanji: CombinedKanji[]
-const kanjiIndex = new Map<string, CombinedKanji>()
+export const kanjiIndex = new Map<string, CombinedKanji>()
 
 export async function loadBasicList() {
     if (kanji) return kanji
@@ -18,7 +18,7 @@ export async function loadBasicList() {
     // const cards = (await getIndexed("kanjiCards", "order")) as KanjiCard[]
     const cards = (await getAllCards("kanjiCards")) as KanjiCard[]
     console.timeLog("t1", "cards")
-    console.log(cards)
+    // console.log(cards)
 
     kanji = cards.map((card, i) => {
         // console.log(card.id.codePointAt(0))

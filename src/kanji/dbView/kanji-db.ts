@@ -3,7 +3,7 @@ import type BigTable from "../../views/big-table"
 import type { CombinedKanji } from "../types"
 import { loadAllProgs, loadBasicList } from "../data/data"
 import fillRow from "./fillBTRow"
-import { EVT } from "../../global/events"
+import { EVT, on } from "../../global/events"
 import { rearrangeData, sort } from "./sortSearch"
 import type KanjiSearch from "./kanji-search"
 import collectKanji from "../data/collector"
@@ -29,25 +29,24 @@ export default class KanjiDb extends HTMLElement {
             collectKanji()
         })
 
-        // on(EVT.WORDS_COUNT_CHANGED, async () => {
-        //     this.updateDisplayData(await searchSort(this.allData))
-        //     this.dispatchEvent(
-        //         new CustomEvent("card-selected", {
-        //             detail: { cardNum: this.allData.length, rowIdx: 0 }
-        //         })
-        //     )
-        // })
+        on(EVT.KANJI_COUNT_CHANGED, async () => {
+            this.updateDisplayData(await rearrangeData(this.allData))
+            this.dispatchEvent(
+                new CustomEvent("card-selected", {
+                    detail: { cardNum: this.allData.length, rowIdx: 0 }
+                })
+            )
+        })
 
-        // on(EVT.WORD_UPDATES_RECEIVED, async ({ type }) => {
-        //     console.log(type)
-        //     if (type === this.sortType) {
-        //         this.updateDisplayData(await searchSort(this.allData))
-        //     } else if (this.searching && type === "wordCards") {
-        //         console.log("here we go!")
-        //         this.updateDisplayData(await searchSort(this.allData))
-        //     }
-        //     console.log(this.searching, type === "wordCards")
-        // })
+        on(EVT.KANJI_UPDATES_RECEIVED, async ({ type }) => {
+            console.log(type)
+            if (type === this.sortType) {
+                this.updateDisplayData(await rearrangeData(this.allData))
+            } /*else if (this.searching && type === "kanjiCards") {
+                // WE REALLY DO NEED THIS?
+                this.updateDisplayData(await rearrangeData(this.allData))
+            }*/
+        })
     }
 
     render() {
