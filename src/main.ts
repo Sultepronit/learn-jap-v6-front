@@ -21,29 +21,29 @@ import setMutationsListener from "./sync/localMutations"
 
 console.time("t1")
 
-setMutationsListener()
+// setMutationsListener()
 
-customElements.define("main-view", MainView)
-customElements.define("status-bar", StatusBar)
-customElements.define("controls-slider", ControlsSlider)
+// customElements.define("main-view", MainView)
+// customElements.define("status-bar", StatusBar)
+// customElements.define("controls-slider", ControlsSlider)
 
-customElements.define("big-table", BigTable)
+// customElements.define("big-table", BigTable)
 
-customElements.define("words-search", WordsSearch)
-customElements.define("word-editor", WordEditor)
-customElements.define("words-db", WordsDb)
+// customElements.define("words-search", WordsSearch)
+// customElements.define("word-editor", WordEditor)
+// customElements.define("words-db", WordsDb)
 
-customElements.define("words-session-stats", WordsSessionStats)
-customElements.define("word-card", WordCard)
-customElements.define("word-buttons", WordButtons)
-customElements.define("words-session", WordsSession)
+// customElements.define("words-session-stats", WordsSessionStats)
+// customElements.define("word-card", WordCard)
+// customElements.define("word-buttons", WordButtons)
+// customElements.define("words-session", WordsSession)
 
-customElements.define("kanji-search", KanjiSearch)
-customElements.define("kanji-db", KanjiDb)
+// customElements.define("kanji-search", KanjiSearch)
+// customElements.define("kanji-db", KanjiDb)
 
-customElements.define("kanji-card", KanjiCard)
-customElements.define("kanji-buttons", KanjiButtons)
-customElements.define("kanji-session", KanjiSession)
+// customElements.define("kanji-card", KanjiCard)
+// customElements.define("kanji-buttons", KanjiButtons)
+// customElements.define("kanji-session", KanjiSession)
 
 // import fetchInitData from "./temp-init/fetchInitData"
 import { parseInitKanjiData } from "./temp-init/parseInitData"
