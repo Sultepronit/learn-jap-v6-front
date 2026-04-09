@@ -1,6 +1,7 @@
 import { emit, EVT, on } from "../../global/events"
 import { areSameDay, getNow } from "../../helpers/time"
-import { loadBasicList } from "../data/data"
+import { loadBasicList as loadBasicWordsList } from "../../words/data/data"
+// import { loadBasicList } from "../data/data"
 import type { CombinedKanji } from "../types"
 import { papareKanji } from "./helpers"
 import prepareSession from "./preparation"
@@ -75,6 +76,9 @@ const restoreSession = () => JSON.parse(localStorage.getItem("kanjiSession")) as
 // }
 
 export async function initSession() {
+    loadBasicWordsList()
+    // const wordsPromise = loadBasicWordsList()
+    // await loadAllWords()
     // const restored = await continueSession()
     // if (restored) {
     //     session = restored
@@ -82,6 +86,7 @@ export async function initSession() {
     //     session = await createSession(sessionLenth)
     // }
     session = await createSession(sessionLenth)
+    // await wordsPromise
 
     getNext()
 }

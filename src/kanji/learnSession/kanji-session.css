@@ -20,6 +20,7 @@ kanji-session-stats {
 }
 
 kanji-session .main-view {
+    height: 100%;
     display: grid;
     grid-template-rows: 1fr auto;
 }
@@ -39,13 +40,35 @@ kanji-card .stats {
 }
 
 kanji-card .content {
-    display: flex;
-    flex-direction: column;
+    /* height: 100%; */
+    /* display: flex;
+    flex-direction: column; */
+    display: grid;
+    grid-template-rows: auto auto 1fr;
     align-items: center;
     text-align: center;
     font-size: 1.6rem;
+    overflow-y: auto;
 }
 
 kanji-card .kanji {
     font-size: 3.5rem;
+}
+
+.wl-container {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.words-list {
+    width: 100%;
+    height: 100%;
+}
+.words-list div {
+    border: 2px solid green;
+    border-radius: 6px;
+    /* background-color: aliceblue; */
+    margin: 0.2em 0;
+    padding-inline: 0.5em;
+    text-align: left;
 }

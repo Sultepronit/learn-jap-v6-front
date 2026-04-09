@@ -87,8 +87,8 @@ export async function parseInitData() {
 }
 
 export async function parseInitKanjiData() {
-    const initData = JSON.parse(localStorage.getItem("initData")) as any[]
-    // const initData = await fetchInitData()
+    // const initData = JSON.parse(localStorage.getItem("initData")) as any[]
+    const initData = await fetchInitData()
     console.log(initData)
 
     const joMap = new Map(jooyoo.map(c => [c[0], c]))
@@ -166,7 +166,7 @@ export async function parseInitKanjiData() {
     // tempClearStore("kanjiCards")
     // tempClearStore("kanjiProgs")
     saveCards("kanjiCards", kanjiCards)
-    // saveCards("kanjiProgs", kanjiProgs)
+    saveCards("kanjiProgs", kanjiProgs)
 }
 
 export function createKanji(kanji: string, readings: string, obsolete: string) {

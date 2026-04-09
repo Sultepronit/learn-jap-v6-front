@@ -33,6 +33,10 @@ export type KanjiProg = {
 type Computed = {
     stage?: "learn" | "repeat"
     retrying?: true
+    words?: {
+        main: any[]
+        other?: any[]
+    }
 }
 
 export type CombinedKanji = {
