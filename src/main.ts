@@ -47,18 +47,10 @@ customElements.define("kanji-card", KanjiCard)
 customElements.define("kanji-buttons", KanjiButtons)
 customElements.define("kanji-session", KanjiSession)
 
-// import fetchInitData from "./temp-init/fetchInitData"
-import { parseInitKanjiData } from "./temp-init/parseInitData"
-import prepareSession from "./kanji/kanjiSession/preparation"
-import { initSession } from "./kanji/kanjiSession/sessionData"
-
-// import loadToServer from "./temp-init/loadToServer"
-
-// fetchInitData()
-
-// parseInitData()
+// import { parseInitKanjiData } from "./temp-init/parseInitData"
 // parseInitKanjiData()
 
+// import loadToServer from "./temp-init/loadToServer"
 // loadToServer()
 
 // import { tempClearStore } from "./indexedDB/dbUseCases"
@@ -77,5 +69,3 @@ window.onerror = message => {
 }
 
 //test
-// prepareSession(50)
-// initSession()

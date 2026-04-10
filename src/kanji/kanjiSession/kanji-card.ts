@@ -2,7 +2,6 @@ import template from "./kanji-card.html?raw"
 
 import { EVT, on } from "../../global/events"
 import BaseComponent from "../../global/BaseComponent"
-import { genRandomInt } from "../../helpers/random"
 import type { CombinedKanji } from "../types"
 
 type RefKeys = "stats" | "font1" | "obsolete" | "readings" | "wordsList"

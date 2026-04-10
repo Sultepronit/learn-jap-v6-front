@@ -1,4 +1,3 @@
-import { getNow } from "../helpers/time"
 import { putMany } from "../indexedDB/dbHandlers"
 import { tempClearStore, saveCards } from "../indexedDB/dbUseCases"
 import type { KanjiCard, KanjiProg } from "../kanji/types"
@@ -175,7 +174,6 @@ export function createKanji(kanji: string, readings: string, obsolete: string) {
         v: 0,
         syncV: 0,
         data: {
-            // created: getNow(),
             created: 0,
             readings,
             links: { main: [] },

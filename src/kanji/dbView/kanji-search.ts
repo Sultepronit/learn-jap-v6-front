@@ -20,6 +20,7 @@ export default class KanjiSearch extends BaseComponent<TKeys> {
     }
 
     attachListeners() {
+        // remove?
         // on(EVT.KANJI_COUNT_CHANGED, async () => {
         //     this.wordNum.max = this.allData.length.toString()
         // })

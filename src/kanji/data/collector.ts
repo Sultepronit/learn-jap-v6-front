@@ -1,6 +1,7 @@
 import { emit, EVT } from "../../global/events"
 import { areArraysEqual } from "../../helpers/array"
 import { getUniqueKanji } from "../../helpers/text"
+import { getNow } from "../../helpers/time"
 import { loadAll as loadAllWords, loadBasicList as loadBasicWordsList } from "../../words/data/data"
 import type { KanjiCard, KanjiProg } from "../types"
 import { loadAllProgs, loadBasicList } from "./data"
@@ -91,6 +92,7 @@ export default async function collectKanji() {
                 mutatedCards.push(k.card)
 
                 if (k.prog.data.status === -1 || k.prog.data.status === -2) {
+                    k.card.data.created = getNow()
                     k.prog.data.status = 0
                     mutatedProgs.push(k.prog)
 

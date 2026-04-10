@@ -20,12 +20,11 @@ export async function loadBasicList() {
     console.timeLog("t1", "cards")
     // console.log(cards)
 
-    kanji = cards.map((card, i) => {
+    kanji = cards.map(card => {
         // console.log(card.id.codePointAt(0))
         const k = {
             id: card.id,
             num: card.id.codePointAt(0),
-            // num: i + 1,
             v: 0,
             card,
             get prog() {
