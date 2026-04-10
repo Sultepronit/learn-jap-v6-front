@@ -47,11 +47,11 @@ export default class ControlsSlider extends BaseComponent<RefKeys> {
     }
 
     handleSwipe(end: number) {
-        console.log(window.innerHeight / 3)
+        // console.log(window.innerHeight / 3)
         // console.log(window.innerHeight)
         // console.log(window.outerHeight)
         // alert(`${this.start} - ${end}`)
-        console.log(this.start, end)
+        // console.log(this.start, end)
         // alert(end - this.start)
         if (this.start > window.innerHeight / 3) return
         if (end - this.start < 100) return

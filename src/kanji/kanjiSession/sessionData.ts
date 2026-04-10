@@ -1,6 +1,7 @@
 import { emit, EVT, on } from "../../global/events"
 import { areSameDay, getNow } from "../../helpers/time"
 import { loadBasicList as loadBasicWordsList } from "../../words/data/data"
+import { kanjiIndex, loadBasicList } from "../data/data"
 // import { loadBasicList } from "../data/data"
 import type { CombinedKanji } from "../types"
 import { papareKanji } from "./helpers"
@@ -26,14 +27,12 @@ async function createSession(sessionLenth: number) {
                 pass: 0,
                 retry: 0,
                 bad: 0
-                // upgrade: 0
             },
             repeat: {
                 good: 0,
                 pass: 0,
                 retry: 0,
                 bad: 0
-                // upgrade: 0
             },
             autorepeated: prep.autorepeated
         }
@@ -47,46 +46,40 @@ let session: KanjiSession
 const storeSession = () => localStorage.setItem("kanjiSession", JSON.stringify(session))
 const restoreSession = () => JSON.parse(localStorage.getItem("kanjiSession")) as KanjiSession
 
-// async function continueSession(): Promise<KanjiSession> {
-//     const allWordsPromise = loadBasicList()
-//     const restored = restoreSession()
-//     console.log(restored)
-//     if (!restored) return null
-//     if (restored.content.length < 1) return null
-//     // if (!areSameDay(restored.t, getNow()) && restored.stats.tries > 0) return null
-//     if (!areSameDay(restored.t, getNow())) {
-//         // if (restored.stats.tries > 0) return null
-//         // restored.t = getNow()
-//         return null
-//     }
+async function continueSession(): Promise<KanjiSession> {
+    const allKanjiPromise = loadBasicList()
+    const restored = restoreSession()
+    console.log("resotred:", restored)
+    if (!restored) return null
+    if (restored.content.length < 1) return null
+    if (!areSameDay(restored.t, getNow())) return null
 
-//     await allWordsPromise
+    await allKanjiPromise
 
-//     const newCont: CombinedWord[] = []
-//     for (const oldWord of restored.content) {
-//         // const word = getWordById(oldWord.id)
-//         const word = wordsIndex.get(oldWord.id)
-//         if (oldWord.comp) word.comp = oldWord.comp
-//         // console.log(word.comp)
-//         newCont.push(word)
-//     }
-//     // console.log(newCont)
-//     restored.content = newCont
+    const newCont: CombinedKanji[] = []
+    for (const oldK of restored.content) {
+        const k = kanjiIndex.get(oldK.id)
 
-//     return restored
-// }
+        // is it actual?
+        if (oldK.comp) k.comp = oldK.comp
+        newCont.push(k)
+    }
+    restored.content = newCont
+
+    return restored
+}
 
 export async function initSession() {
     loadBasicWordsList()
     // const wordsPromise = loadBasicWordsList()
     // await loadAllWords()
-    // const restored = await continueSession()
-    // if (restored) {
-    //     session = restored
-    // } else {
-    //     session = await createSession(sessionLenth)
-    // }
-    session = await createSession(sessionLenth)
+    const restored = await continueSession()
+    if (restored) {
+        session = restored
+    } else {
+        session = await createSession(sessionLenth)
+    }
+    // session = await createSession(sessionLenth)
     // await wordsPromise
 
     getNext()

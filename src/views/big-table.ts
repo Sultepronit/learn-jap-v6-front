@@ -195,7 +195,7 @@ export default class BigTable extends HTMLElement {
         console.log(prevN, this.rowsN)
 
         for (let i = this.rows.length; i < this.rowsN; i++) {
-            console.log(this.rows.length, this.rowsN)
+            // console.log(this.rows.length, this.rowsN)
             this.addRow(i)
         }
         // console.log(this.rows)

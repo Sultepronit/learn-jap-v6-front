@@ -4,7 +4,7 @@ import { getNow } from "../../helpers/time"
 import type { CombinedKanji } from "../types"
 import type { KanjiSession } from "./sessionData"
 
-const genRepeatStatus = () => Math.floor(Date.now() / 8640000) - 180750
+const genRepeatStatus = () => Math.floor(Date.now() / 8640000) - 180650
 console.log(genRepeatStatus())
 
 export default function update(k: CombinedKanji, mark: Mark, stats: KanjiSession["stats"]) {
@@ -30,7 +30,7 @@ export default function update(k: CombinedKanji, mark: Mark, stats: KanjiSession
     }
 
     console.log("before update:")
-    console.table(prog)
+    console.log(prog)
 
     switch (mark) {
         case "bad":
@@ -54,7 +54,7 @@ export default function update(k: CombinedKanji, mark: Mark, stats: KanjiSession
             break
     }
     console.log("updated:")
-    console.table(prog)
+    console.log(prog)
 
     k.v++
     emit(EVT.CARD_MUTATED, { type: "kanjiProgs", card: k.prog })
