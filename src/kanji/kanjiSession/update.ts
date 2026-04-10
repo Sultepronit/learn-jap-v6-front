@@ -26,7 +26,7 @@ export default function update(k: CombinedKanji, mark: Mark, stats: KanjiSession
     if (prog.status === -1) {
         prog.status = 0
         k.card.data.created = prog.t
-        emit(EVT.CARD_MUTATED, { type: "kanjiCards", card: k.prog })
+        emit(EVT.CARD_MUTATED, { type: "kanjiCards", card: k.card })
     }
 
     console.log("before update:")
