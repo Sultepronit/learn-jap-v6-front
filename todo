@@ -2,6 +2,8 @@ Implement return from temp to normal search
 
 Add to the server & the client forced update if the client update is too stale
 
+check work of sync in case of bad connection! Are there cases when sync is now full, while green?
+
 Forbid update after delete?
 
 Check if hidden big views are enough quiet?

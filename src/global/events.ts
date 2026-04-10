@@ -1,3 +1,4 @@
+import type { KanjiSession } from "../kanji/kanjiSession/sessionData"
 import type { CombinedKanji } from "../kanji/types"
 import type { WordsSession } from "../words/learnSession/sessionData"
 import type { CombinedWord } from "../words/types"
@@ -52,7 +53,8 @@ export const EVT = {
     KS: {
         NEXT_CARD: "ks:next-card",
         ANSWER_REQUESTED: "ks:answer-requested",
-        EVALUATED: "ks:evaluated"
+        EVALUATED: "ks:evaluated",
+        STATS_UPDATED: "ks:stats-updated"
     }
 } as const
 
@@ -91,6 +93,7 @@ interface EventPayloads {
     "ks:next-card": CombinedKanji
     "ks:answer-requested": undefined
     "ks:evaluated": Mark
+    "ks:stats-updated": KanjiSession
 }
 
 export function emit<T extends EventName>(eventName: T, detail?: EventPayloads[T]) {

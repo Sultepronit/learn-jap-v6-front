@@ -23,29 +23,26 @@ export async function papareKanji(k: CombinedKanji) {
 
         const ml = k.card.data.links.main
         for (const l of ml) {
-            console.log(l)
+            // console.log(l)
             const word = wordsIndex.get(l)
-            console.log(word)
+            // console.log(word)
             while (!word.card) {
                 await new Promise(res => on(EVT.WORD_UPDATED, res, true))
             }
             computeCommon(word)
-            console.log(word.card.data)
+            // console.log(word.card.data)
             const comp = word.comp.common
-            // const wordDisplay = comp.writings.main.value + comp.readings.main
+
             const wordContent = [comp.writings.main.value]
             if (comp.writings.rare) {
                 wordContent.push(`<span class="rare">${comp.writings.rare.value}</span>`)
             }
-            wordContent.push(" : ", comp.readings.main)
+            wordContent.push(":", comp.readings.main)
             if (comp.readings.rare) {
                 wordContent.push(`<span class="rare">${comp.readings.rare}</span>`)
             }
-            wordContent.push(" — ", word.card.data.translation)
+            wordContent.push("—", word.card.data.translation)
 
-            // console.log(wordDisplay)
-            console.log(wordContent)
-            console.log(wordContent.join(" "))
             k.comp.words.main.push(`<div>${wordContent.join(" ")}</div>`)
         }
     }

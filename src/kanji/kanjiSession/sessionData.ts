@@ -5,6 +5,7 @@ import { loadBasicList as loadBasicWordsList } from "../../words/data/data"
 import type { CombinedKanji } from "../types"
 import { papareKanji } from "./helpers"
 import prepareSession from "./preparation"
+import update from "./update"
 
 const sessionLenth = 30
 async function createSession(sessionLenth: number) {
@@ -98,7 +99,7 @@ export async function initSession() {
 
 let k: CombinedKanji
 export async function getNext() {
-    // emit(EVT.WS.STATS_UPDATED, session)
+    emit(EVT.KS.STATS_UPDATED, session)
     storeSession()
 
     if (session.content.length === 0) {
@@ -116,7 +117,7 @@ export async function getNext() {
 }
 
 on(EVT.KS.EVALUATED, mark => {
-    // update(k, mark, session.stats)
+    update(k, mark, session.stats)
 
     if (mark === "retry") {
         session.content.unshift(session.content.pop())

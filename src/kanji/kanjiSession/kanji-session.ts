@@ -14,7 +14,7 @@ export default class KanjiSession extends BaseComponent<RefKeys> {
     async connectedCallback() {
         this.innerHTML = template
 
-        this.collectRefs(["words-session-stats", "word-card", "word-buttons"])
+        this.collectRefs(["kanji-session-stats", "kanji-card", "kanji-buttons"])
         console.log(this.refs)
         // rewrite
         // this.refs.reset.on("click", () => emit(EVT.WS.RESET_REQUESTED))
