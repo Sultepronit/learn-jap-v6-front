@@ -4,12 +4,15 @@ import { getNow } from "../../helpers/time"
 import type { CombinedKanji } from "../types"
 import type { KanjiSession } from "./sessionData"
 
-const genRepeatStatus = () => Math.floor(Date.now() / 8640000) - 180650
+const genRepeatStatus = () => Math.floor(Date.now() / 8640000) - 180610
 console.log(genRepeatStatus())
 
 export default function update(k: CombinedKanji, mark: Mark, stats: KanjiSession["stats"]) {
     const prog = k.prog.data
     const stage = k.comp.stage
+
+    console.log("before update:")
+    console.log(prog)
 
     prog.t = getNow()
 
@@ -28,9 +31,6 @@ export default function update(k: CombinedKanji, mark: Mark, stats: KanjiSession
         k.card.data.created = prog.t
         emit(EVT.CARD_MUTATED, { type: "kanjiCards", card: k.card })
     }
-
-    console.log("before update:")
-    console.log(prog)
 
     switch (mark) {
         case "bad":

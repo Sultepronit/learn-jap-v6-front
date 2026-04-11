@@ -1,31 +1,30 @@
 <style>
-status-bar {
-    height: 3px;
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-}
+    status-bar {
+        height: 3px;
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+    }
 
+    #sync-status {
+        /* width: 25%; */
+        background-color: green;
+    }
 
-#sync-status {
-    /* width: 25%; */
-    background-color: green;
-}
+    #sync-status.stale {
+        background-color: yellow;
+    }
 
-#sync-status.stale {
-    background-color: yellow;
-}
+    #sync-status.disconnected {
+        background-color: red;
+    }
 
-#sync-status.disconnected {
-    background-color: orange;
-}
+    .pending {
+        background-color: yellow;
+    }
 
-.pending {
-    background-color: yellow;
-}
-
-.failed {
-    background-color: red;
-}
+    .failed {
+        background-color: red;
+    }
 </style>
 
 <div id="sync-status" class="stale"></div>

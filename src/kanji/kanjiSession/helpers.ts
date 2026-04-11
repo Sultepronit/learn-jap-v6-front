@@ -6,44 +6,59 @@ import type { CombinedKanji } from "../types"
 
 let wordsList = null
 export async function papareKanji(k: CombinedKanji) {
-    if (!wordsList) {
-        wordsList = await loadBasicWordsList()
-    }
-
     if (!k.comp) k.comp = {}
 
     while (!k.prog) {
         await new Promise(res => on(EVT.KANJI_UPDATED, res, true))
     }
-    // console.log(word.prog)
+
     k.comp.stage = k.prog.data.status > 0 ? "repeat" : "learn"
-    // console.log(wordsIndex.get(k.card.data.links.main[0]))
-    if (k.card.data.links.main.length > 0) {
-        k.comp.words = { main: [] }
 
-        const ml = k.card.data.links.main
-        for (const l of ml) {
-            // console.log(l)
-            const word = wordsIndex.get(l)
-            // console.log(word)
-            while (!word.card) {
-                await new Promise(res => on(EVT.WORD_UPDATED, res, true))
-            }
-            computeCommon(word)
-            // console.log(word.card.data)
-            const comp = word.comp.common
-
-            const wordContent = [comp.writings.main.value]
-            if (comp.writings.rare) {
-                wordContent.push(`<span class="rare">${comp.writings.rare.value}</span>`)
-            }
-            wordContent.push(":", comp.readings.main)
-            if (comp.readings.rare) {
-                wordContent.push(`<span class="rare">${comp.readings.rare}</span>`)
-            }
-            wordContent.push("—", word.card.data.translation)
-
-            k.comp.words.main.push(`<div>${wordContent.join(" ")}</div>`)
-        }
+    if (!wordsList) {
+        wordsList = await loadBasicWordsList()
     }
+
+    const ml = k.card.data.links.main
+    const ol = k.card.data.links.other
+    if (ml.length > 0) {
+        k.comp.words = { main: await linksToWords(ml) }
+
+        if (ol) {
+            k.comp.words.other = await linksToWords(ol, true)
+        }
+    } else if (ol) {
+        k.comp.words = { other: await linksToWords(ol) }
+    }
+}
+
+async function linksToWords(links: number[], other = false) {
+    const re = []
+    for (const l of links) {
+        const word = wordsIndex.get(l)
+        while (!word.card) {
+            await new Promise(res => on(EVT.WORD_UPDATED, res, true))
+        }
+        computeCommon(word)
+
+        const wComp = word.comp.common
+
+        const mainWrit = wComp.writings.main.value
+        // const wordContent = [wComp.writings.main.value]
+        const wordContent = [
+            word.card.data.writings.alt ? `<span class="alt">${mainWrit}</span>` : mainWrit
+        ]
+        if (wComp.writings.rare) {
+            wordContent.push(`<span class="rare">${wComp.writings.rare.value}</span>`)
+        }
+        wordContent.push(":", wComp.readings.main)
+        if (wComp.readings.rare) {
+            wordContent.push(`<span class="rare">${wComp.readings.rare}</span>`)
+        }
+        wordContent.push("—", word.card.data.translation)
+
+        const classAttr = other ? ` class="other-link"` : ""
+        re.push(`<div${classAttr}>${wordContent.join(" ")}</div>`)
+    }
+
+    return re
 }

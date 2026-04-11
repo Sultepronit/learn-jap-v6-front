@@ -92,3 +92,7 @@ kanji-card .kanji {
     max-height: 4.7em;
     overflow: hidden;
 }
+
+.words-list .other-link {
+    border-color: red;
+}

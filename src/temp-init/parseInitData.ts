@@ -84,7 +84,10 @@ export async function parseInitData() {
     saveCards("wordCards", wordCards)
     putMany("wordProgs", wordProgs)
 }
-
+const syncV = {
+    card: 10,
+    prog: 50
+}
 export async function parseInitKanjiData() {
     // const initData = JSON.parse(localStorage.getItem("initData")) as any[]
     const initData = await fetchInitData()
@@ -120,7 +123,7 @@ export async function parseInitKanjiData() {
         const kanjiCard: KanjiCard = {
             id: kanji,
             v: 0,
-            syncV: 0,
+            syncV: syncV.card,
             data: {
                 created: id,
                 readings,
@@ -137,7 +140,7 @@ export async function parseInitKanjiData() {
         const kanjiProg: KanjiProg = {
             id: kanji,
             v: 0,
-            syncV: 0,
+            syncV: syncV.prog,
             data: {
                 // status: parsedLinks.length > 0 ? repeatStatus : -2,
                 status: repeatStatus,
@@ -172,7 +175,7 @@ export function createKanji(kanji: string, readings: string, obsolete: string) {
     const card: KanjiCard = {
         id: kanji,
         v: 0,
-        syncV: 0,
+        syncV: syncV.card,
         data: {
             created: 0,
             readings,
@@ -184,7 +187,7 @@ export function createKanji(kanji: string, readings: string, obsolete: string) {
     const prog: KanjiProg = {
         id: kanji,
         v: 0,
-        syncV: 0,
+        syncV: syncV.prog,
         data: {
             status: -1,
             progress: 0,

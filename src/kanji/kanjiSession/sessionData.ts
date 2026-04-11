@@ -96,7 +96,7 @@ export async function getNext() {
     storeSession()
 
     if (session.content.length === 0) {
-        emit(EVT.WS.ENDED)
+        emit(EVT.KS.ENDED)
         return
     }
 

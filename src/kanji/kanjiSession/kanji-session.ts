@@ -4,6 +4,7 @@ import "./kanji-session.css"
 import { initSession } from "./sessionData"
 import BaseComponent from "../../global/BaseComponent"
 import type { CombinedKanji } from "../types"
+import { emit, EVT, on } from "../../global/events"
 
 type RefKeys = "mainView" | "endView" | "reset"
 export default class KanjiSession extends BaseComponent<RefKeys> {
@@ -15,14 +16,17 @@ export default class KanjiSession extends BaseComponent<RefKeys> {
 
         this.collectRefs(["kanji-session-stats", "kanji-card", "kanji-buttons"])
         console.log(this.refs)
-        // rewrite
-        // this.refs.reset.on("click", () => emit(EVT.WS.RESET_REQUESTED))
 
-        // rewrite
-        // on(EVT.WS.ENDED, () => {
-        //     this.refs.mainView.hide()
-        //     this.refs.endView.show()
-        // })
+        this.refs.reset.on("click", () => {
+            emit(EVT.WS.RESET_REQUESTED)
+            this.refs.mainView.show()
+            this.refs.endView.hide()
+        })
+
+        on(EVT.KS.ENDED, () => {
+            this.refs.mainView.hide()
+            this.refs.endView.show()
+        })
 
         await initSession()
     }

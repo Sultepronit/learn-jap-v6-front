@@ -54,7 +54,8 @@ export const EVT = {
         NEXT_CARD: "ks:next-card",
         ANSWER_REQUESTED: "ks:answer-requested",
         EVALUATED: "ks:evaluated",
-        STATS_UPDATED: "ks:stats-updated"
+        STATS_UPDATED: "ks:stats-updated",
+        ENDED: "ks:ended"
     }
 } as const
 
@@ -94,6 +95,7 @@ interface EventPayloads {
     "ks:answer-requested": undefined
     "ks:evaluated": Mark
     "ks:stats-updated": KanjiSession
+    "ks:ended": undefined
 }
 
 export function emit<T extends EventName>(eventName: T, detail?: EventPayloads[T]) {

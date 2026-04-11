@@ -83,7 +83,13 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
                     this.refs.readings.text(card.readings).show()
                 }
                 if (comp.words) {
-                    this.refs.wordsList.html(comp.words.main.join("")).show()
+                    const blocks = comp.words.main || []
+                    if (comp.words.other) {
+                        // blocks.push(`<div>***</div>`, ...comp.words.other)
+                        blocks.push(`<hr>`, ...comp.words.other)
+                    }
+                    // this.refs.wordsList.html(comp.words.main.join("")).show()
+                    this.refs.wordsList.html(blocks.join("")).show()
                 }
                 break
         }
