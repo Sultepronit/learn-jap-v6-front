@@ -50,7 +50,7 @@ customElements.define("kanji-session", KanjiSession)
 // import { parseInitKanjiData } from "./temp-init/parseInitData"
 // parseInitKanjiData()
 
-import loadToServer from "./temp-init/loadToServer"
+// import loadToServer from "./temp-init/loadToServer"
 // loadToServer()
 
 // import { tempClearStore } from "./indexedDB/dbUseCases"
