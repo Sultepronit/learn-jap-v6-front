@@ -34,7 +34,8 @@ export default class MainView extends HTMLElement {
     showActive() {
         this.activeView.classList.remove("hidden")
         console.log("show", this.activeView.localName)
-        emit(EVT.VIEW_SHOWN, this.activeView.localName as BigView)
+        setTimeout(() => emit(EVT.VIEW_SHOWN, this.activeView.localName as BigView), 50)
+        // emit(EVT.VIEW_SHOWN, this.activeView.localName as BigView)
     }
 
     navigate() {
@@ -49,12 +50,8 @@ export default class MainView extends HTMLElement {
             this.appendChild(view)
         }
 
-        // this.activeView.classList.add("hidden")
-        // this.activeView.hide()
         this.hideActive()
         this.activeView = view
-        // this.activeView.classList.remove("hidden")
-        // this.activeView.show()
         this.showActive()
     }
 

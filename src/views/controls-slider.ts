@@ -45,6 +45,7 @@ export default class ControlsSlider extends BaseComponent<RefKeys> {
     }
 
     updateToView(view: BigView) {
+        // console.log(view)
         switch (view) {
             case "words-session":
                 this.refs.sessionControls.show()

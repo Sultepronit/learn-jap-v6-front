@@ -8,7 +8,8 @@ const d10 = 10 * 24 * 60 * 60
 function prepareRepeatList(all: KanjiProg[], length: number) {
     const tLimit = getNow() - d10
     // console.log(new Date(tLimit * 1000))
-    const re: KanjiProg[] = []
+    const repeatList: KanjiProg[] = []
+    const autoList: KanjiProg[] = []
     for (let i = 0; i < 1000; i++) {
         const ri = genRandomInt(all.length)
         const kProg = all[ri]
@@ -23,15 +24,22 @@ function prepareRepeatList(all: KanjiProg[], length: number) {
 
         if (kProg.data.autorepeat) {
             // implement autorepeat!
+            autoList.push(kProg)
             continue
         }
 
-        re.push(kProg)
+        repeatList.push(kProg)
         all[ri] = null
 
-        if (re.length >= length) break
+        if (repeatList.length >= length) break
     }
-    return re
+    console.log("Auto", autoList)
+
+    // return repeatList
+    return {
+        repeatList,
+        autoNumber: autoList.length
+    }
 }
 
 function prepareLearnList(range: KanjiProg[], learnIdx: number, repeatIdx: number) {
@@ -84,7 +92,7 @@ function prepareSessionList(candidates: KanjiProg[], sessionLenth: number, tempN
     // console.log(learnList, allToRepeat)
 
     const repeatNumber = sessionLenth - learnList.length
-    const repeatList = prepareRepeatList(allToRepeat, repeatNumber)
+    const { repeatList, autoNumber } = prepareRepeatList(allToRepeat, repeatNumber)
 
     const list = [...learnList, ...repeatList]
     randomize(list)
@@ -93,6 +101,7 @@ function prepareSessionList(candidates: KanjiProg[], sessionLenth: number, tempN
     return {
         learnNumber: learnList.length,
         repeatNumber,
+        autoNumber,
         list
     }
 }
@@ -122,7 +131,7 @@ export default async function prepareSession(length: number) {
     setUpdates({ type: "kanjiProgs", updates: range })
     console.timeLog("t1", "updated!")
 
-    const { learnNumber, repeatNumber, list } = prepareSessionList(range, length, newK)
+    const { learnNumber, repeatNumber, autoNumber, list } = prepareSessionList(range, length, newK)
 
     // console.log(learnNumber, repeatNumber, list)
 
@@ -141,6 +150,6 @@ export default async function prepareSession(length: number) {
         content,
         learnNumber,
         repeatNumber,
-        autorepeated: 0
+        autorepeated: autoNumber
     }
 }
