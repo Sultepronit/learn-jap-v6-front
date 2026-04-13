@@ -18,7 +18,7 @@ export default class KanjiSession extends BaseComponent<RefKeys> {
         console.log(this.refs)
 
         this.refs.reset.on("click", () => {
-            emit(EVT.WS.RESET_REQUESTED)
+            emit(EVT.KS.RESET_REQUESTED)
             this.refs.mainView.show()
             this.refs.endView.hide()
         })

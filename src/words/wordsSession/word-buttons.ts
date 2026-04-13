@@ -1,4 +1,5 @@
-import template from "./word-buttons.html?raw"
+// import template from "./word-buttons.html?raw"
+import template from "../../views/learnSession/nav-buttons.html?raw"
 
 import BaseComponent from "../../global/BaseComponent"
 import type { CombinedWord } from "../types"

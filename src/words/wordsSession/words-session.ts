@@ -14,7 +14,7 @@ export default class WordsSession extends BaseComponent<RefKeys> {
         this.innerHTML = template
 
         this.collectRefs(["words-session-stats", "word-card", "word-buttons"])
-        console.log(this.refs)
+        // console.log(this.refs)
         this.refs.reset.on("click", () => emit(EVT.WS.RESET_REQUESTED))
 
         on(EVT.WS.ENDED, () => {

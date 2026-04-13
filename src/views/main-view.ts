@@ -1,4 +1,5 @@
 import { emit, EVT, on } from "../global/events"
+import type { BigView } from "../global/types"
 import template from "./main-view.html?raw"
 
 export default class MainView extends HTMLElement {
@@ -24,6 +25,18 @@ export default class MainView extends HTMLElement {
         this.checkLogin()
     }
 
+    hideActive() {
+        this.activeView.classList.add("hidden")
+        console.log("hide", this.activeView.localName)
+        emit(EVT.VIEW_HIDDEN, this.activeView.localName as BigView)
+    }
+
+    showActive() {
+        this.activeView.classList.remove("hidden")
+        console.log("show", this.activeView.localName)
+        emit(EVT.VIEW_SHOWN, this.activeView.localName as BigView)
+    }
+
     navigate() {
         const path = location.hash
         let view = this.views[path]
@@ -36,16 +49,21 @@ export default class MainView extends HTMLElement {
             this.appendChild(view)
         }
 
-        this.activeView.classList.add("hidden")
+        // this.activeView.classList.add("hidden")
+        // this.activeView.hide()
+        this.hideActive()
         this.activeView = view
-        this.activeView.classList.remove("hidden")
+        // this.activeView.classList.remove("hidden")
+        // this.activeView.show()
+        this.showActive()
     }
 
     checkLogin() {
         const api = localStorage.getItem("api")
         if (api) return
 
-        this.activeView.classList.add("hidden")
+        // this.activeView.classList.add("hidden")
+        this.hideActive()
 
         this.login = this.querySelector<HTMLInputElement>("#login")
         this.login.classList.remove("hidden")
@@ -63,7 +81,8 @@ export default class MainView extends HTMLElement {
                     localStorage.setItem("api", `https://${this.login.value}`)
                     this.login.remove()
                     this.login = null
-                    this.activeView.classList.remove("hidden")
+                    // this.activeView.classList.remove("hidden")
+                    this.showActive()
                 } else {
                     this.checkInput()
                 }

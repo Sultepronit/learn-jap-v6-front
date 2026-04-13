@@ -1,11 +1,13 @@
 import type { KanjiSession } from "../kanji/kanjiSession/sessionData"
 import type { CombinedKanji } from "../kanji/types"
-import type { WordsSession } from "../words/learnSession/sessionData"
+import type { WordsSession } from "../words/wordsSession/sessionData"
 import type { CombinedWord } from "../words/types"
-import type { Mark, SyncCard, SyncKanji, SyncWord } from "./types"
+import type { BigView, Mark, SyncCard, SyncKanji, SyncWord } from "./types"
 
 export const EVT = {
     LOGIN: "login",
+    VIEW_HIDDEN: "view-hidden",
+    VIEW_SHOWN: "view-shown",
 
     /** data for saving */
     CARD_MUTATED: "card-mutated",
@@ -55,7 +57,8 @@ export const EVT = {
         ANSWER_REQUESTED: "ks:answer-requested",
         EVALUATED: "ks:evaluated",
         STATS_UPDATED: "ks:stats-updated",
-        ENDED: "ks:ended"
+        ENDED: "ks:ended",
+        RESET_REQUESTED: "ks:reset-requested"
     }
 } as const
 
@@ -65,6 +68,8 @@ export type EventName = DeepValue<typeof EVT>
 
 interface EventPayloads {
     login: string
+    "view-hidden": BigView
+    "view-shown": BigView
     "card-mutated": { type: string; card: SyncCard }
     "cards-mutated": { type: string; cards: SyncCard[] }
 
@@ -96,6 +101,7 @@ interface EventPayloads {
     "ks:evaluated": Mark
     "ks:stats-updated": KanjiSession
     "ks:ended": undefined
+    "ks:reset-requested": undefined
 }
 
 export function emit<T extends EventName>(eventName: T, detail?: EventPayloads[T]) {

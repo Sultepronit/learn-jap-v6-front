@@ -17,4 +17,12 @@ export default class BaseComponent<TKeys extends string> extends HTMLElement {
         })
         // console.log(this.refs)
     }
+
+    hide() {
+        this.classList.add("hidden")
+    }
+
+    show() {
+        this.classList.remove("hidden")
+    }
 }

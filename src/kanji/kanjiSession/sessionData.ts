@@ -85,10 +85,10 @@ export async function initSession() {
     getNext()
 }
 
-// on(EVT.WS.RESET_REQUESTED, async () => {
-//     session = await createSession(sessionLenth)
-//     getNext()
-// })
+on(EVT.KS.RESET_REQUESTED, async () => {
+    session = await createSession(sessionLenth)
+    getNext()
+})
 
 let k: CombinedKanji
 export async function getNext() {

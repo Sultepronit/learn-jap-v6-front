@@ -1,11 +1,3 @@
-// export interface SyncCard {
-//     id: number | string
-//     v: number
-//     syncV: number
-//     toSync?: 1
-//     data: any
-// }
-
 export interface AnySync<T> {
     id: T
     v: number
@@ -31,3 +23,5 @@ export type Message = {
 }
 
 export type Mark = "good" | "pass" | "retry" | "bad"
+
+export type BigView = "words-session" | "kanji-session"
