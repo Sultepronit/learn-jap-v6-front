@@ -4,8 +4,9 @@ import "./controls-slider.css"
 import BaseComponent from "../global/BaseComponent"
 import { emit, EVT, on, type EventName } from "../global/events"
 import type { BigView } from "../global/types"
+import syncParams from "../global/syncParams"
 
-type RefKeys = "sessionControls"
+type RefKeys = "sessionControls" | "syncInterval" | "syncDisplay" | "syncOn"
 export default class ControlsSlider extends BaseComponent<RefKeys> {
     start = 0
     sessionReset: EventName
@@ -15,12 +16,25 @@ export default class ControlsSlider extends BaseComponent<RefKeys> {
 
         this.collectRefs()
 
+        this.refs.syncInterval.value = syncParams.timeout
+        this.refs.syncDisplay.text(syncParams.timeout)
+
+        this.refs.syncInterval.on("input", e => {
+            const val = (e.target as HTMLInputElement).value
+            this.refs.syncDisplay.text(val)
+            syncParams.set("timeout", Number(val))
+        })
+
+        this.refs.syncOn.elAsInput.checked = syncParams.turnedOn
+        this.refs.syncOn.on("input", () => {
+            syncParams.set("turnedOn", this.refs.syncOn.elAsInput.checked)
+        })
+
         this.addEventListener("click", (e: Event) => {
             const btn = e.target as HTMLButtonElement
             if (btn.localName !== "button") return
             console.log(btn.name)
             if (btn.name === "session-reset") {
-                // emit(EVT.WS.RESET_REQUESTED)
                 emit(this.sessionReset)
             }
             this.hideControls()

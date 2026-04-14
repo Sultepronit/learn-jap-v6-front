@@ -1,10 +1,16 @@
-<!--remove this thing!-->
-<!-- <div class="controls hidden" data-ref="controls"> -->
 <div class="global-controls">
     <button class="emo-button" name="sync">🔄</button>
-    <input type="range" name="ws-length" min="5" max="60" step="5" value="10" />
-    <div>10</div>
-    <input type="checkbox" name="" id="" checked />
+    <input
+        type="range"
+        name="sync-interval"
+        data-ref="sync-interval"
+        min="5"
+        max="60"
+        step="5"
+        value="10"
+    />
+    <div data-ref="sync-display"></div>
+    <input type="checkbox" name="sync-on" data-ref="sync-on" checked />
 </div>
 <hr class="spacer" />
 <div data-ref="session-controls" class="session-controls hidden">
@@ -12,4 +18,3 @@
     <div>30</div>
     <button class="emo-button" name="session-reset">🔁</button>
 </div>
-<!-- </div> -->

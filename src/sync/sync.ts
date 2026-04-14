@@ -2,8 +2,9 @@ import { EVT, emit, on } from "../global/events"
 import type { Message, SyncCard } from "../global/types"
 import { getIndexed } from "../indexedDB/dbHandlers"
 import { deletedWords } from "./deleteWords"
-import globalVersions from "./globalVersions"
+import versions from "./versions"
 import { implementUpdates } from "./remoteMutations"
+import syncParams from "../global/syncParams"
 
 export const toSync = {
     wordCards: new Map(),
@@ -13,6 +14,8 @@ export const toSync = {
 }
 
 async function checkUnsaved() {
+    if (!syncParams.turnedOn) return
+
     for (const [type, map] of Object.entries(toSync)) {
         const blocks = (await getIndexed(type, "toSync")) as SyncCard[]
         for (const b of blocks) {
@@ -41,7 +44,7 @@ function prepareMsg() {
         // console.log(updated)
         standard.push({
             type,
-            v: globalVersions.get(type as "wordCards" | "wordProgs"),
+            v: versions.get(type as "wordCards" | "wordProgs"),
             ...(updated && { updated })
         })
     }
@@ -96,8 +99,9 @@ async function communicate(msg: string) {
 
         const r = await j.json()
 
-        emit(EVT.SYNC_STATUS_CHANGED, "fulfilled")
-        if (disconnected && planned) {
+        if (!planned) {
+            emit(EVT.SYNC_STATUS_CHANGED, "fulfilled")
+        } else if (disconnected) {
             emit(EVT.SYNC_STATUS_CHANGED, "stale")
         }
 
@@ -105,15 +109,14 @@ async function communicate(msg: string) {
 
         return r
     } catch (error) {
-        // alert(error.message)
+        emit(EVT.CONNECTION_STATUS_CHANGED, "failed")
         emit(EVT.SYNC_STATUS_CHANGED, "disconnected")
         disconnected = true
     } finally {
-        setTimeout(() => emit(EVT.CONNECTION_STATUS_CHANGED, ""), 100)
+        setTimeout(() => emit(EVT.CONNECTION_STATUS_CHANGED, ""), 200)
     }
 }
 
-let time = 0
 function planSync() {
     planned = true
     if (!disconnected) emit(EVT.SYNC_STATUS_CHANGED, "stale")
@@ -122,9 +125,12 @@ on(EVT.CARD_MUTATED, planSync)
 on(EVT.WORD_DELETE_INIT, planSync)
 on(EVT.UPDATE_NOT_ENDED, planSync)
 
+let basicTime = 0
+let time = 0
 function syncWithControl() {
     setTimeout(() => {
         sync()
+        basicTime = 0
         time = 0
         planned = false
         window.removeEventListener("click", syncWithControl)
@@ -132,12 +138,18 @@ function syncWithControl() {
 }
 
 setInterval(() => {
+    basicTime += 5
+    // console.log(basicTime)
+    if (basicTime < syncParams.timeout) return
+    // basicTime = 0
+
     time++
     if (planned || disconnected) {
         syncWithControl()
-    } else if (time === 3) {
+        // } else if (time === 3) {
+    } else if (basicTime === syncParams.timeout * 3) {
         emit(EVT.SYNC_STATUS_CHANGED, "stale")
         window.addEventListener("click", syncWithControl, { once: true })
     }
     // console.log(time)
-}, 5_000)
+}, 5000)

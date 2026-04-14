@@ -1,6 +1,4 @@
-// localStorage.clear()
-
-const globalVersions = {
+const versions = {
     _mem: {
         wordCards: Number(localStorage.getItem("wordCardsV")) || -1,
         wordProgs: Number(localStorage.getItem("wordProgsV")) || -1,
@@ -18,4 +16,4 @@ const globalVersions = {
     }
 }
 
-export default globalVersions
+export default versions
