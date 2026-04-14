@@ -13,6 +13,7 @@ export default class StatusBar extends HTMLElement {
         // this.progress.classList.add("pending")
 
         on(EVT.SYNC_STATUS_CHANGED, val => {
+            console.log(val)
             this.sync.className = ""
             if (!val) return
             this.sync.classList.add(val)

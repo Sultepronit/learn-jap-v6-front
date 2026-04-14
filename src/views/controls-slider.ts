@@ -27,7 +27,9 @@ export default class ControlsSlider extends BaseComponent<RefKeys> {
 
         this.refs.syncOn.elAsInput.checked = syncParams.turnedOn
         this.refs.syncOn.on("input", () => {
-            syncParams.set("turnedOn", this.refs.syncOn.elAsInput.checked)
+            const checked = this.refs.syncOn.elAsInput.checked
+            syncParams.set("turnedOn", checked)
+            emit(EVT.SYNC_STATUS_CHANGED, checked ? "turned-on" : "turned-off")
         })
 
         this.addEventListener("click", (e: Event) => {
