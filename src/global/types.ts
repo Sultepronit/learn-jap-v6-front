@@ -13,6 +13,7 @@ export type SyncKanji = AnySync<string>
 export type SyncBlock = {
     type: string
     v: number
+    forcedUpdate?: true
     updated?: SyncCard[]
     accepted?: SyncCard[]
 }

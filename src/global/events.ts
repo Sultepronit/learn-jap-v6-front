@@ -37,7 +37,7 @@ export const EVT = {
 
     UPDATE_NOT_ENDED: "update-not-ended",
     SYNC_STATUS_CHANGED: "sync-status-changed",
-    CONNECTION_STATUS_UPDATED: "connection-status-updated",
+    CONNECTION_STATUS_CHANGED: "connection-status-changed",
 
     /** words learning session */
     WS: {
@@ -85,7 +85,7 @@ interface EventPayloads {
 
     "update-not-ended": undefined
     "sync-status-changed": string
-    "connection-status-updated": string
+    "connection-status-changed": string
 
     "ws:next-card": CombinedWord
     "ws:word-updated": undefined

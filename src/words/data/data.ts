@@ -150,7 +150,7 @@ type Update = {
     updates: SyncWord[]
 }
 export function setUpdates({ type, updates }: Update) {
-    console.log(type, updates)
+    // console.log(type, updates)
     const block = type === "wordCards" ? "card" : "prog"
 
     const newWords = []

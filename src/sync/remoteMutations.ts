@@ -9,20 +9,19 @@ export async function implementUpdates(
     toSync: Record<string, Map<number | string, SyncCard>>
 ) {
     for (const m of blocks ?? []) {
-        console.log(m)
+        // console.log(m)
         const updated: SyncCard[] = []
         const fullyUpdated: SyncCard[] = []
         const deleted: number[] = []
 
         for (const rc of m.accepted ?? []) {
             const lc = toSync[m.type].get(rc.id)
-            console.log(rc, lc)
-            // if (!lc) console.warn("What the heck?")
+            // console.log(rc, lc)
             if (!lc) continue // already updated!
 
             lc.syncV = rc.syncV
 
-            if (rc.v === lc.v) {
+            if (rc.v === lc.v || m.forcedUpdate) {
                 // succesfully synced
                 delete lc.toSync
                 toSync[m.type].delete(lc.id)
@@ -44,7 +43,7 @@ export async function implementUpdates(
             if (lc) {
                 lc.syncV = rc.syncV
 
-                if (rc.v >= lc.v) {
+                if (rc.v >= lc.v || m.forcedUpdate) {
                     // accept update
                     delete lc.toSync
                     toSync[m.type].delete(lc.id)

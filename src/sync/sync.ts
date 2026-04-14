@@ -62,8 +62,16 @@ async function sync() {
     const msg = prepareMsg()
     const r = await communicate(msg)
     console.log("received:")
-    // console.table(r)
-    implementUpdates(r?.standard, toSync)
+    if (!r?.standard) {
+        console.log(r)
+    } else {
+        console.log(...(r.standard as any[]))
+    }
+
+    await implementUpdates(r?.standard, toSync)
+    // for (const type of ["wordCards", "wordProgs", "kanjiCards", "kanjiProgs"]) {
+    //     console.log(toSync[type].size)
+    // }
 }
 
 // const apiUrl = import.meta.env.VITE_API_URL
@@ -75,10 +83,11 @@ on(EVT.LOGIN, suggestion => {
     sync()
 })
 
+let planned = false
 let disconnected = false
-async function communicate(msg) {
+async function communicate(msg: string) {
     try {
-        emit(EVT.CONNECTION_STATUS_UPDATED, "pending")
+        emit(EVT.CONNECTION_STATUS_CHANGED, "pending")
 
         const j = await fetch(`${apiUrl}/sync`, {
             method: "POST",
@@ -88,6 +97,10 @@ async function communicate(msg) {
         const r = await j.json()
 
         emit(EVT.SYNC_STATUS_CHANGED, "fulfilled")
+        if (disconnected && planned) {
+            emit(EVT.SYNC_STATUS_CHANGED, "stale")
+        }
+
         disconnected = false
 
         return r
@@ -96,15 +109,14 @@ async function communicate(msg) {
         emit(EVT.SYNC_STATUS_CHANGED, "disconnected")
         disconnected = true
     } finally {
-        emit(EVT.CONNECTION_STATUS_UPDATED, "")
+        setTimeout(() => emit(EVT.CONNECTION_STATUS_CHANGED, ""), 100)
     }
 }
 
 let time = 0
-let planned = false
 function planSync() {
     planned = true
-    emit(EVT.SYNC_STATUS_CHANGED, "stale")
+    if (!disconnected) emit(EVT.SYNC_STATUS_CHANGED, "stale")
 }
 on(EVT.CARD_MUTATED, planSync)
 on(EVT.WORD_DELETE_INIT, planSync)
@@ -128,4 +140,4 @@ setInterval(() => {
         window.addEventListener("click", syncWithControl, { once: true })
     }
     // console.log(time)
-}, 10_000)
+}, 5_000)

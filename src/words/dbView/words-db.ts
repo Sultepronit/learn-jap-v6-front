@@ -37,7 +37,7 @@ export default class WordsDb extends HTMLElement {
         })
 
         on(EVT.WORD_UPDATES_RECEIVED, async ({ type }) => {
-            console.log(type)
+            // console.log(type)
             if (type === this.sortType) {
                 this.updateDisplayData(await rearrangeData(this.allData))
             } else if (this.searching && type === "wordCards") {

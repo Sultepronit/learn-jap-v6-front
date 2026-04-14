@@ -8,15 +8,15 @@ let isBusy = false
 
 export async function useSaveQuery(store: string, updates: any[], newV?: number) {
     query.push({ store, updates, newV })
-    console.log(query)
+    // console.log(query)
     if (isBusy) return
 
     isBusy = true
     while (query.length > 0) {
         const task = query.shift()
-        console.log(task)
+        // console.log(task)
         const re = await putMany(task.store, task.updates)
-        console.log(re, task.newV)
+        // console.log(re, task.newV)
         if (re === "success" && task.newV) {
             globalVersions.set(task.store as "wordCards" | "wordProgs", task.newV)
         }
