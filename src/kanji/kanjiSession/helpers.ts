@@ -27,7 +27,7 @@ export async function papareKanji(k: CombinedKanji) {
             k.comp.words.other = await linksToWords(ol, true)
         }
     } else if (ol) {
-        k.comp.words = { other: await linksToWords(ol) }
+        k.comp.words = { other: await linksToWords(ol, true) }
     }
 }
 
@@ -43,10 +43,10 @@ async function linksToWords(links: number[], other = false) {
         const wComp = word.comp.common
 
         const mainWrit = wComp.writings.main.value
-        // const wordContent = [wComp.writings.main.value]
         const wordContent = [
             word.card.data.writings.alt ? `<span class="alt">${mainWrit}</span>` : mainWrit
         ]
+
         if (wComp.writings.rare) {
             wordContent.push(`<span class="rare">${wComp.writings.rare.value}</span>`)
         }

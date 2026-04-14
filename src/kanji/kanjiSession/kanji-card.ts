@@ -3,6 +3,7 @@ import template from "./kanji-card.html?raw"
 import { EVT, on } from "../../global/events"
 import BaseComponent from "../../global/BaseComponent"
 import type { CombinedKanji } from "../types"
+import { genRandomInt } from "../../helpers/random"
 
 type RefKeys = "stats" | "font1" | "obsolete" | "readings" | "wordsList"
 
@@ -30,6 +31,9 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
             this.updateCardView()
             this.updateStats()
         })
+
+        // setInterval(() => this.shuffler([1, 2, 3]), 1000)
+        // this.shuffler(null)
     }
 
     updateStats() {
@@ -70,10 +74,10 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
 
         switch (this.stage) {
             case "question":
-                this.refs.font1.text(this.k.id)
                 this.refs.obsolete.hide()
                 this.refs.readings.hide()
                 this.refs.wordsList.hide()
+                this.refs.font1.text(this.k.id)
                 break
             case "answer":
                 if (card.details?.obsolete) {
@@ -83,15 +87,26 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
                     this.refs.readings.text(card.readings).show()
                 }
                 if (comp.words) {
-                    const blocks = comp.words.main || []
+                    // const mw = this.
+                    const blocks = this.shuffler(comp.words.main || [])
                     if (comp.words.other) {
-                        // blocks.push(`<div>***</div>`, ...comp.words.other)
-                        blocks.push(`<hr>`, ...comp.words.other)
+                        blocks.push(`<hr>`, ...this.shuffler(comp.words.other))
                     }
-                    // this.refs.wordsList.html(comp.words.main.join("")).show()
                     this.refs.wordsList.html(blocks.join("")).show()
                 }
                 break
         }
+    }
+
+    shuffler(input: any[]) {
+        if (input?.length < 2) return input
+        const ri = genRandomInt(input.length)
+        console.log(ri)
+        if (ri === 0) return input
+        const a = input.slice(0, ri)
+        const b = input.slice(ri)
+        console.log(a, b)
+        console.log([...b, ...a])
+        return [...b, ...a]
     }
 }
