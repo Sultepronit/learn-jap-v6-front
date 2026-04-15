@@ -29,16 +29,20 @@ export default class ControlsSlider extends BaseComponent<RefKeys> {
         this.refs.syncOn.on("input", () => {
             const checked = this.refs.syncOn.elAsInput.checked
             syncParams.set("turnedOn", checked)
-            emit(EVT.SYNC_STATUS_CHANGED, checked ? "turned-on" : "turned-off")
+
+            if (checked) emit(EVT.SYNC_REQUESTED)
+
+            emit(EVT.SYNC_STATUS_CHANGED, "stale")
         })
 
         this.addEventListener("click", (e: Event) => {
             const btn = e.target as HTMLButtonElement
             if (btn.localName !== "button") return
             console.log(btn.name)
-            if (btn.name === "session-reset") {
-                emit(this.sessionReset)
-            }
+
+            if (btn.name === "session-reset") emit(this.sessionReset)
+            if (btn.name === "sync") emit(EVT.SYNC_REQUESTED)
+
             this.hideControls()
         })
 

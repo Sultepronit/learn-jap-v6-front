@@ -6,6 +6,12 @@ import type { BigView, Mark, SyncCard, SyncKanji, SyncWord } from "./types"
 
 export const EVT = {
     LOGIN: "login",
+
+    UPDATE_NOT_ENDED: "update-not-ended",
+    SYNC_REQUESTED: "sync-requested",
+    SYNC_STATUS_CHANGED: "sync-status-changed",
+    CONNECTION_STATUS_CHANGED: "connection-status-changed",
+
     VIEW_HIDDEN: "view-hidden",
     VIEW_SHOWN: "view-shown",
 
@@ -34,10 +40,6 @@ export const EVT = {
 
     /** view update */
     KANJI_COUNT_CHANGED: "kanji-count-changed",
-
-    UPDATE_NOT_ENDED: "update-not-ended",
-    SYNC_STATUS_CHANGED: "sync-status-changed",
-    CONNECTION_STATUS_CHANGED: "connection-status-changed",
 
     /** words learning session */
     WS: {
@@ -68,8 +70,15 @@ export type EventName = DeepValue<typeof EVT>
 
 interface EventPayloads {
     login: string
+
+    "update-not-ended": undefined
+    "sync-requested": undefined
+    "sync-status-changed": string
+    "connection-status-changed": string
+
     "view-hidden": BigView
     "view-shown": BigView
+
     "card-mutated": { type: string; card: SyncCard }
     "cards-mutated": { type: string; cards: SyncCard[] }
 
@@ -82,10 +91,6 @@ interface EventPayloads {
     "kanji-updated": undefined
     "kanji-updates-received": { type: string; updates: SyncKanji[] }
     "kanji-count-changed": undefined
-
-    "update-not-ended": undefined
-    "sync-status-changed": string
-    "connection-status-changed": string
 
     "ws:next-card": CombinedWord
     "ws:word-updated": undefined

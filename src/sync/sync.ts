@@ -71,11 +71,10 @@ async function sync() {
         console.log(...(r.standard as any[]))
     }
 
-    await implementUpdates(r?.standard, toSync)
-    // for (const type of ["wordCards", "wordProgs", "kanjiCards", "kanjiProgs"]) {
-    //     console.log(toSync[type].size)
-    // }
+    implementUpdates(r?.standard, toSync)
 }
+
+on(EVT.SYNC_REQUESTED, sync)
 
 // const apiUrl = import.meta.env.VITE_API_URL
 // let apiUrl = localStorage.getItem("api")
@@ -86,12 +85,15 @@ on(EVT.LOGIN, suggestion => {
     sync()
 })
 
+let pending = false
 let planned = false
 let disconnected = false
 async function communicate(msg: string) {
-    try {
-        emit(EVT.CONNECTION_STATUS_CHANGED, "pending")
+    if (pending) return
+    pending = true
+    emit(EVT.CONNECTION_STATUS_CHANGED, "pending")
 
+    try {
         const j = await fetch(`${apiUrl}/sync`, {
             method: "POST",
             body: msg
@@ -113,6 +115,7 @@ async function communicate(msg: string) {
         emit(EVT.SYNC_STATUS_CHANGED, "disconnected")
         disconnected = true
     } finally {
+        pending = false
         setTimeout(() => emit(EVT.CONNECTION_STATUS_CHANGED, ""), 200)
     }
 }
@@ -125,12 +128,10 @@ on(EVT.CARD_MUTATED, planSync)
 on(EVT.WORD_DELETE_INIT, planSync)
 on(EVT.UPDATE_NOT_ENDED, planSync)
 
-let basicTime = 0
 let time = 0
 function syncWithControl() {
     setTimeout(() => {
         sync()
-        basicTime = 0
         time = 0
         planned = false
         window.removeEventListener("click", syncWithControl)
@@ -138,18 +139,15 @@ function syncWithControl() {
 }
 
 setInterval(() => {
-    basicTime += 5
-    // console.log(basicTime)
-    if (basicTime < syncParams.timeout) return
-    // basicTime = 0
+    if (!syncParams.turnedOn) return
 
-    time++
+    time += 5
+    if (time < syncParams.timeout) return
+
     if (planned || disconnected) {
         syncWithControl()
-        // } else if (time === 3) {
-    } else if (basicTime === syncParams.timeout * 3) {
+    } else if (time === syncParams.timeout * 3) {
         emit(EVT.SYNC_STATUS_CHANGED, "stale")
         window.addEventListener("click", syncWithControl, { once: true })
     }
-    // console.log(time)
 }, 5000)
