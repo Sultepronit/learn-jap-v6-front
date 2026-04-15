@@ -28,6 +28,7 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
 
         on(EVT.KANJI_UPDATED, () => {
             if (!this.k || this.k.v === this.kV) return
+            if (this.stage === "question") return
             this.updateCardView()
             this.updateStats()
         })
@@ -52,7 +53,6 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
     ask(k: CombinedKanji) {
         this.k = k
         this.stage = "question"
-        // this.updateStats()
         this.refs.stats.hide()
         this.updateCardView()
     }

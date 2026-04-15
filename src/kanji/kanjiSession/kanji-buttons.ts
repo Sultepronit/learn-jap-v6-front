@@ -26,20 +26,8 @@ export default class KanjiButtons extends BaseComponent<Mark> {
 
     setNext(k: CombinedKanji) {
         this.k = k
-
-        let button: Mark = "pass"
-
-        // if (this.k.comp.stage === "autorepeat") {
-        //     this.expected = "evaluation"
-        //     button = "good"
-        // } else if (this.k.comp.dir === "f") {
-        //     this.expected = "hint"
-        // } else {
-        //     this.expected = "answer"
-        // }
         this.expected = "answer"
-
-        this.setButtons([button])
+        this.setButtons(["pass"])
     }
 
     setButtons(list: Mark[]) {
