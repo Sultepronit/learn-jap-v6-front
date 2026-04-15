@@ -71,8 +71,7 @@ async function continueSession(): Promise<KanjiSession> {
 
 export async function initSession() {
     loadBasicWordsList()
-    // const wordsPromise = loadBasicWordsList()
-    // await loadAllWords()
+
     const restored = await continueSession()
     if (restored) {
         session = restored
@@ -80,7 +79,6 @@ export async function initSession() {
         session = await createSession(sessionLenth)
     }
     // session = await createSession(sessionLenth)
-    // await wordsPromise
 
     getNext()
 }

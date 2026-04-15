@@ -4,9 +4,9 @@ import { getSessionCards } from "../../indexedDB/dbHandlers"
 import { kanjiIndex, loadBasicList, setUpdates } from "../data/data"
 import type { CombinedKanji, KanjiProg } from "../types"
 
-const d10 = 10 * 24 * 60 * 60
+const d = 24 * 60 * 60
 function prepareRepeatList(all: KanjiProg[], length: number) {
-    const tLimit = getNow() - d10
+    const tLimit = getNow() - d * 10
     // console.log(new Date(tLimit * 1000))
     const repeatList: KanjiProg[] = []
     const autoList: KanjiProg[] = []
@@ -58,12 +58,12 @@ function prepareLearnList(range: KanjiProg[], learnIdx: number, repeatIdx: numbe
     })
     console.log(learnList)
 
-    // const tLimit = now - d10
+    const tLimit = now - d * 1.5
     for (let i = 0; i < returnList.length / 2; i++) {
         const ri = genRandomInt(returnList.length)
         const wProg = returnList[ri]
         if (!wProg) continue
-        // if (wProg.data.t > tLimit) continue
+        if (wProg.data.t > tLimit) continue
         console.log("returned:", wProg)
         // wProg.data.status = 0
         learnList.push(wProg)
