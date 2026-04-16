@@ -42,12 +42,20 @@ export default class SmartRef {
         }
     }
 
-    hide() {
+    hide(visibilityOnly = false) {
+        if (visibilityOnly) {
+            this.el.style.visibility = "hidden"
+            return this
+        }
         this.el.classList.add("hidden")
         return this
     }
 
-    show() {
+    show(visibilityOnly = false) {
+        if (visibilityOnly) {
+            this.el.style.visibility = "visible"
+            return this
+        }
         this.el.classList.remove("hidden")
         return this
     }

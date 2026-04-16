@@ -54,14 +54,14 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
     ask(k: CombinedKanji) {
         this.k = k
         this.stage = "question"
-        this.refs.stats.hide()
+        this.refs.stats.hide(true)
         this.updateCardView()
     }
 
     answer() {
         this.stage = "answer"
         this.updateStats()
-        this.refs.stats.show()
+        this.refs.stats.show(true)
         this.updateCardView()
     }
 
