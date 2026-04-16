@@ -10,6 +10,8 @@ type RefKeys = "stats" | "font1" | "obsolete" | "readings" | "wordsList"
 export default class KanjiCard extends BaseComponent<RefKeys> {
     k: CombinedKanji
     kV = 0
+    cV = 0
+    pV = 0
 
     stage: "question" | "answer"
 
@@ -21,6 +23,8 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
         on(EVT.KS.NEXT_CARD, k => {
             this.k = k
             this.kV = k.v
+            this.cV = k.card.v
+            this.pV = k.prog.v
             this.ask(k)
         })
 
@@ -28,13 +32,10 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
 
         on(EVT.KANJI_UPDATED, () => {
             if (!this.k || this.k.v === this.kV) return
-            if (this.stage === "question") return
-            this.updateCardView()
-            this.updateStats()
+            // if (this.stage === "question") return
+            if (this.cV !== this.k.card.v) this.updateCardView()
+            if (this.pV !== this.k.prog.v) this.updateStats()
         })
-
-        // setInterval(() => this.shuffler([1, 2, 3]), 1000)
-        // this.shuffler(null)
     }
 
     updateStats() {
@@ -65,10 +66,6 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
     }
 
     updateCardView() {
-        if (!this.k.card) return
-        // computeAll(this.k)
-        // console.timeLog("t1", "card view!")
-
         const card = this.k.card.data
         const comp = this.k.comp
 
@@ -86,12 +83,12 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
                 if (card.readings) {
                     this.refs.readings.text(card.readings).show()
                 }
-                if (comp.words) {
-                    // const mw = this.
-                    const blocks = this.shuffler(comp.words.main || [])
-                    if (comp.words.other) {
-                        blocks.push(`<hr>`, ...this.shuffler(comp.words.other))
-                    }
+
+                const blocks = this.shuffler(comp.words.main || [])
+                if (comp.words.other) {
+                    blocks.push(`<hr>`, ...this.shuffler(comp.words.other))
+                }
+                if (blocks.length > 0) {
                     this.refs.wordsList.html(blocks.join("")).show()
                 }
                 break
@@ -101,12 +98,9 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
     shuffler(input: any[]) {
         if (input?.length < 2) return input
         const ri = genRandomInt(input.length)
-        console.log(ri)
         if (ri === 0) return input
         const a = input.slice(0, ri)
         const b = input.slice(ri)
-        console.log(a, b)
-        console.log([...b, ...a])
         return [...b, ...a]
     }
 }

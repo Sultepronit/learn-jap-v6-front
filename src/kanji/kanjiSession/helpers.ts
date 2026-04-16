@@ -6,13 +6,20 @@ import type { CombinedKanji } from "../types"
 
 let wordsList = null
 export async function papareKanji(k: CombinedKanji) {
-    if (!k.comp) k.comp = {}
-
     while (!k.prog) {
         await new Promise(res => on(EVT.KANJI_UPDATED, res, true))
     }
 
+    if (!k.comp) k.comp = {}
     k.comp.stage = k.prog.data.status > 0 ? "repeat" : "learn"
+
+    if (!k.comp.words) {
+        k.comp.words = { v: -1 }
+    } else if (k.comp.words.v === k.card.v) {
+        return
+    }
+
+    k.comp.words.v = k.card.v
 
     if (!wordsList) {
         wordsList = await loadBasicWordsList()
@@ -20,15 +27,8 @@ export async function papareKanji(k: CombinedKanji) {
 
     const ml = k.card.data.links.main
     const ol = k.card.data.links.other
-    if (ml.length > 0) {
-        k.comp.words = { main: await linksToWords(ml) }
-
-        if (ol) {
-            k.comp.words.other = await linksToWords(ol, true)
-        }
-    } else if (ol) {
-        k.comp.words = { other: await linksToWords(ol, true) }
-    }
+    if (ml.length > 0) k.comp.words.main = await linksToWords(ml)
+    if (ol) k.comp.words.other = await linksToWords(ol, true)
 }
 
 async function linksToWords(links: number[], other = false) {

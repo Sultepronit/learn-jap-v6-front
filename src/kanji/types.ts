@@ -34,6 +34,7 @@ type Computed = {
     stage?: "learn" | "repeat"
     retrying?: true
     words?: {
+        v: number
         main?: any[]
         other?: any[]
     }
