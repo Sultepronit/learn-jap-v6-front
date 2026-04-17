@@ -49,7 +49,7 @@ export function computeCommon(word: CombinedWord) {
 
 function toKata(hira: string) {
     return Array.from(hira)
-        .map(h => kanagana[h])
+        .map(h => (kanagana[h] ? kanagana[h] : h))
         .join("")
 }
 
