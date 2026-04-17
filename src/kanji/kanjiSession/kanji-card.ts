@@ -5,7 +5,15 @@ import BaseComponent from "../../global/BaseComponent"
 import type { CombinedKanji } from "../types"
 import { genRandomInt } from "../../helpers/random"
 
-type RefKeys = "stats" | "font1" | "obsolete" | "readings" | "wordsList"
+type RefKeys =
+    | "stats"
+    | "font1"
+    | "font2"
+    | "font3"
+    | "font4"
+    | "obsolete"
+    | "readings"
+    | "wordsList"
 
 export default class KanjiCard extends BaseComponent<RefKeys> {
     k: CombinedKanji
@@ -74,9 +82,23 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
                 this.refs.obsolete.hide()
                 this.refs.readings.hide()
                 this.refs.wordsList.hide()
-                this.refs.font1.text(this.k.id)
+                // this.refs.font1.text(this.k.id)
+                // this.refs.font4.text(this.k.id)
+                const ri = genRandomInt(3) + 1
+                for (let i = 1; i < 5; i++) {
+                    if (i === ri) {
+                        this.refs[`font${i}`].text(this.k.id).show()
+                    } else {
+                        this.refs[`font${i}`].hide()
+                    }
+                }
                 break
             case "answer":
+                this.refs.font1.text(this.k.id).show()
+                this.refs.font2.text(this.k.id).show()
+                this.refs.font3.text(this.k.id).show()
+                this.refs.font4.text(this.k.id).show()
+
                 if (card.details?.obsolete) {
                     this.refs.obsolete.text(card.details.obsolete).show()
                 }

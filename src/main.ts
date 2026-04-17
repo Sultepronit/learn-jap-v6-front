@@ -1,3 +1,4 @@
+import "./assets/fonts.css"
 import "./app.css"
 import "./views/learnSession/session-style.css"
 
