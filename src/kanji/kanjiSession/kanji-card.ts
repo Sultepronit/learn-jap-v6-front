@@ -48,7 +48,7 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
                 [${p.status.toLocaleString("uk")}] ${p.progress} ${p.record}
                 `
             )
-            .replaceClasses(["stats", this.k.comp.stage])
+            .replaceClasses(["stats", "card-stats", this.k.comp.stage])
     }
 
     ask(k: CombinedKanji) {

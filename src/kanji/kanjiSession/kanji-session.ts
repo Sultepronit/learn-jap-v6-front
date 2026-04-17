@@ -1,4 +1,5 @@
 import template from "./kanji-session.html?raw"
+import endTemplate from "../../views/learnSession/end-view.html?raw"
 import "./kanji-session.css"
 
 import { initSession } from "./sessionData"
@@ -12,7 +13,7 @@ export default class KanjiSession extends BaseComponent<RefKeys> {
     kV = 0
 
     async connectedCallback() {
-        this.innerHTML = template
+        this.innerHTML = template + endTemplate
 
         this.collectRefs(["kanji-session-stats", "kanji-card", "kanji-buttons"])
         console.log(this.refs)

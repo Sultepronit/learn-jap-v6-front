@@ -5,38 +5,38 @@ words-session {
     margin: 0.4rem 0.4rem 1rem;
 }
 
-words-session-stats {
+/* words-session-stats {
     display: flex;
     column-gap: 1em;
     flex-wrap: wrap;
-}
+} */
 
-.learn-stats {
+/* .learn-stats {
     color: green;
 }
 
 .repeat-stats {
     color: blue;
-}
+} */
 
 words-session .main-view {
     display: grid;
     grid-template-rows: 1fr auto;
 }
 
-word-card .stats {
+/* word-card .stats {
     width: fit-content;
     border-bottom: 3px solid;
     padding-top: 0.2rem;
-}
+} */
 
-.stats.learn {
+/* .stats.learn {
     border-color: yellow;
 }
 
 .stats.repeat {
     border-color: blue;
-}
+} */
 
 word-card .content {
     display: flex;
@@ -49,11 +49,6 @@ word-card .content {
 word-card .writings {
     font-size: 3rem;
 }
-
-/* word-buttons {
-    display: block;
-    height: 3em;
-} */
 
 word-card .writings,
 word-card .readings {

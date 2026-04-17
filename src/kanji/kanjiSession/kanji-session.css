@@ -6,19 +6,19 @@ kanji-session {
     margin: 0.4rem 0.4rem 1rem;
 }
 
-kanji-session-stats {
+/* kanji-session-stats {
     display: flex;
     column-gap: 1em;
     flex-wrap: wrap;
-}
+} */
 
-.learn-stats {
+/* .learn-stats {
     color: green;
 }
 
 .repeat-stats {
     color: blue;
-}
+} */
 
 kanji-session .main-view {
     overflow: hidden;
@@ -32,19 +32,19 @@ kanji-card {
     overflow: hidden;
 }
 
-kanji-card .stats {
+/* kanji-card .stats {
     width: fit-content;
     border-bottom: 3px solid;
     padding-top: 0.2rem;
-}
+} */
 
-.stats.learn {
+/* .stats.learn {
     border-color: yellow;
 }
 
 .stats.repeat {
     border-color: blue;
-}
+} */
 
 kanji-card .content {
     display: grid;

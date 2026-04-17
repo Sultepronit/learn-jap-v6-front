@@ -1,4 +1,5 @@
 import "./app.css"
+import "./views/learnSession/session-style.css"
 
 import MainView from "./views/main-view"
 import StatusBar from "./views/status-bar"

@@ -1,0 +1,68 @@
+.stats {
+    font-size: 1.1rem;
+}
+
+.session-stats {
+    display: flex;
+    column-gap: 1em;
+    flex-wrap: wrap;
+}
+
+.learn-stats {
+    color: green;
+}
+
+.repeat-stats {
+    color: blue;
+}
+
+.card-stats {
+    width: fit-content;
+    border-bottom: 3px solid;
+    padding-top: 0.2rem;
+}
+
+.stats.learn {
+    border-color: yellow;
+}
+
+.stats.repeat {
+    border-color: blue;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 0.7em;
+    height: 3em;
+}
+
+.nav-buttons button {
+    flex-grow: 6;
+    border: none;
+    border-radius: 15px;
+}
+
+.nav-buttons .good {
+    background-color: green;
+}
+
+.nav-buttons .pass {
+    background-color: gray;
+}
+
+.nav-buttons .retry {
+    background-color: yellow;
+}
+
+.nav-buttons .bad {
+    background-color: red;
+}
+
+.end-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 3rem;
+    gap: 1rem;
+    padding-block: 2rem;
+}

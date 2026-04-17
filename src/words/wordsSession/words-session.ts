@@ -1,5 +1,7 @@
 import template from "./words-session.html?raw"
+import endTemplate from "../../views/learnSession/end-view.html?raw"
 import "./words-session.css"
+
 import type { CombinedWord } from "../types"
 import { initSession } from "./sessionData"
 import { emit, EVT, on } from "../../global/events"
@@ -11,7 +13,7 @@ export default class WordsSession extends BaseComponent<RefKeys> {
     wordV = 0
 
     async connectedCallback() {
-        this.innerHTML = template
+        this.innerHTML = template + endTemplate
 
         this.collectRefs(["words-session-stats", "word-card", "word-buttons"])
         // console.log(this.refs)

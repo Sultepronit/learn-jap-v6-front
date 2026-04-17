@@ -87,7 +87,7 @@ input[type="checkbox"] {
     color: green;
 }
 
-words-session-stats,
+/* words-session-stats,
 .stats {
     font-size: 1.1rem;
 }
@@ -96,7 +96,6 @@ words-session-stats,
     display: flex;
     gap: 0.7em;
     height: 3em;
-    /* margin-bottom: 1em; */
 }
 
 .nav-buttons button {
@@ -119,4 +118,4 @@ words-session-stats,
 
 .nav-buttons .bad {
     background-color: red;
-}
+} */

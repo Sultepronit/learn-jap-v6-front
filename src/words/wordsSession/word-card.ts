@@ -44,7 +44,7 @@ export default class WordCard extends BaseComponent<RefKeys> {
                 ${p.b.record}${p.b.autorepeat ? "*" : ""}
                 `
             )
-            .replaceClasses(["stats", this.word.comp.stage])
+            .replaceClasses(["stats", "card-stats", this.word.comp.stage])
     }
 
     ask(word: CombinedWord) {
