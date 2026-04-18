@@ -15,6 +15,8 @@ export const EVT = {
     VIEW_HIDDEN: "view-hidden",
     VIEW_SHOWN: "view-shown",
 
+    LOUDNESS_TOGGLED: "loudness-toggled",
+
     /** data for saving */
     CARD_MUTATED: "card-mutated",
     CARDS_MUTATED: "cards-mutated",
@@ -77,6 +79,8 @@ interface EventPayloads {
 
     "view-hidden": BigView
     "view-shown": BigView
+
+    "loudness-toggled": boolean
 
     "card-mutated": { type: string; card: SyncCard }
     "cards-mutated": { type: string; cards: SyncCard[] }

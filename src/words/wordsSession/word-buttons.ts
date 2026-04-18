@@ -53,7 +53,7 @@ export default class WordButtons extends BaseComponent<Mark> {
     }
 
     handleClick(mark: Mark) {
-        console.log(mark, this.expected)
+        // console.log(mark, this.expected)
         switch (this.expected) {
             case "hint":
                 emit(EVT.WS.HINT_REQUESTED)

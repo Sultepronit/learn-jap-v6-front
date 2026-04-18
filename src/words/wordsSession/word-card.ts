@@ -4,6 +4,7 @@ import { EVT, on } from "../../global/events"
 import { computeAll } from "../parsers/readingsWritings"
 import BaseComponent from "../../global/BaseComponent"
 import { genRandomInt } from "../../helpers/random"
+import pronouce from "./pronunciation"
 
 type RefKeys =
     | "stats"
@@ -61,6 +62,10 @@ export default class WordCard extends BaseComponent<RefKeys> {
         // console.log(word)
         this.word = word
         this.stage = this.word.comp.stage === "autorepeat" ? "answer" : "question"
+        // pronouce(
+        //     { kanji: word.comp.learn.writQuest[0], variants: word.card.data.readings.main },
+        //     word.comp.stage === "autorepeat"
+        // )
         this.updateStats()
         this.updateCardView()
     }
@@ -72,13 +77,26 @@ export default class WordCard extends BaseComponent<RefKeys> {
 
     answer() {
         this.stage = "answer"
+        pronouce()
         this.updateCardView()
     }
 
+    // pronuouced = false
     updateCardView() {
         if (!this.word.card) return
         computeAll(this.word)
-        // console.timeLog("t1", "card view!")
+
+        pronouce(
+            {
+                kanji: this.word.comp.learn.writQuest[0],
+                variants: [
+                    ...this.word.card.data.readings.main,
+                    ...(this.word.card.data.readings.rare || [])
+                ]
+            },
+            // false
+            this.word.comp.stage === "autorepeat"
+        )
 
         const card = this.word.card.data
         const comp = this.word.comp
@@ -109,6 +127,11 @@ export default class WordCard extends BaseComponent<RefKeys> {
                 this.refs.readMain.text(q).show()
                 break
             case "answer":
+                // if (!this.pronuouced) {
+                //     pronouce()
+                //     this.pronuouced = true
+                // }
+
                 const mw = comp.common.writings.main
                 if (card.writings.alt) {
                     this.refs.writMain.addClass("alt")

@@ -35,6 +35,7 @@ export default class ControlsSlider extends BaseComponent<RefKeys> {
             emit(EVT.SYNC_STATUS_CHANGED, "stale")
         })
 
+        // all the buttons
         this.addEventListener("click", (e: Event) => {
             const btn = e.target as HTMLButtonElement
             if (btn.localName !== "button") return
@@ -42,6 +43,16 @@ export default class ControlsSlider extends BaseComponent<RefKeys> {
 
             if (btn.name === "session-reset") emit(this.sessionReset)
             if (btn.name === "sync") emit(EVT.SYNC_REQUESTED)
+            if (btn.name === "pronunciation") {
+                // btn.textContent = btn.textContent === "🔇" ? "🔊" : "🔇"
+                if (btn.textContent === "🔇") {
+                    btn.textContent = "🔊"
+                    emit(EVT.LOUDNESS_TOGGLED, true)
+                } else {
+                    btn.textContent = "🔇"
+                    emit(EVT.LOUDNESS_TOGGLED, false)
+                }
+            }
 
             this.hideControls()
         })

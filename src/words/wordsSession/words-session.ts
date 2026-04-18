@@ -2,7 +2,6 @@ import template from "./words-session.html?raw"
 import endTemplate from "../../views/learnSession/end-view.html?raw"
 import "./words-session.css"
 
-import type { CombinedWord } from "../types"
 import { initSession } from "./sessionData"
 import { emit, EVT, on } from "../../global/events"
 import BaseComponent from "../../global/BaseComponent"
@@ -29,16 +28,6 @@ export default class WordsSession extends BaseComponent<RefKeys> {
             this.refs.endView.show()
         })
 
-        // on(EVT.WS.NEXT_CARD, w => {
-        //     this.word = w
-        //     this.wordV = w.v
-        // })
-
         await initSession()
-        // on(EVT.WORD_UPDATED, () => {
-        //     // do we need all this things?
-        //     if (!this.word || this.word.v === this.wordV) return
-        //     emit(EVT.WS.WORD_UPDATED)
-        // })
     }
 }

@@ -4,14 +4,10 @@ import "./kanji-session.css"
 
 import { initSession } from "./sessionData"
 import BaseComponent from "../../global/BaseComponent"
-import type { CombinedKanji } from "../types"
 import { emit, EVT, on } from "../../global/events"
 
 type RefKeys = "mainView" | "endView" | "reset"
 export default class KanjiSession extends BaseComponent<RefKeys> {
-    // k: CombinedKanji
-    // kV = 0
-
     async connectedCallback() {
         this.innerHTML = template + endTemplate
 
