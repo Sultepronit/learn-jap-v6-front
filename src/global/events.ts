@@ -44,7 +44,6 @@ export const EVT = {
     /** words learning session */
     WS: {
         NEXT_CARD: "ws:next-card",
-        WORD_UPDATED: "ws:word-updated",
         HINT_REQUESTED: "ws:hint-requested",
         ANSWER_REQUESTED: "ws:answer-requested",
         EVALUATED: "ws:word-evaluated",
@@ -93,7 +92,7 @@ interface EventPayloads {
     "kanji-count-changed": undefined
 
     "ws:next-card": CombinedWord
-    "ws:word-updated": undefined
+    // "ws:word-updated": undefined
     "ws:hint-requested": undefined
     "ws:answer-requested": undefined
     "ws:word-evaluated": Mark

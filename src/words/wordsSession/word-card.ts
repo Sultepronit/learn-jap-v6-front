@@ -16,6 +16,8 @@ type RefKeys =
 
 export default class WordCard extends BaseComponent<RefKeys> {
     word: CombinedWord
+    wordV = 0
+
     stage: "question" | "hint" | "answer"
 
     async connectedCallback() {
@@ -23,11 +25,18 @@ export default class WordCard extends BaseComponent<RefKeys> {
 
         this.collectRefs()
 
-        on(EVT.WS.NEXT_CARD, w => this.ask(w))
+        on(EVT.WS.NEXT_CARD, w => {
+            this.word = w
+            this.wordV = w.v
+
+            this.ask(w)
+        })
+
         on(EVT.WS.HINT_REQUESTED, () => this.hint())
         on(EVT.WS.ANSWER_REQUESTED, () => this.answer())
 
-        on(EVT.WS.WORD_UPDATED, () => {
+        on(EVT.WORD_UPDATED, () => {
+            if (!this.word || this.word.v === this.wordV) return
             this.updateCardView()
             this.updateStats()
         })
@@ -44,7 +53,8 @@ export default class WordCard extends BaseComponent<RefKeys> {
                 ${p.b.record}${p.b.autorepeat ? "*" : ""}
                 `
             )
-            .replaceClasses(["stats", "card-stats", this.word.comp.stage])
+            // .replaceClasses(["stats", "card-stats", this.word.comp.stage])
+            .replaceClasses(["card-stats", this.word.comp.stage])
     }
 
     ask(word: CombinedWord) {

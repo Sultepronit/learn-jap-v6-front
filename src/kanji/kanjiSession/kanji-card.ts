@@ -33,6 +33,7 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
             this.kV = k.v
             this.cV = k.card.v
             this.pV = k.prog.v
+
             this.ask(k)
         })
 
@@ -56,7 +57,8 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
                 [${p.status.toLocaleString("uk")}] ${p.progress} ${p.record}
                 `
             )
-            .replaceClasses(["stats", "card-stats", this.k.comp.stage])
+            // .replaceClasses(["stats", "card-stats", this.k.comp.stage])
+            .replaceClasses(["card-stats", this.k.comp.stage])
     }
 
     ask(k: CombinedKanji) {

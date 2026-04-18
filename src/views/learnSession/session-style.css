@@ -1,4 +1,9 @@
-.stats {
+/* .stats {
+    font-size: 1.1rem;
+} */
+
+.session-stats,
+.card-stats {
     font-size: 1.1rem;
 }
 
@@ -22,11 +27,11 @@
     padding-top: 0.2rem;
 }
 
-.stats.learn {
+.card-stats.learn {
     border-color: yellow;
 }
 
-.stats.repeat {
+.card-stats.repeat {
     border-color: blue;
 }
 
