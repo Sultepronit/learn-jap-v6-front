@@ -118,9 +118,10 @@ export default class KanjiCard extends BaseComponent<RefKeys> {
     }
 
     shuffler(input: any[]) {
-        if (input?.length < 2) return input
+        // if (input?.length < 2) return input
         const ri = genRandomInt(input.length)
-        if (ri === 0) return input
+        // if (ri === 0) return input
+        if (ri === 0) return [...input]
         const a = input.slice(0, ri)
         const b = input.slice(ri)
         return [...b, ...a]

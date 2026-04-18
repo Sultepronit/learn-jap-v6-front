@@ -32,7 +32,12 @@ function prepareRepeatList(all: WordProg[], length: number) {
     return re
 }
 
-function prepareLearnList(range: WordProg[], learnIdx: number, repeatIdx: number) {
+function prepareLearnList(
+    range: WordProg[],
+    learnIdx: number,
+    repeatIdx: number,
+    sessionLenth: number
+) {
     if (repeatIdx === 0) return []
 
     const now = getNow()
@@ -46,6 +51,8 @@ function prepareLearnList(range: WordProg[], learnIdx: number, repeatIdx: number
         if (re) console.log(new Date(c.data.t * 1000))
         return !re
     })
+
+    if (learnList.length > sessionLenth / 2) learnList.length = Math.ceil(sessionLenth / 2)
     console.log(learnList)
 
     const tLimit = now - d10
@@ -75,7 +82,7 @@ function prepareSessionList(candidates: WordProg[], sessionLenth: number) {
     }
     console.log(learnIdx, repeatIdx)
 
-    const learnList = prepareLearnList(candidates, learnIdx, repeatIdx)
+    const learnList = prepareLearnList(candidates, learnIdx, repeatIdx, sessionLenth)
     const allToRepeat = candidates.slice(repeatIdx)
     console.log(learnList, allToRepeat)
 

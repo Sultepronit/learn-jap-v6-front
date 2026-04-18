@@ -42,7 +42,12 @@ function prepareRepeatList(all: KanjiProg[], length: number) {
     }
 }
 
-function prepareLearnList(range: KanjiProg[], learnIdx: number, repeatIdx: number) {
+function prepareLearnList(
+    range: KanjiProg[],
+    learnIdx: number,
+    repeatIdx: number,
+    sessionLenth: number
+) {
     if (repeatIdx === 0) return []
 
     const now = getNow()
@@ -56,6 +61,7 @@ function prepareLearnList(range: KanjiProg[], learnIdx: number, repeatIdx: numbe
         if (re) console.log(new Date(c.data.t * 1000))
         return !re
     })
+    if (learnList.length > sessionLenth / 2) learnList.length = Math.ceil(sessionLenth / 2)
     console.log(learnList)
 
     const tLimit = now - d * 1.5
@@ -85,7 +91,7 @@ function prepareSessionList(candidates: KanjiProg[], sessionLenth: number, tempN
     }
     console.log(learnIdx, repeatIdx)
 
-    const learnList = prepareLearnList(candidates, learnIdx, repeatIdx)
+    const learnList = prepareLearnList(candidates, learnIdx, repeatIdx, sessionLenth)
     if (tempNewK) learnList.push(tempNewK)
 
     const allToRepeat = candidates.slice(repeatIdx)
