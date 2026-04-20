@@ -52,7 +52,8 @@ function prepareLearnList(
         return !re
     })
 
-    if (learnList.length > sessionLenth / 2) learnList.length = Math.ceil(sessionLenth / 2)
+    const max = Math.ceil(sessionLenth * 0.7)
+    if (learnList.length > max) learnList.length = max
     console.log(learnList)
 
     const tLimit = now - d10
