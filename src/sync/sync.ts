@@ -125,6 +125,7 @@ function planSync() {
     if (!disconnected) emit(EVT.SYNC_STATUS_CHANGED, "stale")
 }
 on(EVT.CARD_MUTATED, planSync)
+on(EVT.CARDS_MUTATED, planSync)
 on(EVT.WORD_DELETE_INIT, planSync)
 on(EVT.UPDATE_NOT_ENDED, planSync)
 

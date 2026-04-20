@@ -4,7 +4,7 @@ import { getNow } from "../../helpers/time"
 import type { CombinedKanji } from "../types"
 import type { KanjiSession } from "./sessionData"
 
-const genRepeatStatus = () => Math.floor(Date.now() / 8640000) - 180610
+export const genRepeatStatus = () => Math.floor(Date.now() / 8640000) - 180610
 console.log(genRepeatStatus())
 
 export default function update(k: CombinedKanji, mark: Mark, stats: KanjiSession["stats"]) {

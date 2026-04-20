@@ -1,10 +1,27 @@
+import { emit, EVT } from "../../global/events"
 import { genRandomInt, randomize } from "../../helpers/random"
 import { areSameDay, getNow } from "../../helpers/time"
 import { getSessionCards } from "../../indexedDB/dbHandlers"
 import { kanjiIndex, loadBasicList, setUpdates } from "../data/data"
 import type { CombinedKanji, KanjiProg } from "../types"
+import { genRepeatStatus } from "./update"
 
 const d = 24 * 60 * 60
+
+function doAutoRepeat(list: KanjiProg[]) {
+    console.log("Auto", list)
+    for (const prog of list) {
+        const k = kanjiIndex.get(prog.id)
+        k.v++
+        delete prog.data.autorepeat
+        prog.data.t = getNow()
+        prog.data.status = genRepeatStatus()
+    }
+
+    emit(EVT.KANJI_UPDATED)
+    emit(EVT.CARDS_MUTATED, { type: "kanjiProgs", cards: list })
+}
+
 function prepareRepeatList(all: KanjiProg[], length: number) {
     const tLimit = getNow() - d * 10
     // console.log(new Date(tLimit * 1000))
@@ -23,7 +40,6 @@ function prepareRepeatList(all: KanjiProg[], length: number) {
         if (kProg.data.t > tLimit) continue
 
         if (kProg.data.autorepeat) {
-            // implement autorepeat!
             autoList.push(kProg)
             continue
         }
@@ -33,9 +49,8 @@ function prepareRepeatList(all: KanjiProg[], length: number) {
 
         if (repeatList.length >= length) break
     }
-    console.log("Auto", autoList)
+    doAutoRepeat(autoList)
 
-    // return repeatList
     return {
         repeatList,
         autoNumber: autoList.length
