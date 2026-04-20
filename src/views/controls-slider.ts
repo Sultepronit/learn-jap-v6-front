@@ -54,7 +54,7 @@ export default class ControlsSlider extends BaseComponent<RefKeys> {
                 }
             }
 
-            this.hideControls()
+            setTimeout(() => this.hideControls(), 400)
         })
 
         on(EVT.VIEW_SHOWN, view => this.updateToView(view))
