@@ -20,28 +20,27 @@ audio.oncanplay = () => {
     }
 }
 
-audio.onended = () => {
-    if (++vIdx < variants.length) playNext()
-}
+audio.onended = playNext
 
 let variants: string[] = []
 let kanji = ""
 let vIdx = 0
 function playNext() {
-    console.log(variants, kanji)
-    const src = `${url}${variants[vIdx]}&kanji=${kanji}`
+    if (vIdx >= variants.length) return
+    // console.log(variants, kanji, vIdx)
+    const src = `${url}${variants[vIdx++]}&kanji=${kanji}`
     // const src = `${url}${variants[vIdx]}`
     console.log(src)
 
     audio.src = src
 }
 
-type NewWord = { kanji: string; variants: string[] }
-export default function pronouce(newWord: NewWord = null, play = true) {
+export default function pronouce(newWord: { kanji: string; variants: string[] }) {
+    // console.log("set pronunciation!", newWord.kanji)
     vIdx = 0
-    if (newWord) {
-        kanji = newWord.kanji
-        variants = newWord.variants
-    }
-    if (play && loudnessOn) playNext()
+    // if (newWord) {
+    kanji = newWord.kanji
+    variants = newWord.variants
+    // }
+    if (loudnessOn) playNext()
 }

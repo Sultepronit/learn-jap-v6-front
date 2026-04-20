@@ -53,8 +53,6 @@ export default defineConfig({
                         handler: "CacheFirst",
                         options: {
                             cacheName: "fonts"
-                            // cacheableResponse: {
-                            //   statuses: [0, 200]
                         }
                     },
                     {
@@ -65,6 +63,9 @@ export default defineConfig({
                             cacheName: "audio",
                             expiration: {
                                 maxAgeSeconds: 60 * 60 * 24 * 365 * 2
+                            },
+                            cacheableResponse: {
+                                statuses: [0, 200]
                             }
                         }
                     }

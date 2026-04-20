@@ -18,6 +18,7 @@ type RefKeys =
 export default class WordCard extends BaseComponent<RefKeys> {
     word: CombinedWord
     wordV = 0
+    pronounced = false
 
     stage: "question" | "hint" | "answer"
 
@@ -29,6 +30,7 @@ export default class WordCard extends BaseComponent<RefKeys> {
         on(EVT.WS.NEXT_CARD, w => {
             this.word = w
             this.wordV = w.v
+            this.pronounced = false
 
             this.ask(w)
         })
@@ -62,10 +64,6 @@ export default class WordCard extends BaseComponent<RefKeys> {
         // console.log(word)
         this.word = word
         this.stage = this.word.comp.stage === "autorepeat" ? "answer" : "question"
-        // pronouce(
-        //     { kanji: word.comp.learn.writQuest[0], variants: word.card.data.readings.main },
-        //     word.comp.stage === "autorepeat"
-        // )
         this.updateStats()
         this.updateCardView()
     }
@@ -77,26 +75,12 @@ export default class WordCard extends BaseComponent<RefKeys> {
 
     answer() {
         this.stage = "answer"
-        pronouce()
         this.updateCardView()
     }
 
-    // pronuouced = false
     updateCardView() {
         if (!this.word.card) return
         computeAll(this.word)
-
-        pronouce(
-            {
-                kanji: this.word.comp.learn.writQuest[0],
-                variants: [
-                    ...this.word.card.data.readings.main,
-                    ...(this.word.card.data.readings.rare || [])
-                ]
-            },
-            // false
-            this.word.comp.stage === "autorepeat"
-        )
 
         const card = this.word.card.data
         const comp = this.word.comp
@@ -127,10 +111,17 @@ export default class WordCard extends BaseComponent<RefKeys> {
                 this.refs.readMain.text(q).show()
                 break
             case "answer":
-                // if (!this.pronuouced) {
-                //     pronouce()
-                //     this.pronuouced = true
-                // }
+                if (!this.pronounced) {
+                    pronouce({
+                        kanji: this.word.comp.learn.writQuest[0],
+                        variants: [
+                            ...this.word.card.data.readings.main,
+                            ...(this.word.card.data.readings.rare || [])
+                        ]
+                    })
+
+                    this.pronounced = true
+                }
 
                 const mw = comp.common.writings.main
                 if (card.writings.alt) {
