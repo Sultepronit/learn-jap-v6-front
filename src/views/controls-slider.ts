@@ -59,17 +59,47 @@ export default class ControlsSlider extends BaseComponent<RefKeys> {
 
         on(EVT.VIEW_SHOWN, view => this.updateToView(view))
 
-        document.body.addEventListener("touchstart", (e: TouchEvent) => {
-            this.start = e.changedTouches[0].screenY
-        })
+        // document.body.addEventListener("touchstart", (e: TouchEvent) => {
+        //     this.start = e.changedTouches[0].screenY
+        // })
 
-        document.body.addEventListener("touchend", (e: TouchEvent) => {
-            this.handleSwipe(e.changedTouches[0].screenY)
-        })
+        // document.body.addEventListener("touchend", (e: TouchEvent) => {
+        //     this.handleSwipe(e.changedTouches[0].screenY)
+        // })
+
+        document.body.addEventListener(
+            "pointerdown",
+            (e: PointerEvent) => {
+                if (e.pointerType !== "touch") return
+                this.start = e.clientY
+                // console.log(e.clientY)
+                // console.log(e)
+            },
+            { passive: true }
+        )
+
+        // document.body.addEventListener("pointermove", (e: PointerEvent) => {
+        //     if (e.pointerType !== "touch") return
+        //     // this.handleSwipe(e.clientY)
+        //     console.log(this.start - e.clientY)
+        // })
+
+        document.body.addEventListener(
+            "pointerup",
+            (e: PointerEvent) => {
+                if (e.pointerType !== "touch") return
+                this.handleSwipe(e.clientY)
+                // console.log(this.start - e.clientY)
+                // if (e.target.hasPointerCapture(e.pointerId)) {
+                //     e.target.releasePointerCapture(e.pointerId)
+                // }
+            },
+            { passive: true }
+        )
     }
 
     handleSwipe(end: number) {
-        if (this.start > window.innerHeight / 3) return
+        if (this.start > window.innerHeight / 4) return
         if (end - this.start < 100) return
 
         this.showControls()

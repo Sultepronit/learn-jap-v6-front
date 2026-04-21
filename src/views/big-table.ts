@@ -17,20 +17,32 @@ export default class BigTable extends HTMLElement {
     rowsArea: HTMLDivElement
     scroller: HTMLInputElement
 
-    selected: {
-        element: HTMLDivElement
-        cardNum: number
-    } = {
-        element: null,
+    selected = {
+        element: null as HTMLDivElement,
         cardNum: -1
     }
     rowsN = 3
     top = 0
 
+    // drugStart = 0
+    // drugCounted
+    drag = {
+        start: 0,
+        halt: 0
+    }
+
     fillRow: FillRow
 
     calcRowsN() {
-        const comp = Math.round(this.offsetHeight / 35 - 2.3)
+        // maybe something smarter?
+        // console.log(this.rows[0]?.element.clientHeight)
+        // console.log(this.rows[0]?.element.offsetHeight)
+        // console.log(this.rows[0]?.element.scrollHeight)
+        // const rh = this.rows[0]?.element.offsetHeight || 35
+        // const comp = Math.round(this.offsetHeight / rh - 2.3)
+        // const comp = Math.round(this.offsetHeight / rh - 1.6)
+        const rh = this.rows[0]?.element.offsetHeight
+        const comp = Math.round(rh ? this.offsetHeight / rh - 1.6 : this.offsetHeight / 35 - 2.3)
         this.rowsN = comp > 3 ? comp : 3
     }
 
@@ -66,11 +78,48 @@ export default class BigTable extends HTMLElement {
         this.scroller = this.querySelector(".bt-scroller")
     }
 
+    dragScroll(y: number) {
+        const rh = this.rows[0]?.element.offsetHeight || 35
+        // console.log(this.drag.start - y)
+        // console.log((this.drag.start - y) / rh)
+        // console.log((this.drag.halt - y) / rh)
+        // if (Math.abs(this.drag.halt - y) > 0.5 * rh)
+        // console.log(this.drag.start / rh)
+        // console.log(this.drag.halt / rh)
+        const delta = Math.trunc((this.drag.halt - y) / rh)
+        if (Math.abs(delta) < 1) return
+        console.log(Math.abs(delta))
+
+        // this.drag.halt = this.drag.start - delta * rh
+        this.drag.halt = y
+        this.navigateSafely(delta)
+    }
+
     addListeners() {
         this.addEventListener("wheel", e => {
             if (e.ctrlKey) return
             this.navigateSafely(e.deltaY > 0 ? 3 : -3)
         })
+
+        this.rowsArea.style.touchAction = "pan-x"
+        this.rowsArea.addEventListener("pointerdown", (e: PointerEvent) => {
+            if (e.pointerType !== "touch") return
+            this.drag.start = this.drag.halt = e.clientY
+            console.log(e.clientY)
+            // console.log(e)
+        })
+
+        this.rowsArea.addEventListener("pointermove", (e: PointerEvent) => {
+            if (e.pointerType !== "touch") return
+            this.dragScroll(e.clientY)
+            // console.log(e.clientY)
+        })
+
+        // this.rowsArea.addEventListener("pointerup", (e: PointerEvent) => {
+        //     if (e.pointerType !== "touch") return
+        //     // this.handleSwipe(e.clientY)
+        //     console.log(e.clientY)
+        // })
 
         this.parentElement.addEventListener("card-selected", (e: CustomEvent) => {
             const { cardNum, rowIdx, navigate } = e.detail
