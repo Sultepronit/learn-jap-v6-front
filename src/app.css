@@ -8,7 +8,8 @@ html,
 body {
     overscroll-behavior: none;
     /* touch-action: none; */
-    touch-action: pan-x;
+    /* touch-action: pan-x; */
+    /* touch-action: pan-y pinch-zoom; */
 }
 
 /* body {
